@@ -37,31 +37,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration
 class EarTests {
 
-	@Configuration
-	static class EarConfig {
+    @Autowired private ApplicationContext context;
 
-		@Bean
-		String ear() {
-			return "ear";
-		}
-	}
+    // -------------------------------------------------------------------------
 
+    @Autowired private String ear;
 
-	// -------------------------------------------------------------------------
+    @Test
+    void verifyEarConfig() {
+        boolean condition = context instanceof WebApplicationContext;
+        assertThat(condition).isFalse();
+        assertThat(context.getParent()).isNull();
+        assertThat(ear).isEqualTo("ear");
+    }
 
-	@Autowired
-	private ApplicationContext context;
+    @Configuration
+    static class EarConfig {
 
-	@Autowired
-	private String ear;
-
-
-	@Test
-	void verifyEarConfig() {
-		boolean condition = context instanceof WebApplicationContext;
-		assertThat(condition).isFalse();
-		assertThat(context.getParent()).isNull();
-		assertThat(ear).isEqualTo("ear");
-	}
-
+        @Bean
+        String ear() {
+            return "ear";
+        }
+    }
 }

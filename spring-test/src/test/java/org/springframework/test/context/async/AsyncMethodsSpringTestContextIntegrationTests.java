@@ -30,9 +30,9 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
  * Integration tests for applications using {@link Async @Async} methods with
  * {@code @DirtiesContext}.
  *
- * <p>Execute this test class with {@code -Xmx8M} to verify that there are no
- * issues with memory leaks as raised in
- * <a href="https://github.com/spring-projects/spring-framework/issues/23571">gh-23571</a>.
+ * <p>Execute this test class with {@code -Xmx8M} to verify that there are no issues with memory
+ * leaks as raised in <a
+ * href="https://github.com/spring-projects/spring-framework/issues/23571">gh-23571</a>.
  *
  * @author Sam Brannen
  * @since 5.2
@@ -41,28 +41,25 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 @Disabled("Only meant to be executed manually")
 class AsyncMethodsSpringTestContextIntegrationTests {
 
-	@RepeatedTest(200)
-	@DirtiesContext
-	void test() {
-		// If we don't run out of memory, then this test is a success.
-	}
+    @RepeatedTest(200)
+    @DirtiesContext
+    void test() {
+        // If we don't run out of memory, then this test is a success.
+    }
 
+    @Configuration
+    @EnableAsync
+    static class Config {
 
-	@Configuration
-	@EnableAsync
-	static class Config {
+        @Bean
+        AsyncService asyncService() {
+            return new AsyncService();
+        }
+    }
 
-		@Bean
-		AsyncService asyncService() {
-			return new AsyncService();
-		}
-	}
+    static class AsyncService {
 
-	static class AsyncService {
-
-		@Async
-		void asyncMethod() {
-		}
-	}
-
+        @Async
+        void asyncMethod() {}
+    }
 }

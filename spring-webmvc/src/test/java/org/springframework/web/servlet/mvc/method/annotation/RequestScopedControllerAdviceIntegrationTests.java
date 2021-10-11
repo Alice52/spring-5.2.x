@@ -42,43 +42,41 @@ import static org.assertj.core.api.Assertions.assertThatCode;
  */
 class RequestScopedControllerAdviceIntegrationTests {
 
-	@Test // gh-23985
-	void loadContextWithRequestScopedControllerAdvice() {
-		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-		context.setServletContext(new MockServletContext());
-		context.register(Config.class);
+    @Test // gh-23985
+    void loadContextWithRequestScopedControllerAdvice() {
+        AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+        context.setServletContext(new MockServletContext());
+        context.register(Config.class);
 
-		assertThatCode(context::refresh).doesNotThrowAnyException();
+        assertThatCode(context::refresh).doesNotThrowAnyException();
 
-		List<ControllerAdviceBean> adviceBeans = ControllerAdviceBean.findAnnotatedBeans(context);
-		assertThat(adviceBeans).hasSize(1);
-		assertThat(adviceBeans.get(0))//
-				.returns(RequestScopedControllerAdvice.class, ControllerAdviceBean::getBeanType)//
-				.returns(42, ControllerAdviceBean::getOrder);
+        List<ControllerAdviceBean> adviceBeans = ControllerAdviceBean.findAnnotatedBeans(context);
+        assertThat(adviceBeans).hasSize(1);
+        assertThat(adviceBeans.get(0)) //
+                .returns(RequestScopedControllerAdvice.class, ControllerAdviceBean::getBeanType) //
+                .returns(42, ControllerAdviceBean::getOrder);
 
-		context.close();
-	}
+        context.close();
+    }
 
+    @Configuration
+    @EnableWebMvc
+    static class Config {
 
-	@Configuration
-	@EnableWebMvc
-	static class Config {
+        @Bean
+        @RequestScope
+        RequestScopedControllerAdvice requestScopedControllerAdvice() {
+            return new RequestScopedControllerAdvice();
+        }
+    }
 
-		@Bean
-		@RequestScope
-		RequestScopedControllerAdvice requestScopedControllerAdvice() {
-			return new RequestScopedControllerAdvice();
-		}
-	}
+    @ControllerAdvice
+    @Order(42)
+    static class RequestScopedControllerAdvice implements Ordered {
 
-	@ControllerAdvice
-	@Order(42)
-	static class RequestScopedControllerAdvice implements Ordered {
-
-		@Override
-		public int getOrder() {
-			return 99;
-		}
-	}
-
+        @Override
+        public int getOrder() {
+            return 99;
+        }
+    }
 }

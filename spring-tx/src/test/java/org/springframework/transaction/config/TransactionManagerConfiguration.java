@@ -22,24 +22,21 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.testfixture.CallCountingTransactionManager;
 
-/**
- * @author Juergen Hoeller
- */
+/** @author Juergen Hoeller */
 @Configuration
 public class TransactionManagerConfiguration {
 
-	@Bean
-	@Qualifier("synch")
-	public PlatformTransactionManager transactionManager1() {
-		return new CallCountingTransactionManager();
-	}
+    @Bean
+    @Qualifier("synch")
+    public PlatformTransactionManager transactionManager1() {
+        return new CallCountingTransactionManager();
+    }
 
-	@Bean
-	@NoSynch
-	public PlatformTransactionManager transactionManager2() {
-		CallCountingTransactionManager tm = new CallCountingTransactionManager();
-		tm.setTransactionSynchronization(CallCountingTransactionManager.SYNCHRONIZATION_NEVER);
-		return tm;
-	}
-
+    @Bean
+    @NoSynch
+    public PlatformTransactionManager transactionManager2() {
+        CallCountingTransactionManager tm = new CallCountingTransactionManager();
+        tm.setTransactionSynchronization(CallCountingTransactionManager.SYNCHRONIZATION_NEVER);
+        return tm;
+    }
 }

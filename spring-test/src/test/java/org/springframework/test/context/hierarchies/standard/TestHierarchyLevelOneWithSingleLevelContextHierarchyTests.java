@@ -37,37 +37,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextHierarchy(@ContextConfiguration)
 class TestHierarchyLevelOneWithSingleLevelContextHierarchyTests {
 
-	@Configuration
-	static class Config {
+    @Autowired private String foo;
 
-		@Bean
-		String foo() {
-			return "foo-level-1";
-		}
+    @Autowired private String bar;
 
-		@Bean
-		String bar() {
-			return "bar";
-		}
-	}
+    @Autowired private ApplicationContext context;
 
+    @Test
+    void loadContextHierarchy() {
+        assertThat(context).as("child ApplicationContext").isNotNull();
+        assertThat(context.getParent()).as("parent ApplicationContext").isNull();
+        assertThat(foo).isEqualTo("foo-level-1");
+        assertThat(bar).isEqualTo("bar");
+    }
 
-	@Autowired
-	private String foo;
+    @Configuration
+    static class Config {
 
-	@Autowired
-	private String bar;
+        @Bean
+        String foo() {
+            return "foo-level-1";
+        }
 
-	@Autowired
-	private ApplicationContext context;
-
-
-	@Test
-	void loadContextHierarchy() {
-		assertThat(context).as("child ApplicationContext").isNotNull();
-		assertThat(context.getParent()).as("parent ApplicationContext").isNull();
-		assertThat(foo).isEqualTo("foo-level-1");
-		assertThat(bar).isEqualTo("bar");
-	}
-
+        @Bean
+        String bar() {
+            return "bar";
+        }
+    }
 }

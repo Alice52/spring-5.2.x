@@ -28,8 +28,8 @@ import org.springframework.test.context.ContextCustomizerFactory;
 import org.springframework.test.context.DynamicPropertySource;
 
 /**
- * {@link ContextCustomizerFactory} to support
- * {@link DynamicPropertySource @DynamicPropertySource} methods.
+ * {@link ContextCustomizerFactory} to support {@link DynamicPropertySource @DynamicPropertySource}
+ * methods.
  *
  * @author Phillip Webb
  * @since 5.2.5
@@ -37,20 +37,19 @@ import org.springframework.test.context.DynamicPropertySource;
  */
 class DynamicPropertiesContextCustomizerFactory implements ContextCustomizerFactory {
 
-	@Override
-	@Nullable
-	public DynamicPropertiesContextCustomizer createContextCustomizer(Class<?> testClass,
-			List<ContextConfigurationAttributes> configAttributes) {
+    @Override
+    @Nullable
+    public DynamicPropertiesContextCustomizer createContextCustomizer(
+            Class<?> testClass, List<ContextConfigurationAttributes> configAttributes) {
 
-		Set<Method> methods = MethodIntrospector.selectMethods(testClass, this::isAnnotated);
-		if (methods.isEmpty()) {
-			return null;
-		}
-		return new DynamicPropertiesContextCustomizer(methods);
-	}
+        Set<Method> methods = MethodIntrospector.selectMethods(testClass, this::isAnnotated);
+        if (methods.isEmpty()) {
+            return null;
+        }
+        return new DynamicPropertiesContextCustomizer(methods);
+    }
 
-	private boolean isAnnotated(Method method) {
-		return MergedAnnotations.from(method).isPresent(DynamicPropertySource.class);
-	}
-
+    private boolean isAnnotated(Method method) {
+        return MergedAnnotations.from(method).isPresent(DynamicPropertySource.class);
+    }
 }

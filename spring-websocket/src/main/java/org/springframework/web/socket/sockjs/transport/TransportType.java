@@ -33,78 +33,71 @@ import org.springframework.lang.Nullable;
  * @since 4.0
  */
 public enum TransportType {
+    WEBSOCKET("websocket", HttpMethod.GET, "origin"),
 
-	WEBSOCKET("websocket", HttpMethod.GET, "origin"),
+    XHR("xhr", HttpMethod.POST, "cors", "jsessionid", "no_cache"),
 
-	XHR("xhr", HttpMethod.POST, "cors", "jsessionid", "no_cache"),
+    XHR_SEND("xhr_send", HttpMethod.POST, "cors", "jsessionid", "no_cache"),
 
-	XHR_SEND("xhr_send", HttpMethod.POST, "cors", "jsessionid", "no_cache"),
+    XHR_STREAMING("xhr_streaming", HttpMethod.POST, "cors", "jsessionid", "no_cache"),
 
-	XHR_STREAMING("xhr_streaming", HttpMethod.POST, "cors", "jsessionid", "no_cache"),
+    EVENT_SOURCE("eventsource", HttpMethod.GET, "origin", "jsessionid", "no_cache"),
 
-	EVENT_SOURCE("eventsource", HttpMethod.GET, "origin", "jsessionid", "no_cache"),
+    HTML_FILE("htmlfile", HttpMethod.GET, "cors", "jsessionid", "no_cache");
 
-	HTML_FILE("htmlfile", HttpMethod.GET, "cors", "jsessionid", "no_cache");
+    private static final Map<String, TransportType> TRANSPORT_TYPES;
 
+    private final String value;
 
-	private static final Map<String, TransportType> TRANSPORT_TYPES;
+    private final HttpMethod httpMethod;
 
-	static {
-		Map<String, TransportType> transportTypes = new HashMap<>();
-		for (TransportType type : values()) {
-			transportTypes.put(type.value, type);
-		}
-		TRANSPORT_TYPES = Collections.unmodifiableMap(transportTypes);
-	}
+    private final List<String> headerHints;
 
-	@Nullable
-	public static TransportType fromValue(String value) {
-		return TRANSPORT_TYPES.get(value);
-	}
+    TransportType(String value, HttpMethod httpMethod, String... headerHints) {
+        this.value = value;
+        this.httpMethod = httpMethod;
+        this.headerHints = Arrays.asList(headerHints);
+    }
 
+    @Nullable
+    public static TransportType fromValue(String value) {
+        return TRANSPORT_TYPES.get(value);
+    }
 
-	private final String value;
+    public String value() {
+        return this.value;
+    }
 
-	private final HttpMethod httpMethod;
+    public HttpMethod getHttpMethod() {
+        return this.httpMethod;
+    }
 
-	private final List<String> headerHints;
+    public boolean sendsNoCacheInstruction() {
+        return this.headerHints.contains("no_cache");
+    }
 
+    public boolean sendsSessionCookie() {
+        return this.headerHints.contains("jsessionid");
+    }
 
-	TransportType(String value, HttpMethod httpMethod, String... headerHints) {
-		this.value = value;
-		this.httpMethod = httpMethod;
-		this.headerHints = Arrays.asList(headerHints);
-	}
+    public boolean supportsCors() {
+        return this.headerHints.contains("cors");
+    }
 
+    public boolean supportsOrigin() {
+        return this.headerHints.contains("cors") || this.headerHints.contains("origin");
+    }
 
-	public String value() {
-		return this.value;
-	}
+    @Override
+    public String toString() {
+        return this.value;
+    }
 
-	public HttpMethod getHttpMethod() {
-		return this.httpMethod;
-	}
-
-	public boolean sendsNoCacheInstruction() {
-		return this.headerHints.contains("no_cache");
-	}
-
-	public boolean sendsSessionCookie() {
-		return this.headerHints.contains("jsessionid");
-	}
-
-	public boolean supportsCors() {
-		return this.headerHints.contains("cors");
-	}
-
-	public boolean supportsOrigin() {
-		return this.headerHints.contains("cors") || this.headerHints.contains("origin");
-	}
-
-
-	@Override
-	public String toString() {
-		return this.value;
-	}
-
+    static {
+        Map<String, TransportType> transportTypes = new HashMap<>();
+        for (TransportType type : values()) {
+            transportTypes.put(type.value, type);
+        }
+        TRANSPORT_TYPES = Collections.unmodifiableMap(transportTypes);
+    }
 }

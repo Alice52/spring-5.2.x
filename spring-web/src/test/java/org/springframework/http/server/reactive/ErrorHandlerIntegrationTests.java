@@ -30,89 +30,80 @@ import org.springframework.web.testfixture.http.server.reactive.bootstrap.HttpSe
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Arjen Poutsma
- */
+/** @author Arjen Poutsma */
 class ErrorHandlerIntegrationTests extends AbstractHttpHandlerIntegrationTests {
 
-	private final ErrorHandler handler = new ErrorHandler();
+    private static final ResponseErrorHandler NO_OP_ERROR_HANDLER =
+            new ResponseErrorHandler() {
 
+                @Override
+                public boolean hasError(ClientHttpResponse response) {
+                    return false;
+                }
 
-	@Override
-	protected HttpHandler createHttpHandler() {
-		return handler;
-	}
+                @Override
+                public void handleError(ClientHttpResponse response) {}
+            };
 
+    private final ErrorHandler handler = new ErrorHandler();
 
-	@ParameterizedHttpServerTest
-	void responseBodyError(HttpServer httpServer) throws Exception {
-		startServer(httpServer);
+    @Override
+    protected HttpHandler createHttpHandler() {
+        return handler;
+    }
 
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.setErrorHandler(NO_OP_ERROR_HANDLER);
+    @ParameterizedHttpServerTest
+    void responseBodyError(HttpServer httpServer) throws Exception {
+        startServer(httpServer);
 
-		URI url = new URI("http://localhost:" + port + "/response-body-error");
-		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(NO_OP_ERROR_HANDLER);
 
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-	}
+        URI url = new URI("http://localhost:" + port + "/response-body-error");
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
-	@ParameterizedHttpServerTest
-	void handlingError(HttpServer httpServer) throws Exception {
-		startServer(httpServer);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.setErrorHandler(NO_OP_ERROR_HANDLER);
+    @ParameterizedHttpServerTest
+    void handlingError(HttpServer httpServer) throws Exception {
+        startServer(httpServer);
 
-		URI url = new URI("http://localhost:" + port + "/handling-error");
-		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(NO_OP_ERROR_HANDLER);
 
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-	}
+        URI url = new URI("http://localhost:" + port + "/handling-error");
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
-	@ParameterizedHttpServerTest // SPR-15560
-	void emptyPathSegments(HttpServer httpServer) throws Exception {
-		startServer(httpServer);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.setErrorHandler(NO_OP_ERROR_HANDLER);
+    @ParameterizedHttpServerTest // SPR-15560
+    void emptyPathSegments(HttpServer httpServer) throws Exception {
+        startServer(httpServer);
 
-		URI url = new URI("http://localhost:" + port + "//");
-		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(NO_OP_ERROR_HANDLER);
 
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}
+        URI url = new URI("http://localhost:" + port + "//");
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 
-	private static class ErrorHandler implements HttpHandler {
+    private static class ErrorHandler implements HttpHandler {
 
-		@Override
-		public Mono<Void> handle(ServerHttpRequest request, ServerHttpResponse response) {
-			Exception error = new UnsupportedOperationException();
-			String path = request.getURI().getPath();
-			if (path.endsWith("response-body-error")) {
-				return response.writeWith(Mono.error(error));
-			}
-			else if (path.endsWith("handling-error")) {
-				return Mono.error(error);
-			}
-			else {
-				return Mono.empty();
-			}
-		}
-	}
-
-
-	private static final ResponseErrorHandler NO_OP_ERROR_HANDLER = new ResponseErrorHandler() {
-
-		@Override
-		public boolean hasError(ClientHttpResponse response) {
-			return false;
-		}
-
-		@Override
-		public void handleError(ClientHttpResponse response) {
-		}
-	};
-
+        @Override
+        public Mono<Void> handle(ServerHttpRequest request, ServerHttpResponse response) {
+            Exception error = new UnsupportedOperationException();
+            String path = request.getURI().getPath();
+            if (path.endsWith("response-body-error")) {
+                return response.writeWith(Mono.error(error));
+            } else if (path.endsWith("handling-error")) {
+                return Mono.error(error);
+            } else {
+                return Mono.empty();
+            }
+        }
+    }
 }

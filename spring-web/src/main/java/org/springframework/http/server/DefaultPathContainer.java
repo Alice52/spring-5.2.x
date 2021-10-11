@@ -41,275 +41,268 @@ import org.springframework.util.StringUtils;
  */
 final class DefaultPathContainer implements PathContainer {
 
-	private static final PathContainer EMPTY_PATH = new DefaultPathContainer("", Collections.emptyList());
+    private static final PathContainer EMPTY_PATH =
+            new DefaultPathContainer("", Collections.emptyList());
 
-	private static final Map<Character, DefaultSeparator> SEPARATORS = new HashMap<>(2);
+    private static final Map<Character, DefaultSeparator> SEPARATORS = new HashMap<>(2);
 
-	static {
-		SEPARATORS.put('/', new DefaultSeparator('/', "%2F"));
-		SEPARATORS.put('.', new DefaultSeparator('.', "%2E"));
-	}
+    private final String path;
 
+    private final List<Element> elements;
 
-	private final String path;
+    private DefaultPathContainer(String path, List<Element> elements) {
+        this.path = path;
+        this.elements = Collections.unmodifiableList(elements);
+    }
 
-	private final List<Element> elements;
+    static PathContainer createFromUrlPath(String path, Options options) {
+        if (path.isEmpty()) {
+            return EMPTY_PATH;
+        }
+        char separator = options.separator();
+        DefaultSeparator separatorElement = SEPARATORS.get(separator);
+        if (separatorElement == null) {
+            throw new IllegalArgumentException("Unexpected separator: '" + separator + "'");
+        }
+        List<Element> elements = new ArrayList<>();
+        int begin;
+        if (path.charAt(0) == separator) {
+            begin = 1;
+            elements.add(separatorElement);
+        } else {
+            begin = 0;
+        }
+        while (begin < path.length()) {
+            int end = path.indexOf(separator, begin);
+            String segment = (end != -1 ? path.substring(begin, end) : path.substring(begin));
+            if (!segment.isEmpty()) {
+                elements.add(
+                        options.shouldDecodeAndParseSegments()
+                                ? decodeAndParsePathSegment(segment)
+                                : DefaultPathSegment.from(segment, separatorElement));
+            }
+            if (end == -1) {
+                break;
+            }
+            elements.add(separatorElement);
+            begin = end + 1;
+        }
+        return new DefaultPathContainer(path, elements);
+    }
 
+    private static PathSegment decodeAndParsePathSegment(String segment) {
+        Charset charset = StandardCharsets.UTF_8;
+        int index = segment.indexOf(';');
+        if (index == -1) {
+            String valueToMatch = StringUtils.uriDecode(segment, charset);
+            return DefaultPathSegment.from(segment, valueToMatch);
+        } else {
+            String valueToMatch = StringUtils.uriDecode(segment.substring(0, index), charset);
+            String pathParameterContent = segment.substring(index);
+            MultiValueMap<String, String> parameters =
+                    parsePathParams(pathParameterContent, charset);
+            return DefaultPathSegment.from(segment, valueToMatch, parameters);
+        }
+    }
 
-	private DefaultPathContainer(String path, List<Element> elements) {
-		this.path = path;
-		this.elements = Collections.unmodifiableList(elements);
-	}
+    private static MultiValueMap<String, String> parsePathParams(String input, Charset charset) {
+        MultiValueMap<String, String> result = new LinkedMultiValueMap<>();
+        int begin = 1;
+        while (begin < input.length()) {
+            int end = input.indexOf(';', begin);
+            String param = (end != -1 ? input.substring(begin, end) : input.substring(begin));
+            parsePathParamValues(param, charset, result);
+            if (end == -1) {
+                break;
+            }
+            begin = end + 1;
+        }
+        return result;
+    }
 
+    private static void parsePathParamValues(
+            String input, Charset charset, MultiValueMap<String, String> output) {
+        if (StringUtils.hasText(input)) {
+            int index = input.indexOf('=');
+            if (index != -1) {
+                String name = input.substring(0, index);
+                String value = input.substring(index + 1);
+                for (String v : StringUtils.commaDelimitedListToStringArray(value)) {
+                    name = StringUtils.uriDecode(name, charset);
+                    if (StringUtils.hasText(name)) {
+                        output.add(name, StringUtils.uriDecode(v, charset));
+                    }
+                }
+            } else {
+                String name = StringUtils.uriDecode(input, charset);
+                if (StringUtils.hasText(name)) {
+                    output.add(input, "");
+                }
+            }
+        }
+    }
 
-	@Override
-	public String value() {
-		return this.path;
-	}
+    static PathContainer subPath(PathContainer container, int fromIndex, int toIndex) {
+        List<Element> elements = container.elements();
+        if (fromIndex == 0 && toIndex == elements.size()) {
+            return container;
+        }
+        if (fromIndex == toIndex) {
+            return EMPTY_PATH;
+        }
 
-	@Override
-	public List<Element> elements() {
-		return this.elements;
-	}
+        Assert.isTrue(
+                fromIndex >= 0 && fromIndex < elements.size(),
+                () -> "Invalid fromIndex: " + fromIndex);
+        Assert.isTrue(
+                toIndex >= 0 && toIndex <= elements.size(), () -> "Invalid toIndex: " + toIndex);
+        Assert.isTrue(
+                fromIndex < toIndex,
+                () -> "fromIndex: " + fromIndex + " should be < toIndex " + toIndex);
 
+        List<Element> subList = elements.subList(fromIndex, toIndex);
+        String path = subList.stream().map(Element::value).collect(Collectors.joining(""));
+        return new DefaultPathContainer(path, subList);
+    }
 
-	@Override
-	public boolean equals(@Nullable Object other) {
-		if (this == other) {
-			return true;
-		}
-		if (!(other instanceof PathContainer)) {
-			return false;
-		}
-		return value().equals(((PathContainer) other).value());
-	}
+    @Override
+    public String value() {
+        return this.path;
+    }
 
-	@Override
-	public int hashCode() {
-		return this.path.hashCode();
-	}
+    @Override
+    public List<Element> elements() {
+        return this.elements;
+    }
 
-	@Override
-	public String toString() {
-		return value();
-	}
+    @Override
+    public boolean equals(@Nullable Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof PathContainer)) {
+            return false;
+        }
+        return value().equals(((PathContainer) other).value());
+    }
 
+    @Override
+    public int hashCode() {
+        return this.path.hashCode();
+    }
 
-	static PathContainer createFromUrlPath(String path, Options options) {
-		if (path.isEmpty()) {
-			return EMPTY_PATH;
-		}
-		char separator = options.separator();
-		DefaultSeparator separatorElement = SEPARATORS.get(separator);
-		if (separatorElement == null) {
-			throw new IllegalArgumentException("Unexpected separator: '" + separator + "'");
-		}
-		List<Element> elements = new ArrayList<>();
-		int begin;
-		if (path.charAt(0) == separator) {
-			begin = 1;
-			elements.add(separatorElement);
-		}
-		else {
-			begin = 0;
-		}
-		while (begin < path.length()) {
-			int end = path.indexOf(separator, begin);
-			String segment = (end != -1 ? path.substring(begin, end) : path.substring(begin));
-			if (!segment.isEmpty()) {
-				elements.add(options.shouldDecodeAndParseSegments() ?
-						decodeAndParsePathSegment(segment) :
-						DefaultPathSegment.from(segment, separatorElement));
-			}
-			if (end == -1) {
-				break;
-			}
-			elements.add(separatorElement);
-			begin = end + 1;
-		}
-		return new DefaultPathContainer(path, elements);
-	}
+    @Override
+    public String toString() {
+        return value();
+    }
 
-	private static PathSegment decodeAndParsePathSegment(String segment) {
-		Charset charset = StandardCharsets.UTF_8;
-		int index = segment.indexOf(';');
-		if (index == -1) {
-			String valueToMatch = StringUtils.uriDecode(segment, charset);
-			return DefaultPathSegment.from(segment, valueToMatch);
-		}
-		else {
-			String valueToMatch = StringUtils.uriDecode(segment.substring(0, index), charset);
-			String pathParameterContent = segment.substring(index);
-			MultiValueMap<String, String> parameters = parsePathParams(pathParameterContent, charset);
-			return DefaultPathSegment.from(segment, valueToMatch, parameters);
-		}
-	}
+    private static class DefaultSeparator implements Separator {
 
-	private static MultiValueMap<String, String> parsePathParams(String input, Charset charset) {
-		MultiValueMap<String, String> result = new LinkedMultiValueMap<>();
-		int begin = 1;
-		while (begin < input.length()) {
-			int end = input.indexOf(';', begin);
-			String param = (end != -1 ? input.substring(begin, end) : input.substring(begin));
-			parsePathParamValues(param, charset, result);
-			if (end == -1) {
-				break;
-			}
-			begin = end + 1;
-		}
-		return result;
-	}
+        private final String separator;
 
-	private static void parsePathParamValues(String input, Charset charset, MultiValueMap<String, String> output) {
-		if (StringUtils.hasText(input)) {
-			int index = input.indexOf('=');
-			if (index != -1) {
-				String name = input.substring(0, index);
-				String value = input.substring(index + 1);
-				for (String v : StringUtils.commaDelimitedListToStringArray(value)) {
-					name = StringUtils.uriDecode(name, charset);
-					if (StringUtils.hasText(name)) {
-						output.add(name, StringUtils.uriDecode(v, charset));
-					}
-				}
-			}
-			else {
-				String name = StringUtils.uriDecode(input, charset);
-				if (StringUtils.hasText(name)) {
-					output.add(input, "");
-				}
-			}
-		}
-	}
+        private final String encodedSequence;
 
-	static PathContainer subPath(PathContainer container, int fromIndex, int toIndex) {
-		List<Element> elements = container.elements();
-		if (fromIndex == 0 && toIndex == elements.size()) {
-			return container;
-		}
-		if (fromIndex == toIndex) {
-			return EMPTY_PATH;
-		}
+        DefaultSeparator(char separator, String encodedSequence) {
+            this.separator = String.valueOf(separator);
+            this.encodedSequence = encodedSequence;
+        }
 
-		Assert.isTrue(fromIndex >= 0 && fromIndex < elements.size(), () -> "Invalid fromIndex: " + fromIndex);
-		Assert.isTrue(toIndex >= 0 && toIndex <= elements.size(), () -> "Invalid toIndex: " + toIndex);
-		Assert.isTrue(fromIndex < toIndex, () -> "fromIndex: " + fromIndex + " should be < toIndex " + toIndex);
+        @Override
+        public String value() {
+            return this.separator;
+        }
 
-		List<Element> subList = elements.subList(fromIndex, toIndex);
-		String path = subList.stream().map(Element::value).collect(Collectors.joining(""));
-		return new DefaultPathContainer(path, subList);
-	}
+        public String encodedSequence() {
+            return this.encodedSequence;
+        }
+    }
 
+    private static final class DefaultPathSegment implements PathSegment {
 
-	private static class DefaultSeparator implements Separator {
+        private static final MultiValueMap<String, String> EMPTY_PARAMS =
+                CollectionUtils.unmodifiableMultiValueMap(new LinkedMultiValueMap<>());
 
-		private final String separator;
+        private final String value;
 
-		private final String encodedSequence;
+        private final String valueToMatch;
 
+        private final char[] valueToMatchAsChars;
 
-		DefaultSeparator(char separator, String encodedSequence) {
-			this.separator = String.valueOf(separator);
-			this.encodedSequence = encodedSequence;
-		}
+        private final MultiValueMap<String, String> parameters;
 
+        private DefaultPathSegment(
+                String value, String valueToMatch, MultiValueMap<String, String> params) {
+            this.value = value;
+            this.valueToMatch = valueToMatch;
+            this.valueToMatchAsChars = valueToMatch.toCharArray();
+            this.parameters = params;
+        }
 
-		@Override
-		public String value() {
-			return this.separator;
-		}
+        /** Factory for segments without decoding and parsing. */
+        static DefaultPathSegment from(String value, DefaultSeparator separator) {
+            String valueToMatch =
+                    value.contains(separator.encodedSequence())
+                            ? value.replaceAll(separator.encodedSequence(), separator.value())
+                            : value;
+            return from(value, valueToMatch);
+        }
 
-		public String encodedSequence() {
-			return this.encodedSequence;
-		}
-	}
+        /** Factory for decoded and parsed segments. */
+        static DefaultPathSegment from(String value, String valueToMatch) {
+            return new DefaultPathSegment(value, valueToMatch, EMPTY_PARAMS);
+        }
 
+        /** Factory for decoded and parsed segments. */
+        static DefaultPathSegment from(
+                String value, String valueToMatch, MultiValueMap<String, String> params) {
+            return new DefaultPathSegment(
+                    value, valueToMatch, CollectionUtils.unmodifiableMultiValueMap(params));
+        }
 
-	private static final class DefaultPathSegment implements PathSegment {
+        @Override
+        public String value() {
+            return this.value;
+        }
 
-		private static final MultiValueMap<String, String> EMPTY_PARAMS =
-				CollectionUtils.unmodifiableMultiValueMap(new LinkedMultiValueMap<>());
+        @Override
+        public String valueToMatch() {
+            return this.valueToMatch;
+        }
 
-		private final String value;
+        @Override
+        public char[] valueToMatchAsChars() {
+            return this.valueToMatchAsChars;
+        }
 
-		private final String valueToMatch;
+        @Override
+        public MultiValueMap<String, String> parameters() {
+            return this.parameters;
+        }
 
-		private final char[] valueToMatchAsChars;
+        @Override
+        public boolean equals(@Nullable Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (!(other instanceof PathSegment)) {
+                return false;
+            }
+            return value().equals(((PathSegment) other).value());
+        }
 
-		private final MultiValueMap<String, String> parameters;
+        @Override
+        public int hashCode() {
+            return this.value.hashCode();
+        }
 
-		/**
-		 * Factory for segments without decoding and parsing.
-		 */
-		static DefaultPathSegment from(String value, DefaultSeparator separator) {
-			String valueToMatch = value.contains(separator.encodedSequence()) ?
-					value.replaceAll(separator.encodedSequence(), separator.value()) : value;
-			return from(value, valueToMatch);
-		}
+        @Override
+        public String toString() {
+            return "[value='" + this.value + "']";
+        }
+    }
 
-		/**
-		 * Factory for decoded and parsed segments.
-		 */
-		static DefaultPathSegment from(String value, String valueToMatch) {
-			return new DefaultPathSegment(value, valueToMatch, EMPTY_PARAMS);
-		}
-
-		/**
-		 * Factory for decoded and parsed segments.
-		 */
-		static DefaultPathSegment from(String value, String valueToMatch, MultiValueMap<String, String> params) {
-			return new DefaultPathSegment(value, valueToMatch, CollectionUtils.unmodifiableMultiValueMap(params));
-		}
-
-		private DefaultPathSegment(String value, String valueToMatch, MultiValueMap<String, String> params) {
-			this.value = value;
-			this.valueToMatch = valueToMatch;
-			this.valueToMatchAsChars = valueToMatch.toCharArray();
-			this.parameters = params;
-		}
-
-
-		@Override
-		public String value() {
-			return this.value;
-		}
-
-		@Override
-		public String valueToMatch() {
-			return this.valueToMatch;
-		}
-
-		@Override
-		public char[] valueToMatchAsChars() {
-			return this.valueToMatchAsChars;
-		}
-
-		@Override
-		public MultiValueMap<String, String> parameters() {
-			return this.parameters;
-		}
-
-		@Override
-		public boolean equals(@Nullable Object other) {
-			if (this == other) {
-				return true;
-			}
-			if (!(other instanceof PathSegment)) {
-				return false;
-			}
-			return value().equals(((PathSegment) other).value());
-		}
-
-		@Override
-		public int hashCode() {
-			return this.value.hashCode();
-		}
-
-		@Override
-		public String toString() {
-			return "[value='" + this.value + "']";
-		}
-	}
-
+    static {
+        SEPARATORS.put('/', new DefaultSeparator('/', "%2F"));
+        SEPARATORS.put('.', new DefaultSeparator('.', "%2E"));
+    }
 }
-

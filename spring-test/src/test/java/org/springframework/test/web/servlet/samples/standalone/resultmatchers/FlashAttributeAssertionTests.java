@@ -43,55 +43,60 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
  */
 class FlashAttributeAssertionTests {
 
-	private final MockMvc mockMvc = standaloneSetup(new PersonController())
-										.alwaysExpect(status().isFound())
-										.alwaysExpect(flash().attributeCount(3))
-										.build();
+    private final MockMvc mockMvc =
+            standaloneSetup(new PersonController())
+                    .alwaysExpect(status().isFound())
+                    .alwaysExpect(flash().attributeCount(3))
+                    .build();
 
+    @Test
+    void attributeCountWithWrongCount() throws Exception {
+        assertThatExceptionOfType(AssertionError.class)
+                .isThrownBy(
+                        () ->
+                                this.mockMvc
+                                        .perform(post("/persons"))
+                                        .andExpect(flash().attributeCount(1)))
+                .withMessage("FlashMap size expected:<1> but was:<3>");
+    }
 
-	@Test
-	void attributeCountWithWrongCount() throws Exception {
-		assertThatExceptionOfType(AssertionError.class)
-			.isThrownBy(() -> this.mockMvc.perform(post("/persons")).andExpect(flash().attributeCount(1)))
-			.withMessage("FlashMap size expected:<1> but was:<3>");
-	}
+    @Test
+    void attributeExists() throws Exception {
+        this.mockMvc
+                .perform(post("/persons"))
+                .andExpect(flash().attributeExists("one", "two", "three"));
+    }
 
-	@Test
-	void attributeExists() throws Exception {
-		this.mockMvc.perform(post("/persons"))
-			.andExpect(flash().attributeExists("one", "two", "three"));
-	}
+    @Test
+    void attributeEqualTo() throws Exception {
+        this.mockMvc
+                .perform(post("/persons"))
+                .andExpect(flash().attribute("one", "1"))
+                .andExpect(flash().attribute("two", 2.222))
+                .andExpect(flash().attribute("three", new URL("https://example.com")));
+    }
 
-	@Test
-	void attributeEqualTo() throws Exception {
-		this.mockMvc.perform(post("/persons"))
-			.andExpect(flash().attribute("one", "1"))
-			.andExpect(flash().attribute("two", 2.222))
-			.andExpect(flash().attribute("three", new URL("https://example.com")));
-	}
+    @Test
+    void attributeMatchers() throws Exception {
+        this.mockMvc
+                .perform(post("/persons"))
+                .andExpect(flash().attribute("one", containsString("1")))
+                .andExpect(flash().attribute("two", closeTo(2, 0.5)))
+                .andExpect(flash().attribute("three", notNullValue()))
+                .andExpect(flash().attribute("one", equalTo("1")))
+                .andExpect(flash().attribute("two", equalTo(2.222)))
+                .andExpect(flash().attribute("three", equalTo(new URL("https://example.com"))));
+    }
 
-	@Test
-	void attributeMatchers() throws Exception {
-		this.mockMvc.perform(post("/persons"))
-			.andExpect(flash().attribute("one", containsString("1")))
-			.andExpect(flash().attribute("two", closeTo(2, 0.5)))
-			.andExpect(flash().attribute("three", notNullValue()))
-			.andExpect(flash().attribute("one", equalTo("1")))
-			.andExpect(flash().attribute("two", equalTo(2.222)))
-			.andExpect(flash().attribute("three", equalTo(new URL("https://example.com"))));
-	}
+    @Controller
+    private static class PersonController {
 
-
-	@Controller
-	private static class PersonController {
-
-		@PostMapping("/persons")
-		String save(RedirectAttributes redirectAttrs) throws Exception {
-			redirectAttrs.addFlashAttribute("one", "1");
-			redirectAttrs.addFlashAttribute("two", 2.222);
-			redirectAttrs.addFlashAttribute("three", new URL("https://example.com"));
-			return "redirect:/person/1";
-		}
-	}
-
+        @PostMapping("/persons")
+        String save(RedirectAttributes redirectAttrs) throws Exception {
+            redirectAttrs.addFlashAttribute("one", "1");
+            redirectAttrs.addFlashAttribute("two", 2.222);
+            redirectAttrs.addFlashAttribute("three", new URL("https://example.com"));
+            return "redirect:/person/1";
+        }
+    }
 }

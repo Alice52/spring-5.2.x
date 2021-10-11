@@ -28,30 +28,29 @@ import org.springframework.core.annotation.AliasFor;
 /**
  * An {@link EventListener} that is invoked according to a {@link TransactionPhase}.
  *
- * <p>If the event is not published within an active transaction, the event is discarded
- * unless the {@link #fallbackExecution} flag is explicitly set. If a transaction is
- * running, the event is handled according to its {@code TransactionPhase}.
+ * <p>If the event is not published within an active transaction, the event is discarded unless the
+ * {@link #fallbackExecution} flag is explicitly set. If a transaction is running, the event is
+ * handled according to its {@code TransactionPhase}.
  *
- * <p>Adding {@link org.springframework.core.annotation.Order @Order} to your annotated
- * method allows you to prioritize that listener amongst other listeners running before
- * or after transaction completion.
+ * <p>Adding {@link org.springframework.core.annotation.Order @Order} to your annotated method
+ * allows you to prioritize that listener amongst other listeners running before or after
+ * transaction completion.
  *
- * <p><b>NOTE: Transactional event listeners only work with thread-bound transactions
- * managed by a {@link org.springframework.transaction.PlatformTransactionManager
- * PlatformTransactionManager}.</b> A reactive transaction managed by a
- * {@link org.springframework.transaction.ReactiveTransactionManager ReactiveTransactionManager}
- * uses the Reactor context instead of thread-local variables, so from the perspective of
- * an event listener, there is no compatible active transaction that it can participate in.
+ * <p><b>NOTE: Transactional event listeners only work with thread-bound transactions managed by a
+ * {@link org.springframework.transaction.PlatformTransactionManager
+ * PlatformTransactionManager}.</b> A reactive transaction managed by a {@link
+ * org.springframework.transaction.ReactiveTransactionManager ReactiveTransactionManager} uses the
+ * Reactor context instead of thread-local variables, so from the perspective of an event listener,
+ * there is no compatible active transaction that it can participate in.
  *
- * <p><strong>WARNING:</strong> if the {@code TransactionPhase} is set to
- * {@link TransactionPhase#AFTER_COMMIT AFTER_COMMIT} (the default),
- * {@link TransactionPhase#AFTER_ROLLBACK AFTER_ROLLBACK}, or
- * {@link TransactionPhase#AFTER_COMPLETION AFTER_COMPLETION}, the transaction will
- * have been committed or rolled back already, but the transactional resources might
- * still be active and accessible. As a consequence, any data access code triggered
- * at this point will still "participate" in the original transaction, but changes
- * will not be committed to the transactional resource. See
- * {@link org.springframework.transaction.support.TransactionSynchronization#afterCompletion(int)
+ * <p><strong>WARNING:</strong> if the {@code TransactionPhase} is set to {@link
+ * TransactionPhase#AFTER_COMMIT AFTER_COMMIT} (the default), {@link TransactionPhase#AFTER_ROLLBACK
+ * AFTER_ROLLBACK}, or {@link TransactionPhase#AFTER_COMPLETION AFTER_COMPLETION}, the transaction
+ * will have been committed or rolled back already, but the transactional resources might still be
+ * active and accessible. As a consequence, any data access code triggered at this point will still
+ * "participate" in the original transaction, but changes will not be committed to the transactional
+ * resource. See {@link
+ * org.springframework.transaction.support.TransactionSynchronization#afterCompletion(int)
  * TransactionSynchronization.afterCompletion(int)} for details.
  *
  * @author Stephane Nicoll
@@ -64,41 +63,39 @@ import org.springframework.core.annotation.AliasFor;
 @EventListener
 public @interface TransactionalEventListener {
 
-	/**
-	 * Phase to bind the handling of an event to.
-	 * <p>The default phase is {@link TransactionPhase#AFTER_COMMIT}.
-	 * <p>If no transaction is in progress, the event is not processed at
-	 * all unless {@link #fallbackExecution} has been enabled explicitly.
-	 */
-	TransactionPhase phase() default TransactionPhase.AFTER_COMMIT;
+    /**
+     * Phase to bind the handling of an event to.
+     *
+     * <p>The default phase is {@link TransactionPhase#AFTER_COMMIT}.
+     *
+     * <p>If no transaction is in progress, the event is not processed at all unless {@link
+     * #fallbackExecution} has been enabled explicitly.
+     */
+    TransactionPhase phase() default TransactionPhase.AFTER_COMMIT;
 
-	/**
-	 * Whether the event should be handled if no transaction is running.
-	 */
-	boolean fallbackExecution() default false;
+    /** Whether the event should be handled if no transaction is running. */
+    boolean fallbackExecution() default false;
 
-	/**
-	 * Alias for {@link #classes}.
-	 */
-	@AliasFor(annotation = EventListener.class, attribute = "classes")
-	Class<?>[] value() default {};
+    /** Alias for {@link #classes}. */
+    @AliasFor(annotation = EventListener.class, attribute = "classes")
+    Class<?>[] value() default {};
 
-	/**
-	 * The event classes that this listener handles.
-	 * <p>If this attribute is specified with a single value, the annotated
-	 * method may optionally accept a single parameter. However, if this
-	 * attribute is specified with multiple values, the annotated method
-	 * must <em>not</em> declare any parameters.
-	 */
-	@AliasFor(annotation = EventListener.class, attribute = "classes")
-	Class<?>[] classes() default {};
+    /**
+     * The event classes that this listener handles.
+     *
+     * <p>If this attribute is specified with a single value, the annotated method may optionally
+     * accept a single parameter. However, if this attribute is specified with multiple values, the
+     * annotated method must <em>not</em> declare any parameters.
+     */
+    @AliasFor(annotation = EventListener.class, attribute = "classes")
+    Class<?>[] classes() default {};
 
-	/**
-	 * Spring Expression Language (SpEL) attribute used for making the event
-	 * handling conditional.
-	 * <p>The default is {@code ""}, meaning the event is always handled.
-	 * @see EventListener#condition
-	 */
-	String condition() default "";
-
+    /**
+     * Spring Expression Language (SpEL) attribute used for making the event handling conditional.
+     *
+     * <p>The default is {@code ""}, meaning the event is always handled.
+     *
+     * @see EventListener#condition
+     */
+    String condition() default "";
 }

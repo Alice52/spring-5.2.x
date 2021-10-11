@@ -31,18 +31,15 @@ import org.springframework.core.io.buffer.DataBufferFactory;
  */
 public abstract class AbstractLeakCheckingTests {
 
-	/**
-	 * The data buffer factory.
-	 */
-	protected final LeakAwareDataBufferFactory bufferFactory = new LeakAwareDataBufferFactory();
+    /** The data buffer factory. */
+    protected final LeakAwareDataBufferFactory bufferFactory = new LeakAwareDataBufferFactory();
 
-	/**
-	 * Checks whether any of the data buffers created by {@link #bufferFactory} have not been
-	 * released, throwing an assertion error if so.
-	 */
-	@AfterEach
-	final void checkForLeaks() {
-		this.bufferFactory.checkForLeaks();
-	}
-
+    /**
+     * Checks whether any of the data buffers created by {@link #bufferFactory} have not been
+     * released, throwing an assertion error if so.
+     */
+    @AfterEach
+    final void checkForLeaks() {
+        this.bufferFactory.checkForLeaks();
+    }
 }

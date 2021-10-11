@@ -32,9 +32,9 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
 /**
- * Integration tests which verify support for {@link DisabledIf @DisabledIf} in
- * conjunction with {@link DirtiesContext @DirtiesContext} and the
- * {@link SpringExtension} in a JUnit Jupiter environment.
+ * Integration tests which verify support for {@link DisabledIf @DisabledIf} in conjunction with
+ * {@link DirtiesContext @DirtiesContext} and the {@link SpringExtension} in a JUnit Jupiter
+ * environment.
  *
  * @author Sam Brannen
  * @since 5.2.14
@@ -42,66 +42,63 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
  */
 class DisabledIfAndDirtiesContextTests {
 
-	private static AtomicBoolean contextClosed = new AtomicBoolean();
+    private static AtomicBoolean contextClosed = new AtomicBoolean();
 
+    @BeforeEach
+    void reset() {
+        contextClosed.set(false);
+    }
 
-	@BeforeEach
-	void reset() {
-		contextClosed.set(false);
-	}
+    @Test
+    void contextShouldBeClosedForEnabledTestClass() {
+        assertThat(contextClosed).as("context closed").isFalse();
+        EngineTestKit.engine("junit-jupiter")
+                .selectors(selectClass(EnabledAndDirtiesContextTestCase.class)) //
+                .execute() //
+                .testEvents() //
+                .assertStatistics(stats -> stats.started(1).succeeded(1).failed(0));
+        assertThat(contextClosed).as("context closed").isTrue();
+    }
 
-	@Test
-	void contextShouldBeClosedForEnabledTestClass() {
-		assertThat(contextClosed).as("context closed").isFalse();
-		EngineTestKit.engine("junit-jupiter").selectors(
-				selectClass(EnabledAndDirtiesContextTestCase.class))//
-				.execute()//
-				.testEvents()//
-				.assertStatistics(stats -> stats.started(1).succeeded(1).failed(0));
-		assertThat(contextClosed).as("context closed").isTrue();
-	}
+    @Test
+    void contextShouldBeClosedForDisabledTestClass() {
+        assertThat(contextClosed).as("context closed").isFalse();
+        EngineTestKit.engine("junit-jupiter")
+                .selectors(selectClass(DisabledAndDirtiesContextTestCase.class)) //
+                .execute() //
+                .testEvents() //
+                .assertStatistics(stats -> stats.started(0).succeeded(0).failed(0));
+        assertThat(contextClosed).as("context closed").isTrue();
+    }
 
-	@Test
-	void contextShouldBeClosedForDisabledTestClass() {
-		assertThat(contextClosed).as("context closed").isFalse();
-		EngineTestKit.engine("junit-jupiter").selectors(
-				selectClass(DisabledAndDirtiesContextTestCase.class))//
-				.execute()//
-				.testEvents()//
-				.assertStatistics(stats -> stats.started(0).succeeded(0).failed(0));
-		assertThat(contextClosed).as("context closed").isTrue();
-	}
+    @SpringJUnitConfig(Config.class)
+    @DisabledIf(expression = "false", loadContext = true)
+    @DirtiesContext
+    static class EnabledAndDirtiesContextTestCase {
 
+        @Test
+        void test() {
+            /* no-op */
+        }
+    }
 
-	@SpringJUnitConfig(Config.class)
-	@DisabledIf(expression = "false", loadContext = true)
-	@DirtiesContext
-	static class EnabledAndDirtiesContextTestCase {
+    @SpringJUnitConfig(Config.class)
+    @DisabledIf(expression = "true", loadContext = true)
+    @DirtiesContext
+    static class DisabledAndDirtiesContextTestCase {
 
-		@Test
-		void test() {
-			/* no-op */
-		}
-	}
+        @Test
+        void test() {
+            fail("This test must be disabled");
+        }
+    }
 
-	@SpringJUnitConfig(Config.class)
-	@DisabledIf(expression = "true", loadContext = true)
-	@DirtiesContext
-	static class DisabledAndDirtiesContextTestCase {
+    @Configuration
+    static class Config {
 
-		@Test
-		void test() {
-			fail("This test must be disabled");
-		}
-	}
-
-	@Configuration
-	static class Config {
-
-		@Bean
-		DisposableBean disposableBean() {
-			return () -> contextClosed.set(true);
-		}
-	}
-
+        @Bean
+        DisposableBean disposableBean() {
+            return () -> contextClosed.set(true);
+        }
+    }
 }

@@ -23,19 +23,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Test annotation for use with JUnit 4 to indicate that a test method should be
- * invoked repeatedly.
+ * Test annotation for use with JUnit 4 to indicate that a test method should be invoked repeatedly.
  *
- * <p>Note that the scope of execution to be repeated includes execution of the
- * test method itself as well as any <em>set up</em> or <em>tear down</em> of
- * the test fixture. When used with the
- * {@link org.springframework.test.context.junit4.rules.SpringMethodRule
- * SpringMethodRule}, the scope additionally includes
- * {@linkplain org.springframework.test.context.TestExecutionListener#prepareTestInstance
- * preparation of the test instance}.
+ * <p>Note that the scope of execution to be repeated includes execution of the test method itself
+ * as well as any <em>set up</em> or <em>tear down</em> of the test fixture. When used with the
+ * {@link org.springframework.test.context.junit4.rules.SpringMethodRule SpringMethodRule}, the
+ * scope additionally includes {@linkplain
+ * org.springframework.test.context.TestExecutionListener#prepareTestInstance preparation of the
+ * test instance}.
  *
- * <p>This annotation may be used as a <em>meta-annotation</em> to create custom
- * <em>composed annotations</em>.
+ * <p>This annotation may be used as a <em>meta-annotation</em> to create custom <em>composed
+ * annotations</em>.
  *
  * @author Rod Johnson
  * @author Sam Brannen
@@ -50,9 +48,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Repeat {
 
-	/**
-	 * The number of times that the annotated test method should be repeated.
-	 */
-	int value() default 1;
-
+    /** The number of times that the annotated test method should be repeated. */
+    int value() default 1;
 }

@@ -35,87 +35,82 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class DynamicPropertiesContextCustomizerFactoryTests {
 
-	private final DynamicPropertiesContextCustomizerFactory factory = new DynamicPropertiesContextCustomizerFactory();
+    private final DynamicPropertiesContextCustomizerFactory factory =
+            new DynamicPropertiesContextCustomizerFactory();
 
-	private final List<ContextConfigurationAttributes> configAttributes = Collections.emptyList();
+    private final List<ContextConfigurationAttributes> configAttributes = Collections.emptyList();
 
-	@Test
-	void createContextCustomizerWhenNoAnnotatedMethodsReturnsNull() {
-		DynamicPropertiesContextCustomizer customizer = this.factory.createContextCustomizer(
-				NoDynamicPropertySource.class, this.configAttributes);
-		assertThat(customizer).isNull();
-	}
+    @Test
+    void createContextCustomizerWhenNoAnnotatedMethodsReturnsNull() {
+        DynamicPropertiesContextCustomizer customizer =
+                this.factory.createContextCustomizer(
+                        NoDynamicPropertySource.class, this.configAttributes);
+        assertThat(customizer).isNull();
+    }
 
-	@Test
-	void createContextCustomizerWhenSingleAnnotatedMethodReturnsCustomizer() {
-		DynamicPropertiesContextCustomizer customizer = this.factory.createContextCustomizer(
-			SingleDynamicPropertySource.class, this.configAttributes);
-		assertThat(customizer).isNotNull();
-		assertThat(customizer.getMethods()).flatExtracting(Method::getName).containsOnly("p1");
-	}
+    @Test
+    void createContextCustomizerWhenSingleAnnotatedMethodReturnsCustomizer() {
+        DynamicPropertiesContextCustomizer customizer =
+                this.factory.createContextCustomizer(
+                        SingleDynamicPropertySource.class, this.configAttributes);
+        assertThat(customizer).isNotNull();
+        assertThat(customizer.getMethods()).flatExtracting(Method::getName).containsOnly("p1");
+    }
 
-	@Test
-	void createContextCustomizerWhenMultipleAnnotatedMethodsReturnsCustomizer() {
-		DynamicPropertiesContextCustomizer customizer = this.factory.createContextCustomizer(
-			MultipleDynamicPropertySources.class, this.configAttributes);
-		assertThat(customizer).isNotNull();
-		assertThat(customizer.getMethods()).flatExtracting(Method::getName).containsOnly("p1", "p2", "p3");
-	}
+    @Test
+    void createContextCustomizerWhenMultipleAnnotatedMethodsReturnsCustomizer() {
+        DynamicPropertiesContextCustomizer customizer =
+                this.factory.createContextCustomizer(
+                        MultipleDynamicPropertySources.class, this.configAttributes);
+        assertThat(customizer).isNotNull();
+        assertThat(customizer.getMethods())
+                .flatExtracting(Method::getName)
+                .containsOnly("p1", "p2", "p3");
+    }
 
-	@Test
-	void createContextCustomizerWhenAnnotatedMethodsInBaseClassReturnsCustomizer() {
-		DynamicPropertiesContextCustomizer customizer = this.factory.createContextCustomizer(
-			SubDynamicPropertySource.class, this.configAttributes);
-		assertThat(customizer).isNotNull();
-		assertThat(customizer.getMethods()).flatExtracting(Method::getName).containsOnly("p1", "p2");
-	}
+    @Test
+    void createContextCustomizerWhenAnnotatedMethodsInBaseClassReturnsCustomizer() {
+        DynamicPropertiesContextCustomizer customizer =
+                this.factory.createContextCustomizer(
+                        SubDynamicPropertySource.class, this.configAttributes);
+        assertThat(customizer).isNotNull();
+        assertThat(customizer.getMethods())
+                .flatExtracting(Method::getName)
+                .containsOnly("p1", "p2");
+    }
 
+    static class NoDynamicPropertySource {
 
-	static class NoDynamicPropertySource {
+        void empty() {}
+    }
 
-		void empty() {
-		}
+    static class SingleDynamicPropertySource {
 
-	}
+        @DynamicPropertySource
+        static void p1(DynamicPropertyRegistry registry) {}
+    }
 
-	static class SingleDynamicPropertySource {
+    static class MultipleDynamicPropertySources {
 
-		@DynamicPropertySource
-		static void p1(DynamicPropertyRegistry registry) {
-		}
+        @DynamicPropertySource
+        static void p1(DynamicPropertyRegistry registry) {}
 
-	}
+        @DynamicPropertySource
+        static void p2(DynamicPropertyRegistry registry) {}
 
-	static class MultipleDynamicPropertySources {
+        @DynamicPropertySource
+        static void p3(DynamicPropertyRegistry registry) {}
+    }
 
-		@DynamicPropertySource
-		static void p1(DynamicPropertyRegistry registry) {
-		}
+    static class BaseDynamicPropertySource {
 
-		@DynamicPropertySource
-		static void p2(DynamicPropertyRegistry registry) {
-		}
+        @DynamicPropertySource
+        static void p1(DynamicPropertyRegistry registry) {}
+    }
 
-		@DynamicPropertySource
-		static void p3(DynamicPropertyRegistry registry) {
-		}
+    static class SubDynamicPropertySource extends BaseDynamicPropertySource {
 
-	}
-
-	static class BaseDynamicPropertySource {
-
-		@DynamicPropertySource
-		static void p1(DynamicPropertyRegistry registry) {
-		}
-
-	}
-
-	static class SubDynamicPropertySource extends BaseDynamicPropertySource {
-
-		@DynamicPropertySource
-		static void p2(DynamicPropertyRegistry registry) {
-		}
-
-	}
-
+        @DynamicPropertySource
+        static void p2(DynamicPropertyRegistry registry) {}
+    }
 }

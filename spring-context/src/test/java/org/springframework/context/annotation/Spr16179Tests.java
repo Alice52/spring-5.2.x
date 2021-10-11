@@ -28,71 +28,73 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class Spr16179Tests {
 
-	@Test
-	public void repro() {
-		AnnotationConfigApplicationContext bf =
-				new AnnotationConfigApplicationContext(AssemblerConfig.class, AssemblerInjection.class);
+    @Test
+    public void repro() {
+        AnnotationConfigApplicationContext bf =
+                new AnnotationConfigApplicationContext(
+                        AssemblerConfig.class, AssemblerInjection.class);
 
-		assertThat(bf.getBean(AssemblerInjection.class).assembler0).isSameAs(bf.getBean("someAssembler"));
-		// assertNull(bf.getBean(AssemblerInjection.class).assembler1);  TODO: accidental match
-		// assertNull(bf.getBean(AssemblerInjection.class).assembler2);
-		assertThat(bf.getBean(AssemblerInjection.class).assembler3).isSameAs(bf.getBean("pageAssembler"));
-		assertThat(bf.getBean(AssemblerInjection.class).assembler4).isSameAs(bf.getBean("pageAssembler"));
-		assertThat(bf.getBean(AssemblerInjection.class).assembler5).isSameAs(bf.getBean("pageAssembler"));
-		assertThat(bf.getBean(AssemblerInjection.class).assembler6).isSameAs(bf.getBean("pageAssembler"));
-	}
+        assertThat(bf.getBean(AssemblerInjection.class).assembler0)
+                .isSameAs(bf.getBean("someAssembler"));
+        // assertNull(bf.getBean(AssemblerInjection.class).assembler1);  TODO: accidental match
+        // assertNull(bf.getBean(AssemblerInjection.class).assembler2);
+        assertThat(bf.getBean(AssemblerInjection.class).assembler3)
+                .isSameAs(bf.getBean("pageAssembler"));
+        assertThat(bf.getBean(AssemblerInjection.class).assembler4)
+                .isSameAs(bf.getBean("pageAssembler"));
+        assertThat(bf.getBean(AssemblerInjection.class).assembler5)
+                .isSameAs(bf.getBean("pageAssembler"));
+        assertThat(bf.getBean(AssemblerInjection.class).assembler6)
+                .isSameAs(bf.getBean("pageAssembler"));
+    }
 
+    interface Assembler<T> {}
 
-	@Configuration
-	static class AssemblerConfig {
+    interface PageAssembler<T> extends Assembler<Page<T>> {}
 
-		@Bean
-		PageAssemblerImpl<?> pageAssembler() {
-			return new PageAssemblerImpl<>();
-		}
+    interface Page<T> {}
 
-		@Bean
-		Assembler<SomeType> someAssembler() {
-			return new Assembler<SomeType>() {};
-		}
-	}
+    interface SomeType {}
 
+    interface SomeOtherType {}
 
-	public static class AssemblerInjection {
+    @Configuration
+    static class AssemblerConfig {
 
-		@Autowired(required = false)
-		Assembler<SomeType> assembler0;
+        @Bean
+        PageAssemblerImpl<?> pageAssembler() {
+            return new PageAssemblerImpl<>();
+        }
 
-		@Autowired(required = false)
-		Assembler<SomeOtherType> assembler1;
+        @Bean
+        Assembler<SomeType> someAssembler() {
+            return new Assembler<SomeType>() {};
+        }
+    }
 
-		@Autowired(required = false)
-		Assembler<Page<String>> assembler2;
+    public static class AssemblerInjection {
 
-		@Autowired(required = false)
-		Assembler<Page> assembler3;
+        @Autowired(required = false)
+        Assembler<SomeType> assembler0;
 
-		@Autowired(required = false)
-		Assembler<Page<?>> assembler4;
+        @Autowired(required = false)
+        Assembler<SomeOtherType> assembler1;
 
-		@Autowired(required = false)
-		PageAssembler<?> assembler5;
+        @Autowired(required = false)
+        Assembler<Page<String>> assembler2;
 
-		@Autowired(required = false)
-		PageAssembler<String> assembler6;
-	}
+        @Autowired(required = false)
+        Assembler<Page> assembler3;
 
+        @Autowired(required = false)
+        Assembler<Page<?>> assembler4;
 
-	interface Assembler<T> {}
+        @Autowired(required = false)
+        PageAssembler<?> assembler5;
 
-	interface PageAssembler<T> extends Assembler<Page<T>> {}
+        @Autowired(required = false)
+        PageAssembler<String> assembler6;
+    }
 
-	static class PageAssemblerImpl<T> implements PageAssembler<T> {}
-
-	interface Page<T> {}
-
-	interface SomeType {}
-
-	interface SomeOtherType {}
-
+    static class PageAssemblerImpl<T> implements PageAssembler<T> {}
 }

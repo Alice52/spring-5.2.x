@@ -45,306 +45,304 @@ import org.springframework.web.server.WebSession;
  */
 public class InMemoryWebSessionStore implements WebSessionStore {
 
-	private static final IdGenerator idGenerator = new JdkIdGenerator();
+    private static final IdGenerator idGenerator = new JdkIdGenerator();
 
+    private final Map<String, InMemoryWebSession> sessions = new ConcurrentHashMap<>();
 
-	private int maxSessions = 10000;
+    private final ExpiredSessionChecker expiredSessionChecker = new ExpiredSessionChecker();
 
-	private Clock clock = Clock.system(ZoneId.of("GMT"));
+    private int maxSessions = 10000;
 
-	private final Map<String, InMemoryWebSession> sessions = new ConcurrentHashMap<>();
+    private Clock clock = Clock.system(ZoneId.of("GMT"));
 
-	private final ExpiredSessionChecker expiredSessionChecker = new ExpiredSessionChecker();
+    /**
+     * Return the maximum number of sessions that can be stored.
+     *
+     * @since 5.0.8
+     */
+    public int getMaxSessions() {
+        return this.maxSessions;
+    }
 
+    /**
+     * Set the maximum number of sessions that can be stored. Once the limit is reached, any attempt
+     * to store an additional session will result in an {@link IllegalStateException}.
+     *
+     * <p>By default set to 10000.
+     *
+     * @param maxSessions the maximum number of sessions
+     * @since 5.0.8
+     */
+    public void setMaxSessions(int maxSessions) {
+        this.maxSessions = maxSessions;
+    }
 
-	/**
-	 * Set the maximum number of sessions that can be stored. Once the limit is
-	 * reached, any attempt to store an additional session will result in an
-	 * {@link IllegalStateException}.
-	 * <p>By default set to 10000.
-	 * @param maxSessions the maximum number of sessions
-	 * @since 5.0.8
-	 */
-	public void setMaxSessions(int maxSessions) {
-		this.maxSessions = maxSessions;
-	}
+    /** Return the configured clock for session lastAccessTime calculations. */
+    public Clock getClock() {
+        return this.clock;
+    }
 
-	/**
-	 * Return the maximum number of sessions that can be stored.
-	 * @since 5.0.8
-	 */
-	public int getMaxSessions() {
-		return this.maxSessions;
-	}
+    /**
+     * Configure the {@link Clock} to use to set lastAccessTime on every created session and to
+     * calculate if it is expired.
+     *
+     * <p>This may be useful to align to different timezone or to set the clock back in a test, e.g.
+     * {@code Clock.offset(clock, Duration.ofMinutes(-31))} in order to simulate session expiration.
+     *
+     * <p>By default this is {@code Clock.system(ZoneId.of("GMT"))}.
+     *
+     * @param clock the clock to use
+     */
+    public void setClock(Clock clock) {
+        Assert.notNull(clock, "Clock is required");
+        this.clock = clock;
+        removeExpiredSessions();
+    }
 
-	/**
-	 * Configure the {@link Clock} to use to set lastAccessTime on every created
-	 * session and to calculate if it is expired.
-	 * <p>This may be useful to align to different timezone or to set the clock
-	 * back in a test, e.g. {@code Clock.offset(clock, Duration.ofMinutes(-31))}
-	 * in order to simulate session expiration.
-	 * <p>By default this is {@code Clock.system(ZoneId.of("GMT"))}.
-	 * @param clock the clock to use
-	 */
-	public void setClock(Clock clock) {
-		Assert.notNull(clock, "Clock is required");
-		this.clock = clock;
-		removeExpiredSessions();
-	}
+    /**
+     * Return the map of sessions with an {@link Collections#unmodifiableMap unmodifiable} wrapper.
+     * This could be used for management purposes, to list active sessions, invalidate expired ones,
+     * etc.
+     *
+     * @since 5.0.8
+     */
+    public Map<String, WebSession> getSessions() {
+        return Collections.unmodifiableMap(this.sessions);
+    }
 
-	/**
-	 * Return the configured clock for session lastAccessTime calculations.
-	 */
-	public Clock getClock() {
-		return this.clock;
-	}
+    @Override
+    public Mono<WebSession> createWebSession() {
 
-	/**
-	 * Return the map of sessions with an {@link Collections#unmodifiableMap
-	 * unmodifiable} wrapper. This could be used for management purposes, to
-	 * list active sessions, invalidate expired ones, etc.
-	 * @since 5.0.8
-	 */
-	public Map<String, WebSession> getSessions() {
-		return Collections.unmodifiableMap(this.sessions);
-	}
+        // Opportunity to clean expired sessions
+        Instant now = this.clock.instant();
+        this.expiredSessionChecker.checkIfNecessary(now);
 
+        return Mono.<WebSession>fromSupplier(() -> new InMemoryWebSession(now))
+                .subscribeOn(Schedulers.boundedElastic());
+    }
 
-	@Override
-	public Mono<WebSession> createWebSession() {
+    @Override
+    public Mono<WebSession> retrieveSession(String id) {
+        Instant now = this.clock.instant();
+        this.expiredSessionChecker.checkIfNecessary(now);
+        InMemoryWebSession session = this.sessions.get(id);
+        if (session == null) {
+            return Mono.empty();
+        } else if (session.isExpired(now)) {
+            this.sessions.remove(id);
+            return Mono.empty();
+        } else {
+            session.updateLastAccessTime(now);
+            return Mono.just(session);
+        }
+    }
 
-		// Opportunity to clean expired sessions
-		Instant now = this.clock.instant();
-		this.expiredSessionChecker.checkIfNecessary(now);
+    @Override
+    public Mono<Void> removeSession(String id) {
+        this.sessions.remove(id);
+        return Mono.empty();
+    }
 
-		return Mono.<WebSession>fromSupplier(() -> new InMemoryWebSession(now))
-				.subscribeOn(Schedulers.boundedElastic());
-	}
+    @Override
+    public Mono<WebSession> updateLastAccessTime(WebSession session) {
+        return Mono.fromSupplier(
+                () -> {
+                    Assert.isInstanceOf(InMemoryWebSession.class, session);
+                    ((InMemoryWebSession) session).updateLastAccessTime(this.clock.instant());
+                    return session;
+                });
+    }
 
-	@Override
-	public Mono<WebSession> retrieveSession(String id) {
-		Instant now = this.clock.instant();
-		this.expiredSessionChecker.checkIfNecessary(now);
-		InMemoryWebSession session = this.sessions.get(id);
-		if (session == null) {
-			return Mono.empty();
-		}
-		else if (session.isExpired(now)) {
-			this.sessions.remove(id);
-			return Mono.empty();
-		}
-		else {
-			session.updateLastAccessTime(now);
-			return Mono.just(session);
-		}
-	}
+    /**
+     * Check for expired sessions and remove them. Typically such checks are kicked off lazily
+     * during calls to {@link #createWebSession() create} or {@link #retrieveSession retrieve}, no
+     * less than 60 seconds apart. This method can be called to force a check at a specific time.
+     *
+     * @since 5.0.8
+     */
+    public void removeExpiredSessions() {
+        this.expiredSessionChecker.removeExpiredSessions(this.clock.instant());
+    }
 
-	@Override
-	public Mono<Void> removeSession(String id) {
-		this.sessions.remove(id);
-		return Mono.empty();
-	}
+    private enum State {
+        NEW,
+        STARTED,
+        EXPIRED
+    }
 
-	@Override
-	public Mono<WebSession> updateLastAccessTime(WebSession session) {
-		return Mono.fromSupplier(() -> {
-			Assert.isInstanceOf(InMemoryWebSession.class, session);
-			((InMemoryWebSession) session).updateLastAccessTime(this.clock.instant());
-			return session;
-		});
-	}
+    private class InMemoryWebSession implements WebSession {
 
-	/**
-	 * Check for expired sessions and remove them. Typically such checks are
-	 * kicked off lazily during calls to {@link #createWebSession() create} or
-	 * {@link #retrieveSession retrieve}, no less than 60 seconds apart.
-	 * This method can be called to force a check at a specific time.
-	 * @since 5.0.8
-	 */
-	public void removeExpiredSessions() {
-		this.expiredSessionChecker.removeExpiredSessions(this.clock.instant());
-	}
+        private final AtomicReference<String> id =
+                new AtomicReference<>(String.valueOf(idGenerator.generateId()));
 
+        private final Map<String, Object> attributes = new ConcurrentHashMap<>();
 
-	private class InMemoryWebSession implements WebSession {
+        private final Instant creationTime;
 
-		private final AtomicReference<String> id = new AtomicReference<>(String.valueOf(idGenerator.generateId()));
+        private final AtomicReference<State> state = new AtomicReference<>(State.NEW);
 
-		private final Map<String, Object> attributes = new ConcurrentHashMap<>();
+        private volatile Instant lastAccessTime;
 
-		private final Instant creationTime;
+        private volatile Duration maxIdleTime = Duration.ofMinutes(30);
 
-		private volatile Instant lastAccessTime;
+        public InMemoryWebSession(Instant creationTime) {
+            this.creationTime = creationTime;
+            this.lastAccessTime = this.creationTime;
+        }
 
-		private volatile Duration maxIdleTime = Duration.ofMinutes(30);
+        @Override
+        public String getId() {
+            return this.id.get();
+        }
 
-		private final AtomicReference<State> state = new AtomicReference<>(State.NEW);
+        @Override
+        public Map<String, Object> getAttributes() {
+            return this.attributes;
+        }
 
+        @Override
+        public Instant getCreationTime() {
+            return this.creationTime;
+        }
 
-		public InMemoryWebSession(Instant creationTime) {
-			this.creationTime = creationTime;
-			this.lastAccessTime = this.creationTime;
-		}
+        @Override
+        public Instant getLastAccessTime() {
+            return this.lastAccessTime;
+        }
 
-		@Override
-		public String getId() {
-			return this.id.get();
-		}
+        @Override
+        public Duration getMaxIdleTime() {
+            return this.maxIdleTime;
+        }
 
-		@Override
-		public Map<String, Object> getAttributes() {
-			return this.attributes;
-		}
+        @Override
+        public void setMaxIdleTime(Duration maxIdleTime) {
+            this.maxIdleTime = maxIdleTime;
+        }
 
-		@Override
-		public Instant getCreationTime() {
-			return this.creationTime;
-		}
+        @Override
+        public void start() {
+            this.state.compareAndSet(State.NEW, State.STARTED);
+        }
 
-		@Override
-		public Instant getLastAccessTime() {
-			return this.lastAccessTime;
-		}
+        @Override
+        public boolean isStarted() {
+            return this.state.get().equals(State.STARTED) || !getAttributes().isEmpty();
+        }
 
-		@Override
-		public void setMaxIdleTime(Duration maxIdleTime) {
-			this.maxIdleTime = maxIdleTime;
-		}
+        @Override
+        public Mono<Void> changeSessionId() {
+            String currentId = this.id.get();
+            InMemoryWebSessionStore.this.sessions.remove(currentId);
+            String newId = String.valueOf(idGenerator.generateId());
+            this.id.set(newId);
+            InMemoryWebSessionStore.this.sessions.put(this.getId(), this);
+            return Mono.empty();
+        }
 
-		@Override
-		public Duration getMaxIdleTime() {
-			return this.maxIdleTime;
-		}
+        @Override
+        public Mono<Void> invalidate() {
+            this.state.set(State.EXPIRED);
+            getAttributes().clear();
+            InMemoryWebSessionStore.this.sessions.remove(this.id.get());
+            return Mono.empty();
+        }
 
-		@Override
-		public void start() {
-			this.state.compareAndSet(State.NEW, State.STARTED);
-		}
+        @Override
+        public Mono<Void> save() {
 
-		@Override
-		public boolean isStarted() {
-			return this.state.get().equals(State.STARTED) || !getAttributes().isEmpty();
-		}
+            checkMaxSessionsLimit();
 
-		@Override
-		public Mono<Void> changeSessionId() {
-			String currentId = this.id.get();
-			InMemoryWebSessionStore.this.sessions.remove(currentId);
-			String newId = String.valueOf(idGenerator.generateId());
-			this.id.set(newId);
-			InMemoryWebSessionStore.this.sessions.put(this.getId(), this);
-			return Mono.empty();
-		}
+            // Implicitly started session..
+            if (!getAttributes().isEmpty()) {
+                this.state.compareAndSet(State.NEW, State.STARTED);
+            }
 
-		@Override
-		public Mono<Void> invalidate() {
-			this.state.set(State.EXPIRED);
-			getAttributes().clear();
-			InMemoryWebSessionStore.this.sessions.remove(this.id.get());
-			return Mono.empty();
-		}
+            if (isStarted()) {
+                // Save
+                InMemoryWebSessionStore.this.sessions.put(this.getId(), this);
 
-		@Override
-		public Mono<Void> save() {
+                // Unless it was invalidated
+                if (this.state.get().equals(State.EXPIRED)) {
+                    InMemoryWebSessionStore.this.sessions.remove(this.getId());
+                    return Mono.error(new IllegalStateException("Session was invalidated"));
+                }
+            }
 
-			checkMaxSessionsLimit();
+            return Mono.empty();
+        }
 
-			// Implicitly started session..
-			if (!getAttributes().isEmpty()) {
-				this.state.compareAndSet(State.NEW, State.STARTED);
-			}
+        private void checkMaxSessionsLimit() {
+            if (sessions.size() >= maxSessions) {
+                expiredSessionChecker.removeExpiredSessions(clock.instant());
+                if (sessions.size() >= maxSessions) {
+                    throw new IllegalStateException(
+                            "Max sessions limit reached: " + sessions.size());
+                }
+            }
+        }
 
-			if (isStarted()) {
-				// Save
-				InMemoryWebSessionStore.this.sessions.put(this.getId(), this);
+        @Override
+        public boolean isExpired() {
+            return isExpired(clock.instant());
+        }
 
-				// Unless it was invalidated
-				if (this.state.get().equals(State.EXPIRED)) {
-					InMemoryWebSessionStore.this.sessions.remove(this.getId());
-					return Mono.error(new IllegalStateException("Session was invalidated"));
-				}
-			}
+        private boolean isExpired(Instant now) {
+            if (this.state.get().equals(State.EXPIRED)) {
+                return true;
+            }
+            if (checkExpired(now)) {
+                this.state.set(State.EXPIRED);
+                return true;
+            }
+            return false;
+        }
 
-			return Mono.empty();
-		}
+        private boolean checkExpired(Instant currentTime) {
+            return isStarted()
+                    && !this.maxIdleTime.isNegative()
+                    && currentTime.minus(this.maxIdleTime).isAfter(this.lastAccessTime);
+        }
 
-		private void checkMaxSessionsLimit() {
-			if (sessions.size() >= maxSessions) {
-				expiredSessionChecker.removeExpiredSessions(clock.instant());
-				if (sessions.size() >= maxSessions) {
-					throw new IllegalStateException("Max sessions limit reached: " + sessions.size());
-				}
-			}
-		}
+        private void updateLastAccessTime(Instant currentTime) {
+            this.lastAccessTime = currentTime;
+        }
+    }
 
-		@Override
-		public boolean isExpired() {
-			return isExpired(clock.instant());
-		}
+    private class ExpiredSessionChecker {
 
-		private boolean isExpired(Instant now) {
-			if (this.state.get().equals(State.EXPIRED)) {
-				return true;
-			}
-			if (checkExpired(now)) {
-				this.state.set(State.EXPIRED);
-				return true;
-			}
-			return false;
-		}
+        /** Max time between expiration checks. */
+        private static final int CHECK_PERIOD = 60 * 1000;
 
-		private boolean checkExpired(Instant currentTime) {
-			return isStarted() && !this.maxIdleTime.isNegative() &&
-					currentTime.minus(this.maxIdleTime).isAfter(this.lastAccessTime);
-		}
+        private final ReentrantLock lock = new ReentrantLock();
 
-		private void updateLastAccessTime(Instant currentTime) {
-			this.lastAccessTime = currentTime;
-		}
-	}
+        private Instant checkTime = clock.instant().plus(CHECK_PERIOD, ChronoUnit.MILLIS);
 
+        public void checkIfNecessary(Instant now) {
+            if (this.checkTime.isBefore(now)) {
+                removeExpiredSessions(now);
+            }
+        }
 
-	private class ExpiredSessionChecker {
-
-		/** Max time between expiration checks. */
-		private static final int CHECK_PERIOD = 60 * 1000;
-
-
-		private final ReentrantLock lock = new ReentrantLock();
-
-		private Instant checkTime = clock.instant().plus(CHECK_PERIOD, ChronoUnit.MILLIS);
-
-
-		public void checkIfNecessary(Instant now) {
-			if (this.checkTime.isBefore(now)) {
-				removeExpiredSessions(now);
-			}
-		}
-
-		public void removeExpiredSessions(Instant now) {
-			if (sessions.isEmpty()) {
-				return;
-			}
-			if (this.lock.tryLock()) {
-				try {
-					Iterator<InMemoryWebSession> iterator = sessions.values().iterator();
-					while (iterator.hasNext()) {
-						InMemoryWebSession session = iterator.next();
-						if (session.isExpired(now)) {
-							iterator.remove();
-							session.invalidate();
-						}
-					}
-				}
-				finally {
-					this.checkTime = now.plus(CHECK_PERIOD, ChronoUnit.MILLIS);
-					this.lock.unlock();
-				}
-			}
-		}
-	}
-
-
-	private enum State { NEW, STARTED, EXPIRED }
-
+        public void removeExpiredSessions(Instant now) {
+            if (sessions.isEmpty()) {
+                return;
+            }
+            if (this.lock.tryLock()) {
+                try {
+                    Iterator<InMemoryWebSession> iterator = sessions.values().iterator();
+                    while (iterator.hasNext()) {
+                        InMemoryWebSession session = iterator.next();
+                        if (session.isExpired(now)) {
+                            iterator.remove();
+                            session.invalidate();
+                        }
+                    }
+                } finally {
+                    this.checkTime = now.plus(CHECK_PERIOD, ChronoUnit.MILLIS);
+                    this.lock.unlock();
+                }
+            }
+        }
+    }
 }

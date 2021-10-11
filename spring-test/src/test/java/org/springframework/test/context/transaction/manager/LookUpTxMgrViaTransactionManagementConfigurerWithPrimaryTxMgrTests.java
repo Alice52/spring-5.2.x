@@ -34,69 +34,64 @@ import org.springframework.transaction.testfixture.CallCountingTransactionManage
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Integration test that verifies the current behavior for transaction manager
- * lookups when one transaction manager is {@link Primary @Primary} and an
- * additional transaction manager is configured via the
- * {@link TransactionManagementConfigurer} API.
+ * Integration test that verifies the current behavior for transaction manager lookups when one
+ * transaction manager is {@link Primary @Primary} and an additional transaction manager is
+ * configured via the {@link TransactionManagementConfigurer} API.
  *
  * @author Sam Brannen
  * @since 5.2.6
  */
 @SpringJUnitConfig
 @Transactional
-// TODO Update assertions once https://github.com/spring-projects/spring-framework/issues/24869 is fixed.
+// TODO Update assertions once https://github.com/spring-projects/spring-framework/issues/24869 is
+// fixed.
 class LookUpTxMgrViaTransactionManagementConfigurerWithPrimaryTxMgrTests {
 
-	@Autowired
-	CallCountingTransactionManager primary;
+    @Autowired CallCountingTransactionManager primary;
 
-	@Autowired
-	@Qualifier("annotationDrivenTransactionManager")
-	CallCountingTransactionManager annotationDriven;
+    @Autowired
+    @Qualifier("annotationDrivenTransactionManager")
+    CallCountingTransactionManager annotationDriven;
 
+    @Test
+    void transactionalTest() {
+        assertThat(primary.begun).isEqualTo(1);
+        assertThat(primary.inflight).isEqualTo(1);
+        assertThat(primary.commits).isEqualTo(0);
+        assertThat(primary.rollbacks).isEqualTo(0);
 
-	@Test
-	void transactionalTest() {
-		assertThat(primary.begun).isEqualTo(1);
-		assertThat(primary.inflight).isEqualTo(1);
-		assertThat(primary.commits).isEqualTo(0);
-		assertThat(primary.rollbacks).isEqualTo(0);
+        assertThat(annotationDriven.begun).isEqualTo(0);
+        assertThat(annotationDriven.inflight).isEqualTo(0);
+        assertThat(annotationDriven.commits).isEqualTo(0);
+        assertThat(annotationDriven.rollbacks).isEqualTo(0);
+    }
 
-		assertThat(annotationDriven.begun).isEqualTo(0);
-		assertThat(annotationDriven.inflight).isEqualTo(0);
-		assertThat(annotationDriven.commits).isEqualTo(0);
-		assertThat(annotationDriven.rollbacks).isEqualTo(0);
-	}
+    @AfterTransaction
+    void afterTransaction() {
+        assertThat(primary.begun).isEqualTo(1);
+        assertThat(primary.inflight).isEqualTo(0);
+        assertThat(primary.commits).isEqualTo(0);
+        assertThat(primary.rollbacks).isEqualTo(1);
 
-	@AfterTransaction
-	void afterTransaction() {
-		assertThat(primary.begun).isEqualTo(1);
-		assertThat(primary.inflight).isEqualTo(0);
-		assertThat(primary.commits).isEqualTo(0);
-		assertThat(primary.rollbacks).isEqualTo(1);
+        assertThat(annotationDriven.begun).isEqualTo(0);
+        assertThat(annotationDriven.inflight).isEqualTo(0);
+        assertThat(annotationDriven.commits).isEqualTo(0);
+        assertThat(annotationDriven.rollbacks).isEqualTo(0);
+    }
 
-		assertThat(annotationDriven.begun).isEqualTo(0);
-		assertThat(annotationDriven.inflight).isEqualTo(0);
-		assertThat(annotationDriven.commits).isEqualTo(0);
-		assertThat(annotationDriven.rollbacks).isEqualTo(0);
-	}
+    @Configuration
+    static class Config implements TransactionManagementConfigurer {
 
+        @Bean
+        @Primary
+        PlatformTransactionManager primary() {
+            return new CallCountingTransactionManager();
+        }
 
-	@Configuration
-	static class Config implements TransactionManagementConfigurer {
-
-		@Bean
-		@Primary
-		PlatformTransactionManager primary() {
-			return new CallCountingTransactionManager();
-		}
-
-		@Bean
-		@Override
-		public TransactionManager annotationDrivenTransactionManager() {
-			return new CallCountingTransactionManager();
-		}
-
-	}
-
+        @Bean
+        @Override
+        public TransactionManager annotationDrivenTransactionManager() {
+            return new CallCountingTransactionManager();
+        }
+    }
 }

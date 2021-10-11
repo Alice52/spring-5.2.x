@@ -28,8 +28,8 @@ import org.springframework.transaction.testfixture.CallCountingTransactionManage
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Integration tests that verify the behavior requested in
- * <a href="https://jira.spring.io/browse/SPR-9645">SPR-9645</a>.
+ * Integration tests that verify the behavior requested in <a
+ * href="https://jira.spring.io/browse/SPR-9645">SPR-9645</a>.
  *
  * @author Sam Brannen
  * @since 3.2
@@ -37,27 +37,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringJUnitConfig
 class LookUpTxMgrNonTransactionalTests {
 
-	@Autowired
-	CallCountingTransactionManager txManager;
+    @Autowired CallCountingTransactionManager txManager;
 
+    @Test
+    void nonTransactionalTest() {
+        assertThat(txManager.begun).isEqualTo(0);
+        assertThat(txManager.inflight).isEqualTo(0);
+        assertThat(txManager.commits).isEqualTo(0);
+        assertThat(txManager.rollbacks).isEqualTo(0);
+    }
 
-	@Test
-	void nonTransactionalTest() {
-		assertThat(txManager.begun).isEqualTo(0);
-		assertThat(txManager.inflight).isEqualTo(0);
-		assertThat(txManager.commits).isEqualTo(0);
-		assertThat(txManager.rollbacks).isEqualTo(0);
-	}
+    @Configuration
+    static class Config {
 
-
-	@Configuration
-	static class Config {
-
-		@Bean
-		PlatformTransactionManager transactionManager() {
-			return new CallCountingTransactionManager();
-		}
-
-	}
-
+        @Bean
+        PlatformTransactionManager transactionManager() {
+            return new CallCountingTransactionManager();
+        }
+    }
 }

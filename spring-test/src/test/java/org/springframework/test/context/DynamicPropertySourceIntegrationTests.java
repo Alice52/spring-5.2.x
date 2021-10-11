@@ -44,85 +44,84 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 @DisplayName("@DynamicPropertySource integration tests")
 class DynamicPropertySourceIntegrationTests {
 
-	private static final String TEST_CONTAINER_IP = "test.container.ip";
+    private static final String TEST_CONTAINER_IP = "test.container.ip";
 
-	static {
-		System.setProperty(TEST_CONTAINER_IP, "system");
-	}
+    static DemoContainer container = new DemoContainer();
 
-	static DemoContainer container = new DemoContainer();
+    @DynamicPropertySource
+    static void containerProperties(DynamicPropertyRegistry registry) {
+        registry.add(TEST_CONTAINER_IP, container::getIpAddress);
+        registry.add("test.container.port", container::getPort);
+    }
 
-	@DynamicPropertySource
-	static void containerProperties(DynamicPropertyRegistry registry) {
-		registry.add(TEST_CONTAINER_IP, container::getIpAddress);
-		registry.add("test.container.port", container::getPort);
-	}
+    @AfterAll
+    void clearSystemProperty() {
+        System.clearProperty(TEST_CONTAINER_IP);
+    }
 
+    @Test
+    @DisplayName("@DynamicPropertySource overrides @TestPropertySource and JVM system property")
+    void dynamicPropertySourceOverridesTestPropertySourceAndSystemProperty(
+            @Autowired ConfigurableEnvironment env) {
+        MutablePropertySources propertySources = env.getPropertySources();
+        assertThat(propertySources.size()).isGreaterThanOrEqualTo(4);
+        assertThat(propertySources.contains("Dynamic Test Properties")).isTrue();
+        assertThat(propertySources.contains("Inlined Test Properties")).isTrue();
+        assertThat(propertySources.contains("systemProperties")).isTrue();
+        assertThat(propertySources.get("Dynamic Test Properties").getProperty(TEST_CONTAINER_IP))
+                .isEqualTo("127.0.0.1");
+        assertThat(propertySources.get("Inlined Test Properties").getProperty(TEST_CONTAINER_IP))
+                .isEqualTo("test");
+        assertThat(propertySources.get("systemProperties").getProperty(TEST_CONTAINER_IP))
+                .isEqualTo("system");
+        assertThat(env.getProperty(TEST_CONTAINER_IP)).isEqualTo("127.0.0.1");
+    }
 
-	@AfterAll
-	void clearSystemProperty() {
-		System.clearProperty(TEST_CONTAINER_IP);
-	}
+    @Test
+    @DisplayName("@Service has values injected from @DynamicPropertySource")
+    void serviceHasInjectedValues(@Autowired Service service) {
+        assertThat(service.getIp()).isEqualTo("127.0.0.1");
+        assertThat(service.getPort()).isEqualTo(4242);
+    }
 
-	@Test
-	@DisplayName("@DynamicPropertySource overrides @TestPropertySource and JVM system property")
-	void dynamicPropertySourceOverridesTestPropertySourceAndSystemProperty(@Autowired ConfigurableEnvironment env) {
-		MutablePropertySources propertySources = env.getPropertySources();
-		assertThat(propertySources.size()).isGreaterThanOrEqualTo(4);
-		assertThat(propertySources.contains("Dynamic Test Properties")).isTrue();
-		assertThat(propertySources.contains("Inlined Test Properties")).isTrue();
-		assertThat(propertySources.contains("systemProperties")).isTrue();
-		assertThat(propertySources.get("Dynamic Test Properties").getProperty(TEST_CONTAINER_IP)).isEqualTo("127.0.0.1");
-		assertThat(propertySources.get("Inlined Test Properties").getProperty(TEST_CONTAINER_IP)).isEqualTo("test");
-		assertThat(propertySources.get("systemProperties").getProperty(TEST_CONTAINER_IP)).isEqualTo("system");
-		assertThat(env.getProperty(TEST_CONTAINER_IP)).isEqualTo("127.0.0.1");
-	}
+    @Configuration
+    @Import(Service.class)
+    static class Config {}
 
-	@Test
-	@DisplayName("@Service has values injected from @DynamicPropertySource")
-	void serviceHasInjectedValues(@Autowired Service service) {
-		assertThat(service.getIp()).isEqualTo("127.0.0.1");
-		assertThat(service.getPort()).isEqualTo(4242);
-	}
+    static class Service {
 
+        private final String ip;
 
-	@Configuration
-	@Import(Service.class)
-	static class Config {
-	}
+        private final int port;
 
-	static class Service {
+        Service(
+                @Value("${test.container.ip}") String ip,
+                @Value("${test.container.port}") int port) {
+            this.ip = ip;
+            this.port = port;
+        }
 
-		private final String ip;
+        String getIp() {
+            return this.ip;
+        }
 
-		private final int port;
+        int getPort() {
+            return this.port;
+        }
+    }
 
+    static class DemoContainer {
 
-		Service(@Value("${test.container.ip}") String ip, @Value("${test.container.port}") int port) {
-			this.ip = ip;
-			this.port = port;
-		}
+        String getIpAddress() {
+            return "127.0.0.1";
+        }
 
-		String getIp() {
-			return this.ip;
-		}
+        int getPort() {
+            return 4242;
+        }
+    }
 
-		int getPort() {
-			return this.port;
-		}
-
-	}
-
-	static class DemoContainer {
-
-		String getIpAddress() {
-			return "127.0.0.1";
-		}
-
-		int getPort() {
-			return 4242;
-		}
-
-	}
-
+    static {
+        System.setProperty(TEST_CONTAINER_IP, "system");
+    }
 }

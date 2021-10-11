@@ -42,77 +42,81 @@ import static org.junit.jupiter.api.condition.JRE.JAVA_14;
 @DisabledForJreRange(min = JAVA_14)
 public class SpringCoreBlockHoundIntegrationTests {
 
+    @BeforeAll
+    static void setUp() {
+        BlockHound.builder()
+                .with(new ReactorBlockHoundIntegration()) // Reactor non-blocking thread predicate
+                .with(new ReactiveAdapterRegistry.SpringCoreBlockHoundIntegration())
+                .install();
+    }
 
-	@BeforeAll
-	static void setUp() {
-		BlockHound.builder()
-				.with(new ReactorBlockHoundIntegration()) // Reactor non-blocking thread predicate
-				.with(new ReactiveAdapterRegistry.SpringCoreBlockHoundIntegration())
-				.install();
-	}
+    @Test
+    void blockHoundIsInstalled() {
+        assertThatThrownBy(() -> testNonBlockingTask(() -> Thread.sleep(10)))
+                .hasMessageContaining("Blocking call!");
+    }
 
+    @Test
+    void localVariableTableParameterNameDiscoverer() {
+        testNonBlockingTask(
+                () -> {
+                    Method setName = TestObject.class.getMethod("setName", String.class);
+                    String[] names =
+                            new LocalVariableTableParameterNameDiscoverer()
+                                    .getParameterNames(setName);
+                    assertThat(names).isEqualTo(new String[] {"name"});
+                });
+    }
 
-	@Test
-	void blockHoundIsInstalled() {
-		assertThatThrownBy(() -> testNonBlockingTask(() -> Thread.sleep(10)))
-				.hasMessageContaining("Blocking call!");
-	}
+    @Test
+    void concurrentReferenceHashMap() {
+        int size = 10000;
+        Map<String, String> map = new ConcurrentReferenceHashMap<>(size);
 
-	@Test
-	void localVariableTableParameterNameDiscoverer() {
-		testNonBlockingTask(() -> {
-			Method setName = TestObject.class.getMethod("setName", String.class);
-			String[] names = new LocalVariableTableParameterNameDiscoverer().getParameterNames(setName);
-			assertThat(names).isEqualTo(new String[] {"name"});
-		});
-	}
+        CompletableFuture<Object> future1 = new CompletableFuture<>();
+        testNonBlockingTask(
+                () -> {
+                    for (int i = 0; i < size / 2; i++) {
+                        map.put("a" + i, "bar");
+                    }
+                },
+                future1);
 
-	@Test
-	void concurrentReferenceHashMap() {
-		int size = 10000;
-		Map<String, String> map = new ConcurrentReferenceHashMap<>(size);
+        CompletableFuture<Object> future2 = new CompletableFuture<>();
+        testNonBlockingTask(
+                () -> {
+                    for (int i = 0; i < size / 2; i++) {
+                        map.put("b" + i, "bar");
+                    }
+                },
+                future2);
 
-		CompletableFuture<Object> future1 = new CompletableFuture<>();
-		testNonBlockingTask(() -> {
-			for (int i = 0; i < size / 2; i++) {
-				map.put("a" + i, "bar");
-			}
-		}, future1);
+        CompletableFuture.allOf(future1, future2).join();
+        assertThat(map).hasSize(size);
+    }
 
-		CompletableFuture<Object> future2 = new CompletableFuture<>();
-		testNonBlockingTask(() -> {
-			for (int i = 0; i < size / 2; i++) {
-				map.put("b" + i, "bar");
-			}
-		}, future2);
+    private void testNonBlockingTask(NonBlockingTask task) {
+        CompletableFuture<Object> future = new CompletableFuture<>();
+        testNonBlockingTask(task, future);
+        future.join();
+    }
 
-		CompletableFuture.allOf(future1, future2).join();
-		assertThat(map).hasSize(size);
-	}
+    private void testNonBlockingTask(NonBlockingTask task, CompletableFuture<Object> future) {
+        Schedulers.parallel()
+                .schedule(
+                        () -> {
+                            try {
+                                task.run();
+                                future.complete(null);
+                            } catch (Throwable ex) {
+                                future.completeExceptionally(ex);
+                            }
+                        });
+    }
 
-	private void testNonBlockingTask(NonBlockingTask task) {
-		CompletableFuture<Object> future = new CompletableFuture<>();
-		testNonBlockingTask(task, future);
-		future.join();
-	}
+    @FunctionalInterface
+    private interface NonBlockingTask {
 
-	private void testNonBlockingTask(NonBlockingTask task, CompletableFuture<Object> future) {
-		Schedulers.parallel().schedule(() -> {
-			try {
-				task.run();
-				future.complete(null);
-			}
-			catch (Throwable ex) {
-				future.completeExceptionally(ex);
-			}
-		});
-	}
-
-
-	@FunctionalInterface
-	private interface NonBlockingTask {
-
-		void run() throws Exception;
-	}
-
+        void run() throws Exception;
+    }
 }

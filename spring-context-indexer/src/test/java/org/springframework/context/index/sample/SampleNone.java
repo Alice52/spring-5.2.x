@@ -25,5 +25,4 @@ import org.springframework.beans.factory.annotation.Qualifier;
  */
 @Scope("None")
 @Qualifier("None")
-public class SampleNone {
-}
+public class SampleNone {}

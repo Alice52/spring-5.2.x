@@ -54,235 +54,273 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  */
 class RequestHeaderMethodArgumentResolverTests {
 
-	private RequestHeaderMethodArgumentResolver resolver;
+    private RequestHeaderMethodArgumentResolver resolver;
 
-	private MethodParameter paramNamedDefaultValueStringHeader;
-	private MethodParameter paramNamedValueStringArray;
-	private MethodParameter paramSystemProperty;
-	private MethodParameter paramContextPath;
-	private MethodParameter paramResolvedNameWithExpression;
-	private MethodParameter paramResolvedNameWithPlaceholder;
-	private MethodParameter paramNamedValueMap;
-	private MethodParameter paramDate;
-	private MethodParameter paramInstant;
-	private MethodParameter paramUuid;
+    private MethodParameter paramNamedDefaultValueStringHeader;
+    private MethodParameter paramNamedValueStringArray;
+    private MethodParameter paramSystemProperty;
+    private MethodParameter paramContextPath;
+    private MethodParameter paramResolvedNameWithExpression;
+    private MethodParameter paramResolvedNameWithPlaceholder;
+    private MethodParameter paramNamedValueMap;
+    private MethodParameter paramDate;
+    private MethodParameter paramInstant;
+    private MethodParameter paramUuid;
 
-	private MockHttpServletRequest servletRequest;
+    private MockHttpServletRequest servletRequest;
 
-	private NativeWebRequest webRequest;
+    private NativeWebRequest webRequest;
 
+    @BeforeEach
+    @SuppressWarnings("resource")
+    void setup() throws Exception {
+        GenericWebApplicationContext context = new GenericWebApplicationContext();
+        context.refresh();
+        resolver = new RequestHeaderMethodArgumentResolver(context.getBeanFactory());
 
-	@BeforeEach
-	@SuppressWarnings("resource")
-	void setup() throws Exception {
-		GenericWebApplicationContext context = new GenericWebApplicationContext();
-		context.refresh();
-		resolver = new RequestHeaderMethodArgumentResolver(context.getBeanFactory());
+        Method method = ReflectionUtils.findMethod(getClass(), "params", (Class<?>[]) null);
+        paramNamedDefaultValueStringHeader = new SynthesizingMethodParameter(method, 0);
+        paramNamedValueStringArray = new SynthesizingMethodParameter(method, 1);
+        paramSystemProperty = new SynthesizingMethodParameter(method, 2);
+        paramContextPath = new SynthesizingMethodParameter(method, 3);
+        paramResolvedNameWithExpression = new SynthesizingMethodParameter(method, 4);
+        paramResolvedNameWithPlaceholder = new SynthesizingMethodParameter(method, 5);
+        paramNamedValueMap = new SynthesizingMethodParameter(method, 6);
+        paramDate = new SynthesizingMethodParameter(method, 7);
+        paramInstant = new SynthesizingMethodParameter(method, 8);
+        paramUuid = new SynthesizingMethodParameter(method, 9);
 
-		Method method = ReflectionUtils.findMethod(getClass(), "params", (Class<?>[]) null);
-		paramNamedDefaultValueStringHeader = new SynthesizingMethodParameter(method, 0);
-		paramNamedValueStringArray = new SynthesizingMethodParameter(method, 1);
-		paramSystemProperty = new SynthesizingMethodParameter(method, 2);
-		paramContextPath = new SynthesizingMethodParameter(method, 3);
-		paramResolvedNameWithExpression = new SynthesizingMethodParameter(method, 4);
-		paramResolvedNameWithPlaceholder = new SynthesizingMethodParameter(method, 5);
-		paramNamedValueMap = new SynthesizingMethodParameter(method, 6);
-		paramDate = new SynthesizingMethodParameter(method, 7);
-		paramInstant = new SynthesizingMethodParameter(method, 8);
-		paramUuid = new SynthesizingMethodParameter(method, 9);
+        servletRequest = new MockHttpServletRequest();
+        webRequest = new ServletWebRequest(servletRequest, new MockHttpServletResponse());
 
-		servletRequest = new MockHttpServletRequest();
-		webRequest = new ServletWebRequest(servletRequest, new MockHttpServletResponse());
+        // Expose request to the current thread (for SpEL expressions)
+        RequestContextHolder.setRequestAttributes(webRequest);
+    }
 
-		// Expose request to the current thread (for SpEL expressions)
-		RequestContextHolder.setRequestAttributes(webRequest);
-	}
+    @AfterEach
+    void reset() {
+        RequestContextHolder.resetRequestAttributes();
+    }
 
-	@AfterEach
-	void reset() {
-		RequestContextHolder.resetRequestAttributes();
-	}
+    @Test
+    void supportsParameter() {
+        assertThat(resolver.supportsParameter(paramNamedDefaultValueStringHeader))
+                .as("String parameter not supported")
+                .isTrue();
+        assertThat(resolver.supportsParameter(paramNamedValueStringArray))
+                .as("String array parameter not supported")
+                .isTrue();
+        assertThat(resolver.supportsParameter(paramNamedValueMap))
+                .as("non-@RequestParam parameter supported")
+                .isFalse();
+    }
 
+    @Test
+    void resolveStringArgument() throws Exception {
+        String expected = "foo";
+        servletRequest.addHeader("name", expected);
 
-	@Test
-	void supportsParameter() {
-		assertThat(resolver.supportsParameter(paramNamedDefaultValueStringHeader)).as("String parameter not supported").isTrue();
-		assertThat(resolver.supportsParameter(paramNamedValueStringArray)).as("String array parameter not supported").isTrue();
-		assertThat(resolver.supportsParameter(paramNamedValueMap)).as("non-@RequestParam parameter supported").isFalse();
-	}
+        Object result =
+                resolver.resolveArgument(
+                        paramNamedDefaultValueStringHeader, null, webRequest, null);
 
-	@Test
-	void resolveStringArgument() throws Exception {
-		String expected = "foo";
-		servletRequest.addHeader("name", expected);
+        assertThat(result).isEqualTo(expected);
+    }
 
-		Object result = resolver.resolveArgument(paramNamedDefaultValueStringHeader, null, webRequest, null);
+    @Test
+    void resolveStringArrayArgument() throws Exception {
+        String[] expected = new String[] {"foo", "bar"};
+        servletRequest.addHeader("name", expected);
 
-		assertThat(result).isEqualTo(expected);
-	}
+        Object result =
+                resolver.resolveArgument(paramNamedValueStringArray, null, webRequest, null);
+        assertThat(result).isInstanceOf(String[].class);
+        assertThat(result).isEqualTo(expected);
+    }
 
-	@Test
-	void resolveStringArrayArgument() throws Exception {
-		String[] expected = new String[] {"foo", "bar"};
-		servletRequest.addHeader("name", expected);
+    @Test
+    void resolveDefaultValue() throws Exception {
+        Object result =
+                resolver.resolveArgument(
+                        paramNamedDefaultValueStringHeader, null, webRequest, null);
 
-		Object result = resolver.resolveArgument(paramNamedValueStringArray, null, webRequest, null);
-		assertThat(result).isInstanceOf(String[].class);
-		assertThat(result).isEqualTo(expected);
-	}
+        assertThat(result).isEqualTo("bar");
+    }
 
-	@Test
-	void resolveDefaultValue() throws Exception {
-		Object result = resolver.resolveArgument(paramNamedDefaultValueStringHeader, null, webRequest, null);
+    @Test
+    void resolveDefaultValueFromSystemProperty() throws Exception {
+        System.setProperty("systemProperty", "bar");
+        try {
+            Object result = resolver.resolveArgument(paramSystemProperty, null, webRequest, null);
 
-		assertThat(result).isEqualTo("bar");
-	}
+            assertThat(result).isEqualTo("bar");
+        } finally {
+            System.clearProperty("systemProperty");
+        }
+    }
 
-	@Test
-	void resolveDefaultValueFromSystemProperty() throws Exception {
-		System.setProperty("systemProperty", "bar");
-		try {
-			Object result = resolver.resolveArgument(paramSystemProperty, null, webRequest, null);
+    @Test
+    void resolveNameFromSystemPropertyThroughExpression() throws Exception {
+        String expected = "foo";
+        servletRequest.addHeader("bar", expected);
 
-			assertThat(result).isEqualTo("bar");
-		}
-		finally {
-			System.clearProperty("systemProperty");
-		}
-	}
+        System.setProperty("systemProperty", "bar");
+        try {
+            Object result =
+                    resolver.resolveArgument(
+                            paramResolvedNameWithExpression, null, webRequest, null);
 
-	@Test
-	void resolveNameFromSystemPropertyThroughExpression() throws Exception {
-		String expected = "foo";
-		servletRequest.addHeader("bar", expected);
+            assertThat(result).isEqualTo(expected);
+        } finally {
+            System.clearProperty("systemProperty");
+        }
+    }
 
-		System.setProperty("systemProperty", "bar");
-		try {
-			Object result = resolver.resolveArgument(paramResolvedNameWithExpression, null, webRequest, null);
+    @Test
+    void resolveNameFromSystemPropertyThroughPlaceholder() throws Exception {
+        String expected = "foo";
+        servletRequest.addHeader("bar", expected);
 
-			assertThat(result).isEqualTo(expected);
-		}
-		finally {
-			System.clearProperty("systemProperty");
-		}
-	}
+        System.setProperty("systemProperty", "bar");
+        try {
+            Object result =
+                    resolver.resolveArgument(
+                            paramResolvedNameWithPlaceholder, null, webRequest, null);
 
-	@Test
-	void resolveNameFromSystemPropertyThroughPlaceholder() throws Exception {
-		String expected = "foo";
-		servletRequest.addHeader("bar", expected);
+            assertThat(result).isEqualTo(expected);
+        } finally {
+            System.clearProperty("systemProperty");
+        }
+    }
 
-		System.setProperty("systemProperty", "bar");
-		try {
-			Object result = resolver.resolveArgument(paramResolvedNameWithPlaceholder, null, webRequest, null);
+    @Test
+    void resolveDefaultValueFromRequest() throws Exception {
+        servletRequest.setContextPath("/bar");
 
-			assertThat(result).isEqualTo(expected);
-		}
-		finally {
-			System.clearProperty("systemProperty");
-		}
-	}
+        Object result = resolver.resolveArgument(paramContextPath, null, webRequest, null);
 
-	@Test
-	void resolveDefaultValueFromRequest() throws Exception {
-		servletRequest.setContextPath("/bar");
+        assertThat(result).isEqualTo("/bar");
+    }
 
-		Object result = resolver.resolveArgument(paramContextPath, null, webRequest, null);
+    @Test
+    void notFound() throws Exception {
+        assertThatExceptionOfType(ServletRequestBindingException.class)
+                .isThrownBy(
+                        () ->
+                                resolver.resolveArgument(
+                                        paramNamedValueStringArray, null, webRequest, null));
+    }
 
-		assertThat(result).isEqualTo("/bar");
-	}
+    @Test
+    @SuppressWarnings("deprecation")
+    void dateConversion() throws Exception {
+        String rfc1123val = "Thu, 21 Apr 2016 17:11:08 +0100";
+        servletRequest.addHeader("name", rfc1123val);
 
-	@Test
-	void notFound() throws Exception {
-		assertThatExceptionOfType(ServletRequestBindingException.class).isThrownBy(() ->
-				resolver.resolveArgument(paramNamedValueStringArray, null, webRequest, null));
-	}
+        ConfigurableWebBindingInitializer bindingInitializer =
+                new ConfigurableWebBindingInitializer();
+        bindingInitializer.setConversionService(new DefaultFormattingConversionService());
+        Object result =
+                resolver.resolveArgument(
+                        paramDate,
+                        null,
+                        webRequest,
+                        new DefaultDataBinderFactory(bindingInitializer));
 
-	@Test
-	@SuppressWarnings("deprecation")
-	void dateConversion() throws Exception {
-		String rfc1123val = "Thu, 21 Apr 2016 17:11:08 +0100";
-		servletRequest.addHeader("name", rfc1123val);
+        assertThat(result).isEqualTo(new Date(rfc1123val));
+    }
 
-		ConfigurableWebBindingInitializer bindingInitializer = new ConfigurableWebBindingInitializer();
-		bindingInitializer.setConversionService(new DefaultFormattingConversionService());
-		Object result = resolver.resolveArgument(paramDate, null, webRequest,
-				new DefaultDataBinderFactory(bindingInitializer));
+    @Test
+    void instantConversion() throws Exception {
+        String rfc1123val = "Thu, 21 Apr 2016 17:11:08 +0100";
+        servletRequest.addHeader("name", rfc1123val);
 
-		assertThat(result).isEqualTo(new Date(rfc1123val));
-	}
+        ConfigurableWebBindingInitializer bindingInitializer =
+                new ConfigurableWebBindingInitializer();
+        bindingInitializer.setConversionService(new DefaultFormattingConversionService());
+        Object result =
+                resolver.resolveArgument(
+                        paramInstant,
+                        null,
+                        webRequest,
+                        new DefaultDataBinderFactory(bindingInitializer));
 
-	@Test
-	void instantConversion() throws Exception {
-		String rfc1123val = "Thu, 21 Apr 2016 17:11:08 +0100";
-		servletRequest.addHeader("name", rfc1123val);
+        assertThat(result)
+                .isEqualTo(Instant.from(DateTimeFormatter.RFC_1123_DATE_TIME.parse(rfc1123val)));
+    }
 
-		ConfigurableWebBindingInitializer bindingInitializer = new ConfigurableWebBindingInitializer();
-		bindingInitializer.setConversionService(new DefaultFormattingConversionService());
-		Object result = resolver.resolveArgument(paramInstant, null, webRequest,
-				new DefaultDataBinderFactory(bindingInitializer));
+    @Test
+    void uuidConversionWithValidValue() throws Exception {
+        UUID uuid = UUID.randomUUID();
+        servletRequest.addHeader("name", uuid.toString());
 
-		assertThat(result).isEqualTo(Instant.from(DateTimeFormatter.RFC_1123_DATE_TIME.parse(rfc1123val)));
-	}
+        ConfigurableWebBindingInitializer bindingInitializer =
+                new ConfigurableWebBindingInitializer();
+        bindingInitializer.setConversionService(new DefaultFormattingConversionService());
+        Object result =
+                resolver.resolveArgument(
+                        paramUuid,
+                        null,
+                        webRequest,
+                        new DefaultDataBinderFactory(bindingInitializer));
 
-	@Test
-	void uuidConversionWithValidValue() throws Exception {
-		UUID uuid = UUID.randomUUID();
-		servletRequest.addHeader("name", uuid.toString());
+        assertThat(result).isEqualTo(uuid);
+    }
 
-		ConfigurableWebBindingInitializer bindingInitializer = new ConfigurableWebBindingInitializer();
-		bindingInitializer.setConversionService(new DefaultFormattingConversionService());
-		Object result = resolver.resolveArgument(paramUuid, null, webRequest,
-				new DefaultDataBinderFactory(bindingInitializer));
+    @Test
+    void uuidConversionWithInvalidValue() throws Exception {
+        servletRequest.addHeader("name", "bogus-uuid");
 
-		assertThat(result).isEqualTo(uuid);
-	}
+        ConfigurableWebBindingInitializer bindingInitializer =
+                new ConfigurableWebBindingInitializer();
+        bindingInitializer.setConversionService(new DefaultFormattingConversionService());
 
-	@Test
-	void uuidConversionWithInvalidValue() throws Exception {
-		servletRequest.addHeader("name", "bogus-uuid");
+        assertThatExceptionOfType(MethodArgumentTypeMismatchException.class)
+                .isThrownBy(
+                        () ->
+                                resolver.resolveArgument(
+                                        paramUuid,
+                                        null,
+                                        webRequest,
+                                        new DefaultDataBinderFactory(bindingInitializer)));
+    }
 
-		ConfigurableWebBindingInitializer bindingInitializer = new ConfigurableWebBindingInitializer();
-		bindingInitializer.setConversionService(new DefaultFormattingConversionService());
+    @Test
+    void uuidConversionWithEmptyValue() throws Exception {
+        uuidConversionWithEmptyOrBlankValue("");
+    }
 
-		assertThatExceptionOfType(MethodArgumentTypeMismatchException.class).isThrownBy(
-				() -> resolver.resolveArgument(paramUuid, null, webRequest,
-						new DefaultDataBinderFactory(bindingInitializer)));
-	}
+    @Test
+    void uuidConversionWithBlankValue() throws Exception {
+        uuidConversionWithEmptyOrBlankValue("     ");
+    }
 
-	@Test
-	void uuidConversionWithEmptyValue() throws Exception {
-		uuidConversionWithEmptyOrBlankValue("");
-	}
+    private void uuidConversionWithEmptyOrBlankValue(String uuid) throws Exception {
+        servletRequest.addHeader("name", uuid);
 
-	@Test
-	void uuidConversionWithBlankValue() throws Exception {
-		uuidConversionWithEmptyOrBlankValue("     ");
-	}
+        ConfigurableWebBindingInitializer bindingInitializer =
+                new ConfigurableWebBindingInitializer();
+        bindingInitializer.setConversionService(new DefaultFormattingConversionService());
+        Object result =
+                resolver.resolveArgument(
+                        paramUuid,
+                        null,
+                        webRequest,
+                        new DefaultDataBinderFactory(bindingInitializer));
 
-	private void uuidConversionWithEmptyOrBlankValue(String uuid) throws Exception {
-		servletRequest.addHeader("name", uuid);
+        assertThat(result).isNull();
+    }
 
-		ConfigurableWebBindingInitializer bindingInitializer = new ConfigurableWebBindingInitializer();
-		bindingInitializer.setConversionService(new DefaultFormattingConversionService());
-		Object result = resolver.resolveArgument(paramUuid, null, webRequest,
-				new DefaultDataBinderFactory(bindingInitializer));
-
-		assertThat(result).isNull();
-	}
-
-
-	void params(
-			@RequestHeader(name = "name", defaultValue = "bar") String param1,
-			@RequestHeader("name") String[] param2,
-			@RequestHeader(name = "name", defaultValue="#{systemProperties.systemProperty}") String param3,
-			@RequestHeader(name = "name", defaultValue="#{request.contextPath}") String param4,
-			@RequestHeader("#{systemProperties.systemProperty}") String param5,
-			@RequestHeader("${systemProperty}") String param6,
-			@RequestHeader("name") Map<?, ?> unsupported,
-			@RequestHeader("name") Date dateParam,
-			@RequestHeader("name") Instant instantParam,
-			@RequestHeader("name") UUID uuid) {
-	}
-
+    void params(
+            @RequestHeader(name = "name", defaultValue = "bar") String param1,
+            @RequestHeader("name") String[] param2,
+            @RequestHeader(name = "name", defaultValue = "#{systemProperties.systemProperty}")
+                    String param3,
+            @RequestHeader(name = "name", defaultValue = "#{request.contextPath}") String param4,
+            @RequestHeader("#{systemProperties.systemProperty}") String param5,
+            @RequestHeader("${systemProperty}") String param6,
+            @RequestHeader("name") Map<?, ?> unsupported,
+            @RequestHeader("name") Date dateParam,
+            @RequestHeader("name") Instant instantParam,
+            @RequestHeader("name") UUID uuid) {}
 }

@@ -29,47 +29,52 @@ import org.springframework.transaction.support.TransactionSynchronization;
  */
 public enum TransactionPhase {
 
-	/**
-	 * Handle the event before transaction commit.
-	 * @see TransactionSynchronization#beforeCommit(boolean)
-	 */
-	BEFORE_COMMIT,
+    /**
+     * Handle the event before transaction commit.
+     *
+     * @see TransactionSynchronization#beforeCommit(boolean)
+     */
+    BEFORE_COMMIT,
 
-	/**
-	 * Handle the event after the commit has completed successfully.
-	 * <p>Note: This is a specialization of {@link #AFTER_COMPLETION} and therefore
-	 * executes in the same sequence of events as {@code AFTER_COMPLETION}
-	 * (and not in {@link TransactionSynchronization#afterCommit()}).
-	 * <p>Interactions with the underlying transactional resource will not be
-	 * committed in this phase. See
-	 * {@link TransactionSynchronization#afterCompletion(int)} for details.
-	 * @see TransactionSynchronization#afterCompletion(int)
-	 * @see TransactionSynchronization#STATUS_COMMITTED
-	 */
-	AFTER_COMMIT,
+    /**
+     * Handle the event after the commit has completed successfully.
+     *
+     * <p>Note: This is a specialization of {@link #AFTER_COMPLETION} and therefore executes in the
+     * same sequence of events as {@code AFTER_COMPLETION} (and not in {@link
+     * TransactionSynchronization#afterCommit()}).
+     *
+     * <p>Interactions with the underlying transactional resource will not be committed in this
+     * phase. See {@link TransactionSynchronization#afterCompletion(int)} for details.
+     *
+     * @see TransactionSynchronization#afterCompletion(int)
+     * @see TransactionSynchronization#STATUS_COMMITTED
+     */
+    AFTER_COMMIT,
 
-	/**
-	 * Handle the event if the transaction has rolled back.
-	 * <p>Note: This is a specialization of {@link #AFTER_COMPLETION} and therefore
-	 * executes in the same sequence of events as {@code AFTER_COMPLETION}.
-	 * <p>Interactions with the underlying transactional resource will not be
-	 * committed in this phase. See
-	 * {@link TransactionSynchronization#afterCompletion(int)} for details.
-	 * @see TransactionSynchronization#afterCompletion(int)
-	 * @see TransactionSynchronization#STATUS_ROLLED_BACK
-	 */
-	AFTER_ROLLBACK,
+    /**
+     * Handle the event if the transaction has rolled back.
+     *
+     * <p>Note: This is a specialization of {@link #AFTER_COMPLETION} and therefore executes in the
+     * same sequence of events as {@code AFTER_COMPLETION}.
+     *
+     * <p>Interactions with the underlying transactional resource will not be committed in this
+     * phase. See {@link TransactionSynchronization#afterCompletion(int)} for details.
+     *
+     * @see TransactionSynchronization#afterCompletion(int)
+     * @see TransactionSynchronization#STATUS_ROLLED_BACK
+     */
+    AFTER_ROLLBACK,
 
-	/**
-	 * Handle the event after the transaction has completed.
-	 * <p>For more fine-grained events, use {@link #AFTER_COMMIT} or
-	 * {@link #AFTER_ROLLBACK} to intercept transaction commit
-	 * or rollback, respectively.
-	 * <p>Interactions with the underlying transactional resource will not be
-	 * committed in this phase. See
-	 * {@link TransactionSynchronization#afterCompletion(int)} for details.
-	 * @see TransactionSynchronization#afterCompletion(int)
-	 */
-	AFTER_COMPLETION
-
+    /**
+     * Handle the event after the transaction has completed.
+     *
+     * <p>For more fine-grained events, use {@link #AFTER_COMMIT} or {@link #AFTER_ROLLBACK} to
+     * intercept transaction commit or rollback, respectively.
+     *
+     * <p>Interactions with the underlying transactional resource will not be committed in this
+     * phase. See {@link TransactionSynchronization#afterCompletion(int)} for details.
+     *
+     * @see TransactionSynchronization#afterCompletion(int)
+     */
+    AFTER_COMPLETION
 }

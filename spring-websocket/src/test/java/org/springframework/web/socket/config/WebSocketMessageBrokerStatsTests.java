@@ -31,62 +31,72 @@ import static org.mockito.Mockito.mock;
  *
  * @author Sam Brannen
  * @since 5.3.10
- * @see org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurationSupportTests
+ * @see
+ *     org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurationSupportTests
  */
 class WebSocketMessageBrokerStatsTests {
 
-	private final WebSocketMessageBrokerStats stats = new WebSocketMessageBrokerStats();
+    private final WebSocketMessageBrokerStats stats = new WebSocketMessageBrokerStats();
 
-	@Test
-	void nullValues() {
-		String expected = "WebSocketSession[null], stompSubProtocol[null], stompBrokerRelay[null], " +
-				"inboundChannel[null], outboundChannel[null], sockJsScheduler[null]";
-		assertThat(stats).hasToString(expected);
-	}
+    @Test
+    void nullValues() {
+        String expected =
+                "WebSocketSession[null], stompSubProtocol[null], stompBrokerRelay[null], "
+                        + "inboundChannel[null], outboundChannel[null], sockJsScheduler[null]";
+        assertThat(stats).hasToString(expected);
+    }
 
-	@Test
-	void inboundAndOutboundChannelsWithThreadPoolTaskExecutor() {
-		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.afterPropertiesSet();
+    @Test
+    void inboundAndOutboundChannelsWithThreadPoolTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.afterPropertiesSet();
 
-		stats.setInboundChannelExecutor(executor);
-		stats.setOutboundChannelExecutor(executor);
+        stats.setInboundChannelExecutor(executor);
+        stats.setOutboundChannelExecutor(executor);
 
-		assertThat(stats.getClientInboundExecutorStatsInfo()).as("inbound channel stats")
-			.isEqualTo("pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0");
-		assertThat(stats.getClientOutboundExecutorStatsInfo()).as("outbound channel stats")
-			.isEqualTo("pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0");
-	}
+        assertThat(stats.getClientInboundExecutorStatsInfo())
+                .as("inbound channel stats")
+                .isEqualTo(
+                        "pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0");
+        assertThat(stats.getClientOutboundExecutorStatsInfo())
+                .as("outbound channel stats")
+                .isEqualTo(
+                        "pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0");
+    }
 
-	@Test
-	void inboundAndOutboundChannelsWithMockedTaskExecutor() {
-		TaskExecutor executor = mock(TaskExecutor.class);
+    @Test
+    void inboundAndOutboundChannelsWithMockedTaskExecutor() {
+        TaskExecutor executor = mock(TaskExecutor.class);
 
-		stats.setInboundChannelExecutor(executor);
-		stats.setOutboundChannelExecutor(executor);
+        stats.setInboundChannelExecutor(executor);
+        stats.setOutboundChannelExecutor(executor);
 
-		assertThat(stats.getClientInboundExecutorStatsInfo()).as("inbound channel stats").isEqualTo("unknown");
-		assertThat(stats.getClientOutboundExecutorStatsInfo()).as("outbound channel stats").isEqualTo("unknown");
-	}
+        assertThat(stats.getClientInboundExecutorStatsInfo())
+                .as("inbound channel stats")
+                .isEqualTo("unknown");
+        assertThat(stats.getClientOutboundExecutorStatsInfo())
+                .as("outbound channel stats")
+                .isEqualTo("unknown");
+    }
 
-	@Test
-	void sockJsTaskSchedulerWithThreadPoolTaskScheduler() {
-		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		scheduler.afterPropertiesSet();
+    @Test
+    void sockJsTaskSchedulerWithThreadPoolTaskScheduler() {
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.afterPropertiesSet();
 
-		stats.setSockJsTaskScheduler(scheduler);
+        stats.setSockJsTaskScheduler(scheduler);
 
-		assertThat(stats.getSockJsTaskSchedulerStatsInfo())
-			.isEqualTo("pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0");
-	}
+        assertThat(stats.getSockJsTaskSchedulerStatsInfo())
+                .isEqualTo(
+                        "pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0");
+    }
 
-	@Test
-	void sockJsTaskSchedulerWithMockedTaskScheduler() {
-		TaskScheduler scheduler = mock(TaskScheduler.class);
+    @Test
+    void sockJsTaskSchedulerWithMockedTaskScheduler() {
+        TaskScheduler scheduler = mock(TaskScheduler.class);
 
-		stats.setSockJsTaskScheduler(scheduler);
+        stats.setSockJsTaskScheduler(scheduler);
 
-		assertThat(stats.getSockJsTaskSchedulerStatsInfo()).isEqualTo("unknown");
-	}
-
+        assertThat(stats.getSockJsTaskSchedulerStatsInfo()).isEqualTo("unknown");
+    }
 }

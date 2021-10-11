@@ -36,181 +36,207 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Expression evaluation where the TypeConverter plugged in is the
- * {@link org.springframework.core.convert.support.GenericConversionService}.
+ * Expression evaluation where the TypeConverter plugged in is the {@link
+ * org.springframework.core.convert.support.GenericConversionService}.
  *
  * @author Andy Clement
  * @author Dave Syer
  */
 public class ExpressionWithConversionTests extends AbstractExpressionTests {
 
-	private static List<String> listOfString = new ArrayList<>();
-	private static TypeDescriptor typeDescriptorForListOfString = null;
-	private static List<Integer> listOfInteger = new ArrayList<>();
-	private static TypeDescriptor typeDescriptorForListOfInteger = null;
+    private static List<String> listOfString = new ArrayList<>();
+    private static TypeDescriptor typeDescriptorForListOfString = null;
+    private static List<Integer> listOfInteger = new ArrayList<>();
+    private static TypeDescriptor typeDescriptorForListOfInteger = null;
 
-	static {
-		listOfString.add("1");
-		listOfString.add("2");
-		listOfString.add("3");
-		listOfInteger.add(4);
-		listOfInteger.add(5);
-		listOfInteger.add(6);
-	}
+    @BeforeEach
+    public void setUp() throws Exception {
+        ExpressionWithConversionTests.typeDescriptorForListOfString =
+                new TypeDescriptor(
+                        ExpressionWithConversionTests.class.getDeclaredField("listOfString"));
+        ExpressionWithConversionTests.typeDescriptorForListOfInteger =
+                new TypeDescriptor(
+                        ExpressionWithConversionTests.class.getDeclaredField("listOfInteger"));
+    }
 
-	@BeforeEach
-	public void setUp() throws Exception {
-		ExpressionWithConversionTests.typeDescriptorForListOfString = new TypeDescriptor(ExpressionWithConversionTests.class.getDeclaredField("listOfString"));
-		ExpressionWithConversionTests.typeDescriptorForListOfInteger = new TypeDescriptor(ExpressionWithConversionTests.class.getDeclaredField("listOfInteger"));
-	}
+    /** Test the service can convert what we are about to use in the expression evaluation tests. */
+    @Test
+    public void testConversionsAvailable() throws Exception {
+        TypeConvertorUsingConversionService tcs = new TypeConvertorUsingConversionService();
 
+        // ArrayList containing List<Integer> to List<String>
+        Class<?> clazz = typeDescriptorForListOfString.getElementTypeDescriptor().getType();
+        assertThat(clazz).isEqualTo(String.class);
+        List<?> l =
+                (List<?>)
+                        tcs.convertValue(
+                                listOfInteger,
+                                TypeDescriptor.forObject(listOfInteger),
+                                typeDescriptorForListOfString);
+        assertThat(l).isNotNull();
 
-	/**
-	 * Test the service can convert what we are about to use in the expression evaluation tests.
-	 */
-	@Test
-	public void testConversionsAvailable() throws Exception {
-		TypeConvertorUsingConversionService tcs = new TypeConvertorUsingConversionService();
+        // ArrayList containing List<String> to List<Integer>
+        clazz = typeDescriptorForListOfInteger.getElementTypeDescriptor().getType();
+        assertThat(clazz).isEqualTo(Integer.class);
 
-		// ArrayList containing List<Integer> to List<String>
-		Class<?> clazz = typeDescriptorForListOfString.getElementTypeDescriptor().getType();
-		assertThat(clazz).isEqualTo(String.class);
-		List<?> l = (List<?>) tcs.convertValue(listOfInteger, TypeDescriptor.forObject(listOfInteger), typeDescriptorForListOfString);
-		assertThat(l).isNotNull();
+        l =
+                (List<?>)
+                        tcs.convertValue(
+                                listOfString,
+                                TypeDescriptor.forObject(listOfString),
+                                typeDescriptorForListOfString);
+        assertThat(l).isNotNull();
+    }
 
-		// ArrayList containing List<String> to List<Integer>
-		clazz = typeDescriptorForListOfInteger.getElementTypeDescriptor().getType();
-		assertThat(clazz).isEqualTo(Integer.class);
+    @Test
+    public void testSetParameterizedList() throws Exception {
+        StandardEvaluationContext context = TestScenarioCreator.getTestEvaluationContext();
+        Expression e = parser.parseExpression("listOfInteger.size()");
+        assertThat(e.getValue(context, Integer.class).intValue()).isEqualTo(0);
+        context.setTypeConverter(new TypeConvertorUsingConversionService());
+        // Assign a List<String> to the List<Integer> field - the component elements should be
+        // converted
+        parser.parseExpression("listOfInteger").setValue(context, listOfString);
+        // size now 3
+        assertThat(e.getValue(context, Integer.class).intValue()).isEqualTo(3);
+        Class<?> clazz =
+                parser.parseExpression("listOfInteger[1].getClass()")
+                        .getValue(context, Class.class); // element type correctly Integer
+        assertThat(clazz).isEqualTo(Integer.class);
+    }
 
-		l = (List<?>) tcs.convertValue(listOfString, TypeDescriptor.forObject(listOfString), typeDescriptorForListOfString);
-		assertThat(l).isNotNull();
-	}
+    @Test
+    public void testCoercionToCollectionOfPrimitive() throws Exception {
 
-	@Test
-	public void testSetParameterizedList() throws Exception {
-		StandardEvaluationContext context = TestScenarioCreator.getTestEvaluationContext();
-		Expression e = parser.parseExpression("listOfInteger.size()");
-		assertThat(e.getValue(context, Integer.class).intValue()).isEqualTo(0);
-		context.setTypeConverter(new TypeConvertorUsingConversionService());
-		// Assign a List<String> to the List<Integer> field - the component elements should be converted
-		parser.parseExpression("listOfInteger").setValue(context,listOfString);
-		// size now 3
-		assertThat(e.getValue(context, Integer.class).intValue()).isEqualTo(3);
-		Class<?> clazz = parser.parseExpression("listOfInteger[1].getClass()").getValue(context, Class.class); // element type correctly Integer
-		assertThat(clazz).isEqualTo(Integer.class);
-	}
+        class TestTarget {
+            @SuppressWarnings("unused")
+            public int sum(Collection<Integer> numbers) {
+                int total = 0;
+                for (int i : numbers) {
+                    total += i;
+                }
+                return total;
+            }
+        }
 
-	@Test
-	public void testCoercionToCollectionOfPrimitive() throws Exception {
+        StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
 
-		class TestTarget {
-			@SuppressWarnings("unused")
-			public int sum(Collection<Integer> numbers) {
-				int total = 0;
-				for (int i : numbers) {
-					total += i;
-				}
-				return total;
-			}
-		}
+        TypeDescriptor collectionType =
+                new TypeDescriptor(
+                        new MethodParameter(
+                                TestTarget.class.getDeclaredMethod("sum", Collection.class), 0));
+        // The type conversion is possible
+        assertThat(
+                        evaluationContext
+                                .getTypeConverter()
+                                .canConvert(TypeDescriptor.valueOf(String.class), collectionType))
+                .isTrue();
+        // ... and it can be done successfully
+        assertThat(
+                        evaluationContext
+                                .getTypeConverter()
+                                .convertValue(
+                                        "1,2,3,4",
+                                        TypeDescriptor.valueOf(String.class),
+                                        collectionType)
+                                .toString())
+                .isEqualTo("[1, 2, 3, 4]");
 
-		StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
+        evaluationContext.setVariable("target", new TestTarget());
 
-		TypeDescriptor collectionType = new TypeDescriptor(new MethodParameter(TestTarget.class.getDeclaredMethod(
-				"sum", Collection.class), 0));
-		// The type conversion is possible
-		assertThat(evaluationContext.getTypeConverter()
-				.canConvert(TypeDescriptor.valueOf(String.class), collectionType)).isTrue();
-		// ... and it can be done successfully
-		assertThat(evaluationContext.getTypeConverter().convertValue("1,2,3,4", TypeDescriptor.valueOf(String.class), collectionType).toString()).isEqualTo("[1, 2, 3, 4]");
+        // OK up to here, so the evaluation should be fine...
+        // ... but this fails
+        int result =
+                (Integer)
+                        parser.parseExpression("#target.sum(#root)")
+                                .getValue(evaluationContext, "1,2,3,4");
+        assertThat(result).as("Wrong result: " + result).isEqualTo(10);
+    }
 
-		evaluationContext.setVariable("target", new TestTarget());
+    @Test
+    public void testConvert() {
+        Foo root = new Foo("bar");
+        Collection<String> foos = Collections.singletonList("baz");
 
-		// OK up to here, so the evaluation should be fine...
-		// ... but this fails
-		int result = (Integer) parser.parseExpression("#target.sum(#root)").getValue(evaluationContext, "1,2,3,4");
-		assertThat(result).as("Wrong result: " + result).isEqualTo(10);
+        StandardEvaluationContext context = new StandardEvaluationContext(root);
 
-	}
+        // property access
+        Expression expression = parser.parseExpression("foos");
+        expression.setValue(context, foos);
+        Foo baz = root.getFoos().iterator().next();
+        assertThat(baz.value).isEqualTo("baz");
 
-	@Test
-	public void testConvert() {
-		Foo root = new Foo("bar");
-		Collection<String> foos = Collections.singletonList("baz");
+        // method call
+        expression = parser.parseExpression("setFoos(#foos)");
+        context.setVariable("foos", foos);
+        expression.getValue(context);
+        baz = root.getFoos().iterator().next();
+        assertThat(baz.value).isEqualTo("baz");
 
-		StandardEvaluationContext context = new StandardEvaluationContext(root);
+        // method call with result from method call
+        expression = parser.parseExpression("setFoos(getFoosAsStrings())");
+        expression.getValue(context);
+        baz = root.getFoos().iterator().next();
+        assertThat(baz.value).isEqualTo("baz");
 
-		// property access
-		Expression expression = parser.parseExpression("foos");
-		expression.setValue(context, foos);
-		Foo baz = root.getFoos().iterator().next();
-		assertThat(baz.value).isEqualTo("baz");
+        // method call with result from method call
+        expression = parser.parseExpression("setFoos(getFoosAsObjects())");
+        expression.getValue(context);
+        baz = root.getFoos().iterator().next();
+        assertThat(baz.value).isEqualTo("baz");
+    }
 
-		// method call
-		expression = parser.parseExpression("setFoos(#foos)");
-		context.setVariable("foos", foos);
-		expression.getValue(context);
-		baz = root.getFoos().iterator().next();
-		assertThat(baz.value).isEqualTo("baz");
+    /** Type converter that uses the core conversion service. */
+    private static class TypeConvertorUsingConversionService implements TypeConverter {
 
-		// method call with result from method call
-		expression = parser.parseExpression("setFoos(getFoosAsStrings())");
-		expression.getValue(context);
-		baz = root.getFoos().iterator().next();
-		assertThat(baz.value).isEqualTo("baz");
+        private final ConversionService service = new DefaultConversionService();
 
-		// method call with result from method call
-		expression = parser.parseExpression("setFoos(getFoosAsObjects())");
-		expression.getValue(context);
-		baz = root.getFoos().iterator().next();
-		assertThat(baz.value).isEqualTo("baz");
-	}
+        @Override
+        public boolean canConvert(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return this.service.canConvert(sourceType, targetType);
+        }
 
+        @Override
+        public Object convertValue(
+                Object value, TypeDescriptor sourceType, TypeDescriptor targetType)
+                throws EvaluationException {
+            return this.service.convert(value, sourceType, targetType);
+        }
+    }
 
-	/**
-	 * Type converter that uses the core conversion service.
-	 */
-	private static class TypeConvertorUsingConversionService implements TypeConverter {
+    public static class Foo {
 
-		private final ConversionService service = new DefaultConversionService();
+        public final String value;
 
-		@Override
-		public boolean canConvert(TypeDescriptor sourceType, TypeDescriptor targetType) {
-			return this.service.canConvert(sourceType, targetType);
-		}
+        private Collection<Foo> foos;
 
-		@Override
-		public Object convertValue(Object value, TypeDescriptor sourceType, TypeDescriptor targetType) throws EvaluationException {
-			return this.service.convert(value, sourceType, targetType);
-		}
-	}
+        public Foo(String value) {
+            this.value = value;
+        }
 
+        public Collection<Foo> getFoos() {
+            return this.foos;
+        }
 
-	public static class Foo {
+        public void setFoos(Collection<Foo> foos) {
+            this.foos = foos;
+        }
 
-		public final String value;
+        public Collection<String> getFoosAsStrings() {
+            return Collections.singletonList("baz");
+        }
 
-		private Collection<Foo> foos;
+        public Collection<?> getFoosAsObjects() {
+            return Collections.singletonList("baz");
+        }
+    }
 
-		public Foo(String value) {
-			this.value = value;
-		}
-
-		public void setFoos(Collection<Foo> foos) {
-			this.foos = foos;
-		}
-
-		public Collection<Foo> getFoos() {
-			return this.foos;
-		}
-
-		public Collection<String> getFoosAsStrings() {
-			return Collections.singletonList("baz");
-		}
-
-		public Collection<?> getFoosAsObjects() {
-			return Collections.singletonList("baz");
-		}
-	}
-
+    static {
+        listOfString.add("1");
+        listOfString.add("2");
+        listOfString.add("3");
+        listOfInteger.add(4);
+        listOfInteger.add(5);
+        listOfInteger.add(6);
+    }
 }

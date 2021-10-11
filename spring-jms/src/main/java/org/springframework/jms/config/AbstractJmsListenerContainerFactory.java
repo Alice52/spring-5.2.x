@@ -37,231 +37,183 @@ import org.springframework.util.ErrorHandler;
  * @param <C> the container type
  * @see AbstractMessageListenerContainer
  */
-public abstract class AbstractJmsListenerContainerFactory<C extends AbstractMessageListenerContainer>
-		implements JmsListenerContainerFactory<C> {
+public abstract class AbstractJmsListenerContainerFactory<
+                C extends AbstractMessageListenerContainer>
+        implements JmsListenerContainerFactory<C> {
 
-	protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	@Nullable
-	private ConnectionFactory connectionFactory;
+    @Nullable private ConnectionFactory connectionFactory;
 
-	@Nullable
-	private DestinationResolver destinationResolver;
+    @Nullable private DestinationResolver destinationResolver;
 
-	@Nullable
-	private MessageConverter messageConverter;
+    @Nullable private MessageConverter messageConverter;
 
-	@Nullable
-	private ExceptionListener exceptionListener;
+    @Nullable private ExceptionListener exceptionListener;
 
-	@Nullable
-	private ErrorHandler errorHandler;
+    @Nullable private ErrorHandler errorHandler;
 
-	@Nullable
-	private Boolean sessionTransacted;
+    @Nullable private Boolean sessionTransacted;
 
-	@Nullable
-	private Integer sessionAcknowledgeMode;
+    @Nullable private Integer sessionAcknowledgeMode;
 
-	@Nullable
-	private Boolean pubSubDomain;
+    @Nullable private Boolean pubSubDomain;
 
-	@Nullable
-	private Boolean replyPubSubDomain;
+    @Nullable private Boolean replyPubSubDomain;
 
-	@Nullable
-	private QosSettings replyQosSettings;
+    @Nullable private QosSettings replyQosSettings;
 
-	@Nullable
-	private Boolean subscriptionDurable;
+    @Nullable private Boolean subscriptionDurable;
 
-	@Nullable
-	private Boolean subscriptionShared;
+    @Nullable private Boolean subscriptionShared;
 
-	@Nullable
-	private String clientId;
+    @Nullable private String clientId;
 
-	@Nullable
-	private Integer phase;
+    @Nullable private Integer phase;
 
-	@Nullable
-	private Boolean autoStartup;
+    @Nullable private Boolean autoStartup;
 
+    /** @see AbstractMessageListenerContainer#setConnectionFactory(ConnectionFactory) */
+    public void setConnectionFactory(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
 
-	/**
-	 * @see AbstractMessageListenerContainer#setConnectionFactory(ConnectionFactory)
-	 */
-	public void setConnectionFactory(ConnectionFactory connectionFactory) {
-		this.connectionFactory = connectionFactory;
-	}
+    /** @see AbstractMessageListenerContainer#setDestinationResolver(DestinationResolver) */
+    public void setDestinationResolver(DestinationResolver destinationResolver) {
+        this.destinationResolver = destinationResolver;
+    }
 
-	/**
-	 * @see AbstractMessageListenerContainer#setDestinationResolver(DestinationResolver)
-	 */
-	public void setDestinationResolver(DestinationResolver destinationResolver) {
-		this.destinationResolver = destinationResolver;
-	}
+    /** @see AbstractMessageListenerContainer#setMessageConverter(MessageConverter) */
+    public void setMessageConverter(MessageConverter messageConverter) {
+        this.messageConverter = messageConverter;
+    }
 
-	/**
-	 * @see AbstractMessageListenerContainer#setMessageConverter(MessageConverter)
-	 */
-	public void setMessageConverter(MessageConverter messageConverter) {
-		this.messageConverter = messageConverter;
-	}
+    /**
+     * @since 5.2.8
+     * @see AbstractMessageListenerContainer#setExceptionListener(ExceptionListener)
+     */
+    public void setExceptionListener(ExceptionListener exceptionListener) {
+        this.exceptionListener = exceptionListener;
+    }
 
-	/**
-	 * @since 5.2.8
-	 * @see AbstractMessageListenerContainer#setExceptionListener(ExceptionListener)
-	 */
-	public void setExceptionListener(ExceptionListener exceptionListener) {
-		this.exceptionListener = exceptionListener;
-	}
+    /** @see AbstractMessageListenerContainer#setErrorHandler(ErrorHandler) */
+    public void setErrorHandler(ErrorHandler errorHandler) {
+        this.errorHandler = errorHandler;
+    }
 
-	/**
-	 * @see AbstractMessageListenerContainer#setErrorHandler(ErrorHandler)
-	 */
-	public void setErrorHandler(ErrorHandler errorHandler) {
-		this.errorHandler = errorHandler;
-	}
+    /** @see AbstractMessageListenerContainer#setSessionTransacted(boolean) */
+    public void setSessionTransacted(Boolean sessionTransacted) {
+        this.sessionTransacted = sessionTransacted;
+    }
 
-	/**
-	 * @see AbstractMessageListenerContainer#setSessionTransacted(boolean)
-	 */
-	public void setSessionTransacted(Boolean sessionTransacted) {
-		this.sessionTransacted = sessionTransacted;
-	}
+    /** @see AbstractMessageListenerContainer#setSessionAcknowledgeMode(int) */
+    public void setSessionAcknowledgeMode(Integer sessionAcknowledgeMode) {
+        this.sessionAcknowledgeMode = sessionAcknowledgeMode;
+    }
 
-	/**
-	 * @see AbstractMessageListenerContainer#setSessionAcknowledgeMode(int)
-	 */
-	public void setSessionAcknowledgeMode(Integer sessionAcknowledgeMode) {
-		this.sessionAcknowledgeMode = sessionAcknowledgeMode;
-	}
+    /** @see AbstractMessageListenerContainer#setPubSubDomain(boolean) */
+    public void setPubSubDomain(Boolean pubSubDomain) {
+        this.pubSubDomain = pubSubDomain;
+    }
 
-	/**
-	 * @see AbstractMessageListenerContainer#setPubSubDomain(boolean)
-	 */
-	public void setPubSubDomain(Boolean pubSubDomain) {
-		this.pubSubDomain = pubSubDomain;
-	}
+    /** @see AbstractMessageListenerContainer#setReplyPubSubDomain(boolean) */
+    public void setReplyPubSubDomain(Boolean replyPubSubDomain) {
+        this.replyPubSubDomain = replyPubSubDomain;
+    }
 
-	/**
-	 * @see AbstractMessageListenerContainer#setReplyPubSubDomain(boolean)
-	 */
-	public void setReplyPubSubDomain(Boolean replyPubSubDomain) {
-		this.replyPubSubDomain = replyPubSubDomain;
-	}
+    /** @see AbstractMessageListenerContainer#setReplyQosSettings(QosSettings) */
+    public void setReplyQosSettings(QosSettings replyQosSettings) {
+        this.replyQosSettings = replyQosSettings;
+    }
 
-	/**
-	 * @see AbstractMessageListenerContainer#setReplyQosSettings(QosSettings)
-	 */
-	public void setReplyQosSettings(QosSettings replyQosSettings) {
-		this.replyQosSettings = replyQosSettings;
-	}
+    /** @see AbstractMessageListenerContainer#setSubscriptionDurable(boolean) */
+    public void setSubscriptionDurable(Boolean subscriptionDurable) {
+        this.subscriptionDurable = subscriptionDurable;
+    }
 
-	/**
-	 * @see AbstractMessageListenerContainer#setSubscriptionDurable(boolean)
-	 */
-	public void setSubscriptionDurable(Boolean subscriptionDurable) {
-		this.subscriptionDurable = subscriptionDurable;
-	}
+    /** @see AbstractMessageListenerContainer#setSubscriptionShared(boolean) */
+    public void setSubscriptionShared(Boolean subscriptionShared) {
+        this.subscriptionShared = subscriptionShared;
+    }
 
-	/**
-	 * @see AbstractMessageListenerContainer#setSubscriptionShared(boolean)
-	 */
-	public void setSubscriptionShared(Boolean subscriptionShared) {
-		this.subscriptionShared = subscriptionShared;
-	}
+    /** @see AbstractMessageListenerContainer#setClientId(String) */
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
 
-	/**
-	 * @see AbstractMessageListenerContainer#setClientId(String)
-	 */
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
+    /** @see AbstractMessageListenerContainer#setPhase(int) */
+    public void setPhase(int phase) {
+        this.phase = phase;
+    }
 
-	/**
-	 * @see AbstractMessageListenerContainer#setPhase(int)
-	 */
-	public void setPhase(int phase) {
-		this.phase = phase;
-	}
+    /** @see AbstractMessageListenerContainer#setAutoStartup(boolean) */
+    public void setAutoStartup(boolean autoStartup) {
+        this.autoStartup = autoStartup;
+    }
 
-	/**
-	 * @see AbstractMessageListenerContainer#setAutoStartup(boolean)
-	 */
-	public void setAutoStartup(boolean autoStartup) {
-		this.autoStartup = autoStartup;
-	}
+    @Override
+    public C createListenerContainer(JmsListenerEndpoint endpoint) {
+        C instance = createContainerInstance();
 
+        if (this.connectionFactory != null) {
+            instance.setConnectionFactory(this.connectionFactory);
+        }
+        if (this.destinationResolver != null) {
+            instance.setDestinationResolver(this.destinationResolver);
+        }
+        if (this.messageConverter != null) {
+            instance.setMessageConverter(this.messageConverter);
+        }
+        if (this.exceptionListener != null) {
+            instance.setExceptionListener(this.exceptionListener);
+        }
+        if (this.errorHandler != null) {
+            instance.setErrorHandler(this.errorHandler);
+        }
+        if (this.sessionTransacted != null) {
+            instance.setSessionTransacted(this.sessionTransacted);
+        }
+        if (this.sessionAcknowledgeMode != null) {
+            instance.setSessionAcknowledgeMode(this.sessionAcknowledgeMode);
+        }
+        if (this.pubSubDomain != null) {
+            instance.setPubSubDomain(this.pubSubDomain);
+        }
+        if (this.replyPubSubDomain != null) {
+            instance.setReplyPubSubDomain(this.replyPubSubDomain);
+        }
+        if (this.replyQosSettings != null) {
+            instance.setReplyQosSettings(this.replyQosSettings);
+        }
+        if (this.subscriptionDurable != null) {
+            instance.setSubscriptionDurable(this.subscriptionDurable);
+        }
+        if (this.subscriptionShared != null) {
+            instance.setSubscriptionShared(this.subscriptionShared);
+        }
+        if (this.clientId != null) {
+            instance.setClientId(this.clientId);
+        }
+        if (this.phase != null) {
+            instance.setPhase(this.phase);
+        }
+        if (this.autoStartup != null) {
+            instance.setAutoStartup(this.autoStartup);
+        }
 
-	@Override
-	public C createListenerContainer(JmsListenerEndpoint endpoint) {
-		C instance = createContainerInstance();
+        initializeContainer(instance);
+        endpoint.setupListenerContainer(instance);
 
-		if (this.connectionFactory != null) {
-			instance.setConnectionFactory(this.connectionFactory);
-		}
-		if (this.destinationResolver != null) {
-			instance.setDestinationResolver(this.destinationResolver);
-		}
-		if (this.messageConverter != null) {
-			instance.setMessageConverter(this.messageConverter);
-		}
-		if (this.exceptionListener != null) {
-			instance.setExceptionListener(this.exceptionListener);
-		}
-		if (this.errorHandler != null) {
-			instance.setErrorHandler(this.errorHandler);
-		}
-		if (this.sessionTransacted != null) {
-			instance.setSessionTransacted(this.sessionTransacted);
-		}
-		if (this.sessionAcknowledgeMode != null) {
-			instance.setSessionAcknowledgeMode(this.sessionAcknowledgeMode);
-		}
-		if (this.pubSubDomain != null) {
-			instance.setPubSubDomain(this.pubSubDomain);
-		}
-		if (this.replyPubSubDomain != null) {
-			instance.setReplyPubSubDomain(this.replyPubSubDomain);
-		}
-		if (this.replyQosSettings != null) {
-			instance.setReplyQosSettings(this.replyQosSettings);
-		}
-		if (this.subscriptionDurable != null) {
-			instance.setSubscriptionDurable(this.subscriptionDurable);
-		}
-		if (this.subscriptionShared != null) {
-			instance.setSubscriptionShared(this.subscriptionShared);
-		}
-		if (this.clientId != null) {
-			instance.setClientId(this.clientId);
-		}
-		if (this.phase != null) {
-			instance.setPhase(this.phase);
-		}
-		if (this.autoStartup != null) {
-			instance.setAutoStartup(this.autoStartup);
-		}
+        return instance;
+    }
 
-		initializeContainer(instance);
-		endpoint.setupListenerContainer(instance);
+    /** Create an empty container instance. */
+    protected abstract C createContainerInstance();
 
-		return instance;
-	}
-
-	/**
-	 * Create an empty container instance.
-	 */
-	protected abstract C createContainerInstance();
-
-	/**
-	 * Further initialize the specified container.
-	 * <p>Subclasses can inherit from this method to apply extra
-	 * configuration if necessary.
-	 */
-	protected void initializeContainer(C instance) {
-	}
-
+    /**
+     * Further initialize the specified container.
+     *
+     * <p>Subclasses can inherit from this method to apply extra configuration if necessary.
+     */
+    protected void initializeContainer(C instance) {}
 }

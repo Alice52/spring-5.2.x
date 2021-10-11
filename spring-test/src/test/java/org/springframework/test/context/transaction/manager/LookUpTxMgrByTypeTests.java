@@ -30,8 +30,8 @@ import org.springframework.transaction.testfixture.CallCountingTransactionManage
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Integration tests that verify the behavior requested in
- * <a href="https://jira.spring.io/browse/SPR-9645">SPR-9645</a>.
+ * Integration tests that verify the behavior requested in <a
+ * href="https://jira.spring.io/browse/SPR-9645">SPR-9645</a>.
  *
  * @author Sam Brannen
  * @since 3.2
@@ -40,35 +40,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 class LookUpTxMgrByTypeTests {
 
-	@Autowired
-	CallCountingTransactionManager txManager;
+    @Autowired CallCountingTransactionManager txManager;
 
+    @Test
+    void transactionalTest() {
+        assertThat(txManager.begun).isEqualTo(1);
+        assertThat(txManager.inflight).isEqualTo(1);
+        assertThat(txManager.commits).isEqualTo(0);
+        assertThat(txManager.rollbacks).isEqualTo(0);
+    }
 
-	@Test
-	void transactionalTest() {
-		assertThat(txManager.begun).isEqualTo(1);
-		assertThat(txManager.inflight).isEqualTo(1);
-		assertThat(txManager.commits).isEqualTo(0);
-		assertThat(txManager.rollbacks).isEqualTo(0);
-	}
+    @AfterTransaction
+    void afterTransaction() {
+        assertThat(txManager.begun).isEqualTo(1);
+        assertThat(txManager.inflight).isEqualTo(0);
+        assertThat(txManager.commits).isEqualTo(0);
+        assertThat(txManager.rollbacks).isEqualTo(1);
+    }
 
-	@AfterTransaction
-	void afterTransaction() {
-		assertThat(txManager.begun).isEqualTo(1);
-		assertThat(txManager.inflight).isEqualTo(0);
-		assertThat(txManager.commits).isEqualTo(0);
-		assertThat(txManager.rollbacks).isEqualTo(1);
-	}
+    @Configuration
+    static class Config {
 
-
-	@Configuration
-	static class Config {
-
-		@Bean
-		PlatformTransactionManager txManager() {
-			return new CallCountingTransactionManager();
-		}
-
-	}
-
+        @Bean
+        PlatformTransactionManager txManager() {
+            return new CallCountingTransactionManager();
+        }
+    }
 }

@@ -23,35 +23,31 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Method-level annotation for integration tests that need to add properties with
- * dynamic values to the {@code Environment}'s set of {@code PropertySources}.
+ * Method-level annotation for integration tests that need to add properties with dynamic values to
+ * the {@code Environment}'s set of {@code PropertySources}.
  *
- * <p>This annotation and its supporting infrastructure were originally designed
- * to allow properties from
- * <a href="https://www.testcontainers.org/">Testcontainers</a> based tests to be
- * exposed easily to Spring integration tests. However, this feature may also be
- * used with any form of external resource whose lifecycle is maintained outside
- * the test's {@code ApplicationContext}.
+ * <p>This annotation and its supporting infrastructure were originally designed to allow properties
+ * from <a href="https://www.testcontainers.org/">Testcontainers</a> based tests to be exposed
+ * easily to Spring integration tests. However, this feature may also be used with any form of
+ * external resource whose lifecycle is maintained outside the test's {@code ApplicationContext}.
  *
- * <p>Methods annotated with {@code @DynamicPropertySource} must be {@code static}
- * and must have a single {@link DynamicPropertyRegistry} argument which is used
- * to add <em>name-value</em> pairs to the {@code Environment}'s set of
- * {@code PropertySources}. Values are dynamic and provided via a
- * {@link java.util.function.Supplier} which is only invoked when the property
- * is resolved. Typically, method references are used to supply values, as in the
- * following example.
+ * <p>Methods annotated with {@code @DynamicPropertySource} must be {@code static} and must have a
+ * single {@link DynamicPropertyRegistry} argument which is used to add <em>name-value</em> pairs to
+ * the {@code Environment}'s set of {@code PropertySources}. Values are dynamic and provided via a
+ * {@link java.util.function.Supplier} which is only invoked when the property is resolved.
+ * Typically, method references are used to supply values, as in the following example.
  *
  * <h3>Precedence</h3>
- * <p>Dynamic properties have higher precedence than those loaded from
- * {@link TestPropertySource @TestPropertySource}, the operating system's
- * environment, Java system properties, or property sources added by the
- * application declaratively by using
- * {@link org.springframework.context.annotation.PropertySource @PropertySource}
- * or programmatically. Thus, dynamic properties can be used to selectively
- * override properties loaded via {@code @TestPropertySource}, system property
- * sources, and application property sources.
+ *
+ * <p>Dynamic properties have higher precedence than those loaded from {@link
+ * TestPropertySource @TestPropertySource}, the operating system's environment, Java system
+ * properties, or property sources added by the application declaratively by using {@link
+ * org.springframework.context.annotation.PropertySource @PropertySource} or programmatically. Thus,
+ * dynamic properties can be used to selectively override properties loaded via
+ * {@code @TestPropertySource}, system property sources, and application property sources.
  *
  * <h3>Example</h3>
+ *
  * <pre class="code">
  * &#064;SpringJUnitConfig(...)
  * &#064;Testcontainers
@@ -81,5 +77,4 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface DynamicPropertySource {
-}
+public @interface DynamicPropertySource {}

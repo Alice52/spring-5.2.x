@@ -28,45 +28,43 @@ import org.springframework.core.type.MethodMetadata;
  */
 abstract class ConfigurationMethod {
 
-	protected final MethodMetadata metadata;
+    protected final MethodMetadata metadata;
 
-	protected final ConfigurationClass configurationClass;
+    protected final ConfigurationClass configurationClass;
 
+    public ConfigurationMethod(MethodMetadata metadata, ConfigurationClass configurationClass) {
+        this.metadata = metadata;
+        this.configurationClass = configurationClass;
+    }
 
-	public ConfigurationMethod(MethodMetadata metadata, ConfigurationClass configurationClass) {
-		this.metadata = metadata;
-		this.configurationClass = configurationClass;
-	}
+    static String getShortMethodName(String fullyQualifiedMethodName) {
+        return fullyQualifiedMethodName.substring(fullyQualifiedMethodName.indexOf('#') + 1);
+    }
 
+    public MethodMetadata getMetadata() {
+        return this.metadata;
+    }
 
-	public MethodMetadata getMetadata() {
-		return this.metadata;
-	}
+    public ConfigurationClass getConfigurationClass() {
+        return this.configurationClass;
+    }
 
-	public ConfigurationClass getConfigurationClass() {
-		return this.configurationClass;
-	}
+    public Location getResourceLocation() {
+        return new Location(this.configurationClass.getResource(), this.metadata);
+    }
 
-	public Location getResourceLocation() {
-		return new Location(this.configurationClass.getResource(), this.metadata);
-	}
+    String getFullyQualifiedMethodName() {
+        return this.metadata.getDeclaringClassName() + "#" + this.metadata.getMethodName();
+    }
 
-	String getFullyQualifiedMethodName() {
-		return this.metadata.getDeclaringClassName() + "#" + this.metadata.getMethodName();
-	}
+    public void validate(ProblemReporter problemReporter) {}
 
-	static String getShortMethodName(String fullyQualifiedMethodName) {
-		return fullyQualifiedMethodName.substring(fullyQualifiedMethodName.indexOf('#') + 1);
-	}
-
-	public void validate(ProblemReporter problemReporter) {
-	}
-
-
-	@Override
-	public String toString() {
-		return String.format("[%s:name=%s,declaringClass=%s]",
-				getClass().getSimpleName(), getMetadata().getMethodName(), getMetadata().getDeclaringClassName());
-	}
-
+    @Override
+    public String toString() {
+        return String.format(
+                "[%s:name=%s,declaringClass=%s]",
+                getClass().getSimpleName(),
+                getMetadata().getMethodName(),
+                getMetadata().getDeclaringClassName());
+    }
 }

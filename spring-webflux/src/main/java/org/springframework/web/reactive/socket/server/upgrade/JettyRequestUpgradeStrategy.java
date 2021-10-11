@@ -53,187 +53,184 @@ import org.springframework.web.server.ServerWebExchange;
  */
 public class JettyRequestUpgradeStrategy implements RequestUpgradeStrategy, Lifecycle {
 
-	private static final ThreadLocal<WebSocketHandlerContainer> adapterHolder =
-			new NamedThreadLocal<>("JettyWebSocketHandlerAdapter");
+    private static final ThreadLocal<WebSocketHandlerContainer> adapterHolder =
+            new NamedThreadLocal<>("JettyWebSocketHandlerAdapter");
 
+    private final Object lifecycleMonitor = new Object();
 
-	@Nullable
-	private WebSocketPolicy webSocketPolicy;
+    @Nullable private WebSocketPolicy webSocketPolicy;
 
-	@Nullable
-	private WebSocketServerFactory factory;
+    @Nullable private WebSocketServerFactory factory;
 
-	@Nullable
-	private volatile ServletContext servletContext;
+    @Nullable private volatile ServletContext servletContext;
 
-	private volatile boolean running = false;
+    private volatile boolean running = false;
 
-	private final Object lifecycleMonitor = new Object();
+    private static HttpServletRequest getNativeRequest(ServerHttpRequest request) {
+        if (request instanceof AbstractServerHttpRequest) {
+            return ((AbstractServerHttpRequest) request).getNativeRequest();
+        } else if (request instanceof ServerHttpRequestDecorator) {
+            return getNativeRequest(((ServerHttpRequestDecorator) request).getDelegate());
+        } else {
+            throw new IllegalArgumentException(
+                    "Couldn't find HttpServletRequest in " + request.getClass().getName());
+        }
+    }
 
+    private static HttpServletResponse getNativeResponse(ServerHttpResponse response) {
+        if (response instanceof AbstractServerHttpResponse) {
+            return ((AbstractServerHttpResponse) response).getNativeResponse();
+        } else if (response instanceof ServerHttpResponseDecorator) {
+            return getNativeResponse(((ServerHttpResponseDecorator) response).getDelegate());
+        } else {
+            throw new IllegalArgumentException(
+                    "Couldn't find HttpServletResponse in " + response.getClass().getName());
+        }
+    }
 
-	/**
-	 * Configure a {@link WebSocketPolicy} to use to initialize
-	 * {@link WebSocketServerFactory}.
-	 * @param webSocketPolicy the WebSocket settings
-	 */
-	public void setWebSocketPolicy(WebSocketPolicy webSocketPolicy) {
-		this.webSocketPolicy = webSocketPolicy;
-	}
+    /** Return the configured {@link WebSocketPolicy}, if any. */
+    @Nullable
+    public WebSocketPolicy getWebSocketPolicy() {
+        return this.webSocketPolicy;
+    }
 
-	/**
-	 * Return the configured {@link WebSocketPolicy}, if any.
-	 */
-	@Nullable
-	public WebSocketPolicy getWebSocketPolicy() {
-		return this.webSocketPolicy;
-	}
+    /**
+     * Configure a {@link WebSocketPolicy} to use to initialize {@link WebSocketServerFactory}.
+     *
+     * @param webSocketPolicy the WebSocket settings
+     */
+    public void setWebSocketPolicy(WebSocketPolicy webSocketPolicy) {
+        this.webSocketPolicy = webSocketPolicy;
+    }
 
+    @Override
+    public void start() {
+        synchronized (this.lifecycleMonitor) {
+            ServletContext servletContext = this.servletContext;
+            if (!isRunning() && servletContext != null) {
+                try {
+                    this.factory =
+                            (this.webSocketPolicy != null
+                                    ? new WebSocketServerFactory(
+                                            servletContext, this.webSocketPolicy)
+                                    : new WebSocketServerFactory(servletContext));
+                    this.factory.setCreator(
+                            (request, response) -> {
+                                WebSocketHandlerContainer container = adapterHolder.get();
+                                String protocol = container.getProtocol();
+                                if (protocol != null) {
+                                    response.setAcceptedSubProtocol(protocol);
+                                }
+                                return container.getAdapter();
+                            });
+                    this.factory.start();
+                    this.running = true;
+                } catch (Throwable ex) {
+                    throw new IllegalStateException("Unable to start WebSocketServerFactory", ex);
+                }
+            }
+        }
+    }
 
-	@Override
-	public void start() {
-		synchronized (this.lifecycleMonitor) {
-			ServletContext servletContext = this.servletContext;
-			if (!isRunning() && servletContext != null) {
-				try {
-					this.factory = (this.webSocketPolicy != null ?
-							new WebSocketServerFactory(servletContext, this.webSocketPolicy) :
-							new WebSocketServerFactory(servletContext));
-					this.factory.setCreator((request, response) -> {
-						WebSocketHandlerContainer container = adapterHolder.get();
-						String protocol = container.getProtocol();
-						if (protocol != null) {
-							response.setAcceptedSubProtocol(protocol);
-						}
-						return container.getAdapter();
-					});
-					this.factory.start();
-					this.running = true;
-				}
-				catch (Throwable ex) {
-					throw new IllegalStateException("Unable to start WebSocketServerFactory", ex);
-				}
-			}
-		}
-	}
+    @Override
+    public void stop() {
+        synchronized (this.lifecycleMonitor) {
+            if (isRunning()) {
+                if (this.factory != null) {
+                    try {
+                        this.factory.stop();
+                        this.running = false;
+                    } catch (Throwable ex) {
+                        throw new IllegalStateException(
+                                "Failed to stop WebSocketServerFactory", ex);
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public void stop() {
-		synchronized (this.lifecycleMonitor) {
-			if (isRunning()) {
-				if (this.factory != null) {
-					try {
-						this.factory.stop();
-						this.running = false;
-					}
-					catch (Throwable ex) {
-						throw new IllegalStateException("Failed to stop WebSocketServerFactory", ex);
-					}
-				}
-			}
-		}
-	}
+    @Override
+    public boolean isRunning() {
+        return this.running;
+    }
 
-	@Override
-	public boolean isRunning() {
-		return this.running;
-	}
+    @Override
+    public Mono<Void> upgrade(
+            ServerWebExchange exchange,
+            WebSocketHandler handler,
+            @Nullable String subProtocol,
+            Supplier<HandshakeInfo> handshakeInfoFactory) {
 
+        ServerHttpRequest request = exchange.getRequest();
+        ServerHttpResponse response = exchange.getResponse();
 
-	@Override
-	public Mono<Void> upgrade(ServerWebExchange exchange, WebSocketHandler handler,
-			@Nullable String subProtocol, Supplier<HandshakeInfo> handshakeInfoFactory) {
+        HttpServletRequest servletRequest = getNativeRequest(request);
+        HttpServletResponse servletResponse = getNativeResponse(response);
 
-		ServerHttpRequest request = exchange.getRequest();
-		ServerHttpResponse response = exchange.getResponse();
+        HandshakeInfo handshakeInfo = handshakeInfoFactory.get();
+        DataBufferFactory factory = response.bufferFactory();
 
-		HttpServletRequest servletRequest = getNativeRequest(request);
-		HttpServletResponse servletResponse = getNativeResponse(response);
+        JettyWebSocketHandlerAdapter adapter =
+                new JettyWebSocketHandlerAdapter(
+                        handler,
+                        session -> new JettyWebSocketSession(session, handshakeInfo, factory));
 
-		HandshakeInfo handshakeInfo = handshakeInfoFactory.get();
-		DataBufferFactory factory = response.bufferFactory();
+        startLazily(servletRequest);
 
-		JettyWebSocketHandlerAdapter adapter = new JettyWebSocketHandlerAdapter(
-				handler, session -> new JettyWebSocketSession(session, handshakeInfo, factory));
+        Assert.state(this.factory != null, "No WebSocketServerFactory available");
+        boolean isUpgrade = this.factory.isUpgradeRequest(servletRequest, servletResponse);
+        Assert.isTrue(isUpgrade, "Not a WebSocket handshake");
 
-		startLazily(servletRequest);
+        // Trigger WebFlux preCommit actions and upgrade
+        return exchange.getResponse()
+                .setComplete()
+                .then(
+                        Mono.fromCallable(
+                                () -> {
+                                    try {
+                                        adapterHolder.set(
+                                                new WebSocketHandlerContainer(
+                                                        adapter, subProtocol));
+                                        this.factory.acceptWebSocket(
+                                                servletRequest, servletResponse);
+                                    } finally {
+                                        adapterHolder.remove();
+                                    }
+                                    return null;
+                                }));
+    }
 
-		Assert.state(this.factory != null, "No WebSocketServerFactory available");
-		boolean isUpgrade = this.factory.isUpgradeRequest(servletRequest, servletResponse);
-		Assert.isTrue(isUpgrade, "Not a WebSocket handshake");
+    private void startLazily(HttpServletRequest request) {
+        if (isRunning()) {
+            return;
+        }
+        synchronized (this.lifecycleMonitor) {
+            if (!isRunning()) {
+                this.servletContext = request.getServletContext();
+                start();
+            }
+        }
+    }
 
-		// Trigger WebFlux preCommit actions and upgrade
-		return exchange.getResponse().setComplete()
-				.then(Mono.fromCallable(() -> {
-					try {
-						adapterHolder.set(new WebSocketHandlerContainer(adapter, subProtocol));
-						this.factory.acceptWebSocket(servletRequest, servletResponse);
-					}
-					finally {
-						adapterHolder.remove();
-					}
-					return null;
-				}));
-	}
+    private static class WebSocketHandlerContainer {
 
-	private static HttpServletRequest getNativeRequest(ServerHttpRequest request) {
-		if (request instanceof AbstractServerHttpRequest) {
-			return ((AbstractServerHttpRequest) request).getNativeRequest();
-		}
-		else if (request instanceof ServerHttpRequestDecorator) {
-			return getNativeRequest(((ServerHttpRequestDecorator) request).getDelegate());
-		}
-		else {
-			throw new IllegalArgumentException(
-					"Couldn't find HttpServletRequest in " + request.getClass().getName());
-		}
-	}
+        private final JettyWebSocketHandlerAdapter adapter;
 
-	private static HttpServletResponse getNativeResponse(ServerHttpResponse response) {
-		if (response instanceof AbstractServerHttpResponse) {
-			return ((AbstractServerHttpResponse) response).getNativeResponse();
-		}
-		else if (response instanceof ServerHttpResponseDecorator) {
-			return getNativeResponse(((ServerHttpResponseDecorator) response).getDelegate());
-		}
-		else {
-			throw new IllegalArgumentException(
-					"Couldn't find HttpServletResponse in " + response.getClass().getName());
-		}
-	}
+        @Nullable private final String protocol;
 
-	private void startLazily(HttpServletRequest request) {
-		if (isRunning()) {
-			return;
-		}
-		synchronized (this.lifecycleMonitor) {
-			if (!isRunning()) {
-				this.servletContext = request.getServletContext();
-				start();
-			}
-		}
-	}
+        public WebSocketHandlerContainer(
+                JettyWebSocketHandlerAdapter adapter, @Nullable String protocol) {
+            this.adapter = adapter;
+            this.protocol = protocol;
+        }
 
+        public JettyWebSocketHandlerAdapter getAdapter() {
+            return this.adapter;
+        }
 
-	private static class WebSocketHandlerContainer {
-
-		private final JettyWebSocketHandlerAdapter adapter;
-
-		@Nullable
-		private final String protocol;
-
-		public WebSocketHandlerContainer(JettyWebSocketHandlerAdapter adapter, @Nullable String protocol) {
-			this.adapter = adapter;
-			this.protocol = protocol;
-		}
-
-		public JettyWebSocketHandlerAdapter getAdapter() {
-			return this.adapter;
-		}
-
-		@Nullable
-		public String getProtocol() {
-			return this.protocol;
-		}
-	}
-
+        @Nullable
+        public String getProtocol() {
+            return this.protocol;
+        }
+    }
 }

@@ -18,24 +18,23 @@ package org.springframework.expression.spel.testresources;
 
 public class TestPerson {
 
-	private String name;
+    private String name;
 
-	private TestAddress address;
+    private TestAddress address;
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public TestAddress getAddress() {
-		return address;
-	}
+    public TestAddress getAddress() {
+        return address;
+    }
 
-	public void setAddress(TestAddress address) {
-		this.address = address;
-	}
-
+    public void setAddress(TestAddress address) {
+        this.address = address;
+    }
 }

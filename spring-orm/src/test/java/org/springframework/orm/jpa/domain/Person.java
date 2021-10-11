@@ -39,65 +39,72 @@ import org.springframework.context.ApplicationContext;
 @EntityListeners(PersonListener.class)
 public class Person {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
+    public transient ApplicationContext postLoaded;
 
-	private transient TestBean testBean;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
 
-	// Lazy relationship to force use of instrumentation in JPA implementation.
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "DRIVERS_LICENSE_ID")
-	private DriversLicense driversLicense;
+    private transient TestBean testBean;
 
-	private String first_name;
+    // Lazy relationship to force use of instrumentation in JPA implementation.
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "DRIVERS_LICENSE_ID")
+    private DriversLicense driversLicense;
 
-	@Basic(fetch = FetchType.LAZY)
-	private String last_name;
+    private String first_name;
 
-	public transient ApplicationContext postLoaded;
+    @Basic(fetch = FetchType.LAZY)
+    private String last_name;
 
+    public Integer getId() {
+        return id;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public TestBean getTestBean() {
+        return testBean;
+    }
 
-	public void setTestBean(TestBean testBean) {
-		this.testBean = testBean;
-	}
+    public void setTestBean(TestBean testBean) {
+        this.testBean = testBean;
+    }
 
-	public TestBean getTestBean() {
-		return testBean;
-	}
+    public String getFirstName() {
+        return this.first_name;
+    }
 
-	public void setFirstName(String firstName) {
-		this.first_name = firstName;
-	}
+    public void setFirstName(String firstName) {
+        this.first_name = firstName;
+    }
 
-	public String getFirstName() {
-		return this.first_name;
-	}
+    public String getLastName() {
+        return this.last_name;
+    }
 
-	public void setLastName(String lastName) {
-		this.last_name = lastName;
-	}
+    public void setLastName(String lastName) {
+        this.last_name = lastName;
+    }
 
-	public String getLastName() {
-		return this.last_name;
-	}
+    public DriversLicense getDriversLicense() {
+        return this.driversLicense;
+    }
 
-	public void setDriversLicense(DriversLicense driversLicense) {
-		this.driversLicense = driversLicense;
-	}
+    public void setDriversLicense(DriversLicense driversLicense) {
+        this.driversLicense = driversLicense;
+    }
 
-	public DriversLicense getDriversLicense() {
-		return this.driversLicense;
-	}
-
-	@Override
-	public String toString() {
-		return getClass().getName() + ":(" + hashCode() + ") id=" + id + "; firstName=" + first_name +
-				"; lastName=" + last_name + "; testBean=" + testBean;
-	}
-
+    @Override
+    public String toString() {
+        return getClass().getName()
+                + ":("
+                + hashCode()
+                + ") id="
+                + id
+                + "; firstName="
+                + first_name
+                + "; lastName="
+                + last_name
+                + "; testBean="
+                + testBean;
+    }
 }

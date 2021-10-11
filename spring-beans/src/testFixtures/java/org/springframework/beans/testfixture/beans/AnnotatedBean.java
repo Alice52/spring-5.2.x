@@ -16,9 +16,6 @@
 
 package org.springframework.beans.testfixture.beans;
 
-/**
- * @author Stephane Nicoll
- */
+/** @author Stephane Nicoll */
 @TestAnnotation
-public class AnnotatedBean {
-}
+public class AnnotatedBean {}

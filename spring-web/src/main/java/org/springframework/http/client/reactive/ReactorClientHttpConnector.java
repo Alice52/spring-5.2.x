@@ -40,92 +40,100 @@ import org.springframework.util.Assert;
  */
 public class ReactorClientHttpConnector implements ClientHttpConnector {
 
-	private final static Function<HttpClient, HttpClient> defaultInitializer = client -> client.compress(true);
+    private static final Function<HttpClient, HttpClient> defaultInitializer =
+            client -> client.compress(true);
 
+    private final HttpClient httpClient;
 
-	private final HttpClient httpClient;
+    /**
+     * Default constructor. Initializes {@link HttpClient} via:
+     *
+     * <pre class="code">
+     * HttpClient.create().compress()
+     * </pre>
+     */
+    public ReactorClientHttpConnector() {
+        this.httpClient = defaultInitializer.apply(HttpClient.create());
+    }
 
+    /**
+     * Constructor with externally managed Reactor Netty resources, including {@link LoopResources}
+     * for event loop threads, and {@link ConnectionProvider} for the connection pool.
+     *
+     * <p>This constructor should be used only when you don't want the client to participate in the
+     * Reactor Netty global resources. By default the client participates in the Reactor Netty
+     * global resources held in {@link reactor.netty.http.HttpResources}, which is recommended since
+     * fixed, shared resources are favored for event loop concurrency. However, consider declaring a
+     * {@link ReactorResourceFactory} bean with {@code globalResources=true} in order to ensure the
+     * Reactor Netty global resources are shut down when the Spring ApplicationContext is closed.
+     *
+     * @param factory the resource factory to obtain the resources from
+     * @param mapper a mapper for further initialization of the created client
+     * @since 5.1
+     */
+    public ReactorClientHttpConnector(
+            ReactorResourceFactory factory, Function<HttpClient, HttpClient> mapper) {
+        this.httpClient = defaultInitializer.andThen(mapper).apply(initHttpClient(factory));
+    }
 
-	/**
-	 * Default constructor. Initializes {@link HttpClient} via:
-	 * <pre class="code">
-	 * HttpClient.create().compress()
-	 * </pre>
-	 */
-	public ReactorClientHttpConnector() {
-		this.httpClient = defaultInitializer.apply(HttpClient.create());
-	}
+    /**
+     * Constructor with a pre-configured {@code HttpClient} instance.
+     *
+     * @param httpClient the client to use
+     * @since 5.1
+     */
+    public ReactorClientHttpConnector(HttpClient httpClient) {
+        Assert.notNull(httpClient, "HttpClient is required");
+        this.httpClient = httpClient;
+    }
 
-	/**
-	 * Constructor with externally managed Reactor Netty resources, including
-	 * {@link LoopResources} for event loop threads, and {@link ConnectionProvider}
-	 * for the connection pool.
-	 * <p>This constructor should be used only when you don't want the client
-	 * to participate in the Reactor Netty global resources. By default the
-	 * client participates in the Reactor Netty global resources held in
-	 * {@link reactor.netty.http.HttpResources}, which is recommended since
-	 * fixed, shared resources are favored for event loop concurrency. However,
-	 * consider declaring a {@link ReactorResourceFactory} bean with
-	 * {@code globalResources=true} in order to ensure the Reactor Netty global
-	 * resources are shut down when the Spring ApplicationContext is closed.
-	 * @param factory the resource factory to obtain the resources from
-	 * @param mapper a mapper for further initialization of the created client
-	 * @since 5.1
-	 */
-	public ReactorClientHttpConnector(ReactorResourceFactory factory, Function<HttpClient, HttpClient> mapper) {
-		this.httpClient = defaultInitializer.andThen(mapper).apply(initHttpClient(factory));
-	}
+    private static HttpClient initHttpClient(ReactorResourceFactory resourceFactory) {
+        ConnectionProvider provider = resourceFactory.getConnectionProvider();
+        LoopResources resources = resourceFactory.getLoopResources();
+        Assert.notNull(
+                provider, "No ConnectionProvider: is ReactorResourceFactory not initialized yet?");
+        Assert.notNull(
+                resources, "No LoopResources: is ReactorResourceFactory not initialized yet?");
+        return HttpClient.create(provider)
+                .tcpConfiguration(tcpClient -> tcpClient.runOn(resources));
+    }
 
-	private static HttpClient initHttpClient(ReactorResourceFactory resourceFactory) {
-		ConnectionProvider provider = resourceFactory.getConnectionProvider();
-		LoopResources resources = resourceFactory.getLoopResources();
-		Assert.notNull(provider, "No ConnectionProvider: is ReactorResourceFactory not initialized yet?");
-		Assert.notNull(resources, "No LoopResources: is ReactorResourceFactory not initialized yet?");
-		return HttpClient.create(provider).tcpConfiguration(tcpClient -> tcpClient.runOn(resources));
-	}
+    @Override
+    public Mono<ClientHttpResponse> connect(
+            HttpMethod method,
+            URI uri,
+            Function<? super ClientHttpRequest, Mono<Void>> requestCallback) {
 
-	/**
-	 * Constructor with a pre-configured {@code HttpClient} instance.
-	 * @param httpClient the client to use
-	 * @since 5.1
-	 */
-	public ReactorClientHttpConnector(HttpClient httpClient) {
-		Assert.notNull(httpClient, "HttpClient is required");
-		this.httpClient = httpClient;
-	}
+        if (!uri.isAbsolute()) {
+            return Mono.error(new IllegalArgumentException("URI is not absolute: " + uri));
+        }
 
+        AtomicReference<ReactorClientHttpResponse> responseRef = new AtomicReference<>();
 
-	@Override
-	public Mono<ClientHttpResponse> connect(HttpMethod method, URI uri,
-			Function<? super ClientHttpRequest, Mono<Void>> requestCallback) {
+        return this.httpClient
+                .request(io.netty.handler.codec.http.HttpMethod.valueOf(method.name()))
+                .uri(uri.toString())
+                .send(
+                        (request, outbound) ->
+                                requestCallback.apply(adaptRequest(method, uri, request, outbound)))
+                .responseConnection(
+                        (response, connection) -> {
+                            responseRef.set(new ReactorClientHttpResponse(response, connection));
+                            return Mono.just((ClientHttpResponse) responseRef.get());
+                        })
+                .next()
+                .doOnCancel(
+                        () -> {
+                            ReactorClientHttpResponse response = responseRef.get();
+                            if (response != null) {
+                                response.releaseAfterCancel(method);
+                            }
+                        });
+    }
 
-		if (!uri.isAbsolute()) {
-			return Mono.error(new IllegalArgumentException("URI is not absolute: " + uri));
-		}
+    private ReactorClientHttpRequest adaptRequest(
+            HttpMethod method, URI uri, HttpClientRequest request, NettyOutbound nettyOutbound) {
 
-		AtomicReference<ReactorClientHttpResponse> responseRef = new AtomicReference<>();
-
-		return this.httpClient
-				.request(io.netty.handler.codec.http.HttpMethod.valueOf(method.name()))
-				.uri(uri.toString())
-				.send((request, outbound) -> requestCallback.apply(adaptRequest(method, uri, request, outbound)))
-				.responseConnection((response, connection) -> {
-					responseRef.set(new ReactorClientHttpResponse(response, connection));
-					return Mono.just((ClientHttpResponse) responseRef.get());
-				})
-				.next()
-				.doOnCancel(() -> {
-					ReactorClientHttpResponse response = responseRef.get();
-					if (response != null) {
-						response.releaseAfterCancel(method);
-					}
-				});
-	}
-
-	private ReactorClientHttpRequest adaptRequest(HttpMethod method, URI uri, HttpClientRequest request,
-			NettyOutbound nettyOutbound) {
-
-		return new ReactorClientHttpRequest(method, uri, request, nettyOutbound);
-	}
-
+        return new ReactorClientHttpRequest(method, uri, request, nettyOutbound);
+    }
 }

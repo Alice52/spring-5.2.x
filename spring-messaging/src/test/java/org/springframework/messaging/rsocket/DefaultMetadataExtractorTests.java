@@ -46,174 +46,186 @@ import static org.springframework.util.MimeTypeUtils.TEXT_HTML;
 import static org.springframework.util.MimeTypeUtils.TEXT_PLAIN;
 import static org.springframework.util.MimeTypeUtils.TEXT_XML;
 
-
 /**
  * Unit tests for {@link DefaultMetadataExtractor}.
+ *
  * @author Rossen Stoyanchev
  */
 public class DefaultMetadataExtractorTests {
 
-	private static MimeType COMPOSITE_METADATA =
-			MimeTypeUtils.parseMimeType(WellKnownMimeType.MESSAGE_RSOCKET_COMPOSITE_METADATA.getString());
+    private static MimeType COMPOSITE_METADATA =
+            MimeTypeUtils.parseMimeType(
+                    WellKnownMimeType.MESSAGE_RSOCKET_COMPOSITE_METADATA.getString());
 
+    private RSocketStrategies strategies;
 
-	private RSocketStrategies strategies;
+    private DefaultMetadataExtractor extractor;
 
-	private DefaultMetadataExtractor extractor;
+    @BeforeEach
+    public void setUp() {
+        DataBufferFactory bufferFactory =
+                new LeakAwareNettyDataBufferFactory(PooledByteBufAllocator.DEFAULT);
+        this.strategies = RSocketStrategies.builder().dataBufferFactory(bufferFactory).build();
+        this.extractor = new DefaultMetadataExtractor(StringDecoder.allMimeTypes());
+    }
 
+    @AfterEach
+    public void tearDown() throws InterruptedException {
+        DataBufferFactory bufferFactory = this.strategies.dataBufferFactory();
+        ((LeakAwareNettyDataBufferFactory) bufferFactory).checkForLeaks(Duration.ofSeconds(5));
+    }
 
-	@BeforeEach
-	public void setUp() {
-		DataBufferFactory bufferFactory = new LeakAwareNettyDataBufferFactory(PooledByteBufAllocator.DEFAULT);
-		this.strategies = RSocketStrategies.builder().dataBufferFactory(bufferFactory).build();
-		this.extractor = new DefaultMetadataExtractor(StringDecoder.allMimeTypes());
-	}
+    @Test
+    public void compositeMetadataWithDefaultSettings() {
+        MetadataEncoder metadataEncoder =
+                new MetadataEncoder(COMPOSITE_METADATA, this.strategies)
+                        .route("toA")
+                        .metadata("text data", TEXT_PLAIN)
+                        .metadata("html data", TEXT_HTML)
+                        .metadata("xml data", TEXT_XML);
 
-	@AfterEach
-	public void tearDown() throws InterruptedException {
-		DataBufferFactory bufferFactory = this.strategies.dataBufferFactory();
-		((LeakAwareNettyDataBufferFactory) bufferFactory).checkForLeaks(Duration.ofSeconds(5));
-	}
+        DataBuffer metadata = metadataEncoder.encode().block();
+        Payload payload = createPayload(metadata);
+        Map<String, Object> result = this.extractor.extract(payload, COMPOSITE_METADATA);
+        payload.release();
 
+        assertThat(result).hasSize(1).containsEntry(ROUTE_KEY, "toA");
+    }
 
-	@Test
-	public void compositeMetadataWithDefaultSettings() {
-		MetadataEncoder metadataEncoder = new MetadataEncoder(COMPOSITE_METADATA, this.strategies)
-				.route("toA")
-				.metadata("text data", TEXT_PLAIN)
-				.metadata("html data", TEXT_HTML)
-				.metadata("xml data", TEXT_XML);
+    @Test
+    public void compositeMetadataWithMimeTypeRegistrations() {
+        this.extractor.metadataToExtract(TEXT_PLAIN, String.class, "text-entry");
+        this.extractor.metadataToExtract(TEXT_HTML, String.class, "html-entry");
+        this.extractor.metadataToExtract(TEXT_XML, String.class, "xml-entry");
 
-		DataBuffer metadata = metadataEncoder.encode().block();
-		Payload payload = createPayload(metadata);
-		Map<String, Object> result = this.extractor.extract(payload, COMPOSITE_METADATA);
-		payload.release();
+        MetadataEncoder metadataEncoder =
+                new MetadataEncoder(COMPOSITE_METADATA, this.strategies)
+                        .route("toA")
+                        .metadata("text data", TEXT_PLAIN)
+                        .metadata("html data", TEXT_HTML)
+                        .metadata("xml data", TEXT_XML);
 
-		assertThat(result).hasSize(1).containsEntry(ROUTE_KEY, "toA");
-	}
+        DataBuffer metadata = metadataEncoder.encode().block();
+        Payload payload = createPayload(metadata);
+        Map<String, Object> result = this.extractor.extract(payload, COMPOSITE_METADATA);
+        payload.release();
 
-	@Test
-	public void compositeMetadataWithMimeTypeRegistrations() {
-		this.extractor.metadataToExtract(TEXT_PLAIN, String.class, "text-entry");
-		this.extractor.metadataToExtract(TEXT_HTML, String.class, "html-entry");
-		this.extractor.metadataToExtract(TEXT_XML, String.class, "xml-entry");
+        assertThat(result)
+                .hasSize(4)
+                .containsEntry(ROUTE_KEY, "toA")
+                .containsEntry("text-entry", "text data")
+                .containsEntry("html-entry", "html data")
+                .containsEntry("xml-entry", "xml data");
+    }
 
-		MetadataEncoder metadataEncoder = new MetadataEncoder(COMPOSITE_METADATA, this.strategies)
-				.route("toA")
-				.metadata("text data", TEXT_PLAIN)
-				.metadata("html data", TEXT_HTML)
-				.metadata("xml data", TEXT_XML);
+    @Test
+    public void route() {
+        MimeType metaMimeType =
+                MimeTypeUtils.parseMimeType(WellKnownMimeType.MESSAGE_RSOCKET_ROUTING.getString());
+        MetadataEncoder metadataEncoder =
+                new MetadataEncoder(metaMimeType, this.strategies).route("toA");
+        DataBuffer metadata = metadataEncoder.encode().block();
+        Payload payload = createPayload(metadata);
+        Map<String, Object> result = this.extractor.extract(payload, metaMimeType);
+        payload.release();
 
-		DataBuffer metadata = metadataEncoder.encode().block();
-		Payload payload = createPayload(metadata);
-		Map<String, Object> result = this.extractor.extract(payload, COMPOSITE_METADATA);
-		payload.release();
+        assertThat(result).hasSize(1).containsEntry(ROUTE_KEY, "toA");
+    }
 
-		assertThat(result).hasSize(4)
-				.containsEntry(ROUTE_KEY, "toA")
-				.containsEntry("text-entry", "text data")
-				.containsEntry("html-entry", "html data")
-				.containsEntry("xml-entry", "xml data");
-	}
+    @Test
+    public void routeAsText() {
+        this.extractor.metadataToExtract(TEXT_PLAIN, String.class, ROUTE_KEY);
 
-	@Test
-	public void route() {
-		MimeType metaMimeType = MimeTypeUtils.parseMimeType(WellKnownMimeType.MESSAGE_RSOCKET_ROUTING.getString());
-		MetadataEncoder metadataEncoder = new MetadataEncoder(metaMimeType, this.strategies).route("toA");
-		DataBuffer metadata = metadataEncoder.encode().block();
-		Payload payload = createPayload(metadata);
-		Map<String, Object> result = this.extractor.extract(payload, metaMimeType);
-		payload.release();
+        MetadataEncoder metadataEncoder =
+                new MetadataEncoder(TEXT_PLAIN, this.strategies).route("toA");
+        DataBuffer metadata = metadataEncoder.encode().block();
+        Payload payload = createPayload(metadata);
+        Map<String, Object> result = this.extractor.extract(payload, TEXT_PLAIN);
+        payload.release();
 
-		assertThat(result).hasSize(1).containsEntry(ROUTE_KEY, "toA");
-	}
+        assertThat(result).hasSize(1).containsEntry(ROUTE_KEY, "toA");
+    }
 
-	@Test
-	public void routeAsText() {
-		this.extractor.metadataToExtract(TEXT_PLAIN, String.class, ROUTE_KEY);
+    @Test
+    public void routeWithCustomFormatting() {
+        this.extractor.metadataToExtract(
+                TEXT_PLAIN,
+                String.class,
+                (text, result) -> {
+                    String[] items = text.split(":");
+                    Assert.isTrue(items.length == 2, "Expected two items");
+                    result.put(ROUTE_KEY, items[0]);
+                    result.put("entry1", items[1]);
+                });
 
-		MetadataEncoder metadataEncoder = new MetadataEncoder(TEXT_PLAIN, this.strategies).route("toA");
-		DataBuffer metadata = metadataEncoder.encode().block();
-		Payload payload = createPayload(metadata);
-		Map<String, Object> result = this.extractor.extract(payload, TEXT_PLAIN);
-		payload.release();
+        MetadataEncoder encoder =
+                new MetadataEncoder(TEXT_PLAIN, this.strategies).metadata("toA:text data", null);
+        DataBuffer metadata = encoder.encode().block();
+        Payload payload = createPayload(metadata);
+        Map<String, Object> result = this.extractor.extract(payload, TEXT_PLAIN);
+        payload.release();
 
-		assertThat(result).hasSize(1).containsEntry(ROUTE_KEY, "toA");
-	}
+        assertThat(result)
+                .hasSize(2)
+                .containsEntry(ROUTE_KEY, "toA")
+                .containsEntry("entry1", "text data");
+    }
 
-	@Test
-	public void routeWithCustomFormatting() {
-		this.extractor.metadataToExtract(TEXT_PLAIN, String.class, (text, result) -> {
-			String[] items = text.split(":");
-			Assert.isTrue(items.length == 2, "Expected two items");
-			result.put(ROUTE_KEY, items[0]);
-			result.put("entry1", items[1]);
-		});
+    @Test
+    public void nonCompositeMetadataCanBeReadTwice() {
+        DefaultMetadataExtractor extractor = new DefaultMetadataExtractor(new TestDecoder());
+        extractor.metadataToExtract(TEXT_PLAIN, String.class, "name");
 
-		MetadataEncoder encoder = new MetadataEncoder(TEXT_PLAIN, this.strategies).metadata("toA:text data", null);
-		DataBuffer metadata = encoder.encode().block();
-		Payload payload = createPayload(metadata);
-		Map<String, Object> result = this.extractor.extract(payload, TEXT_PLAIN);
-		payload.release();
+        MetadataEncoder encoder =
+                new MetadataEncoder(TEXT_PLAIN, this.strategies).metadata("value", null);
+        DataBuffer metadata = encoder.encode().block();
+        Payload payload = createPayload(metadata);
 
-		assertThat(result).hasSize(2)
-				.containsEntry(ROUTE_KEY, "toA")
-				.containsEntry("entry1", "text data");
-	}
+        Map<String, Object> result = extractor.extract(payload, TEXT_PLAIN);
+        assertThat(result).hasSize(1).containsEntry("name", "value");
 
-	@Test
-	public void nonCompositeMetadataCanBeReadTwice() {
-		DefaultMetadataExtractor extractor = new DefaultMetadataExtractor(new TestDecoder());
-		extractor.metadataToExtract(TEXT_PLAIN, String.class, "name");
+        result = extractor.extract(payload, TEXT_PLAIN);
+        assertThat(result).hasSize(1).containsEntry("name", "value");
 
-		MetadataEncoder encoder = new MetadataEncoder(TEXT_PLAIN, this.strategies).metadata("value", null);
-		DataBuffer metadata = encoder.encode().block();
-		Payload payload = createPayload(metadata);
+        payload.release();
+    }
 
-		Map<String, Object> result = extractor.extract(payload, TEXT_PLAIN);
-		assertThat(result).hasSize(1).containsEntry("name", "value");
+    @Test
+    public void noDecoder() {
+        DefaultMetadataExtractor extractor =
+                new DefaultMetadataExtractor(Collections.singletonList(new ByteArrayDecoder()));
 
-		result = extractor.extract(payload, TEXT_PLAIN);
-		assertThat(result).hasSize(1).containsEntry("name", "value");
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> extractor.metadataToExtract(TEXT_PLAIN, String.class, "key"))
+                .withMessage("No decoder for text/plain and java.lang.String");
+    }
 
-		payload.release();
-	}
+    private Payload createPayload(DataBuffer metadata) {
+        return PayloadUtils.createPayload(
+                this.strategies.dataBufferFactory().allocateBuffer(), metadata);
+    }
 
-	@Test
-	public void noDecoder() {
-		DefaultMetadataExtractor extractor =
-				new DefaultMetadataExtractor(Collections.singletonList(new ByteArrayDecoder())
-		);
+    /**
+     * Like StringDecoder but consumes the reader index in order to prove that extraction uses a
+     * slice and can be read twice.
+     */
+    private static class TestDecoder extends AbstractDataBufferDecoder<String> {
 
-		assertThatIllegalArgumentException()
-				.isThrownBy(() -> extractor.metadataToExtract(TEXT_PLAIN, String.class, "key"))
-				.withMessage("No decoder for text/plain and java.lang.String");
-	}
+        public TestDecoder() {
+            super(TEXT_PLAIN);
+        }
 
+        @Override
+        public String decode(
+                DataBuffer dataBuffer,
+                ResolvableType elementType,
+                @Nullable MimeType mimeType,
+                @Nullable Map<String, Object> hints) {
 
-	private Payload createPayload(DataBuffer metadata) {
-		return PayloadUtils.createPayload(this.strategies.dataBufferFactory().allocateBuffer(), metadata);
-	}
-
-
-	/**
-	 * Like StringDecoder but consumes the reader index in order to prove that
-	 * extraction uses a slice and can be read twice.
-	 */
-	private static class TestDecoder extends AbstractDataBufferDecoder<String> {
-
-		public TestDecoder() {
-			super(TEXT_PLAIN);
-		}
-
-		@Override
-		public String decode(DataBuffer dataBuffer, ResolvableType elementType,
-				@Nullable MimeType mimeType, @Nullable Map<String, Object> hints) {
-
-			byte[] bytes = new byte[dataBuffer.readableByteCount()];
-			dataBuffer.read(bytes);
-			DataBufferUtils.release(dataBuffer);
-			return new String(bytes, StandardCharsets.UTF_8);
-		}
-	}
+            byte[] bytes = new byte[dataBuffer.readableByteCount()];
+            dataBuffer.read(bytes);
+            DataBufferUtils.release(dataBuffer);
+            return new String(bytes, StandardCharsets.UTF_8);
+        }
+    }
 }

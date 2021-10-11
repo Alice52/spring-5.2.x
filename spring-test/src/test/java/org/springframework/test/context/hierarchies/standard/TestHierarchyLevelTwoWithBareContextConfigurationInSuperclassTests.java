@@ -35,46 +35,39 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @ContextHierarchy(@ContextConfiguration)
-class TestHierarchyLevelTwoWithBareContextConfigurationInSuperclassTests extends
-		TestHierarchyLevelOneWithBareContextConfigurationInSuperclassTests {
+class TestHierarchyLevelTwoWithBareContextConfigurationInSuperclassTests
+        extends TestHierarchyLevelOneWithBareContextConfigurationInSuperclassTests {
 
-	@Configuration
-	static class Config {
+    @Autowired private String foo;
 
-		@Bean
-		String foo() {
-			return "foo-level-2";
-		}
+    @Autowired private String bar;
 
-		@Bean
-		String baz() {
-			return "baz";
-		}
-	}
+    @Autowired private String baz;
 
+    @Autowired private ApplicationContext context;
 
-	@Autowired
-	private String foo;
+    @Test
+    @Override
+    void loadContextHierarchy() {
+        assertThat(context).as("child ApplicationContext").isNotNull();
+        assertThat(context.getParent()).as("parent ApplicationContext").isNotNull();
+        assertThat(context.getParent().getParent()).as("grandparent ApplicationContext").isNull();
+        assertThat(foo).isEqualTo("foo-level-2");
+        assertThat(bar).isEqualTo("bar");
+        assertThat(baz).isEqualTo("baz");
+    }
 
-	@Autowired
-	private String bar;
+    @Configuration
+    static class Config {
 
-	@Autowired
-	private String baz;
+        @Bean
+        String foo() {
+            return "foo-level-2";
+        }
 
-	@Autowired
-	private ApplicationContext context;
-
-
-	@Test
-	@Override
-	void loadContextHierarchy() {
-		assertThat(context).as("child ApplicationContext").isNotNull();
-		assertThat(context.getParent()).as("parent ApplicationContext").isNotNull();
-		assertThat(context.getParent().getParent()).as("grandparent ApplicationContext").isNull();
-		assertThat(foo).isEqualTo("foo-level-2");
-		assertThat(bar).isEqualTo("bar");
-		assertThat(baz).isEqualTo("baz");
-	}
-
+        @Bean
+        String baz() {
+            return "baz";
+        }
+    }
 }
