@@ -271,7 +271,7 @@ public abstract class AbstractAopProxyTests {
     }
 
     /**
-     * Check that the two MethodInvocations necessary are independent and don't conflict. Check also
+     * MockWebSessionCheck that the two MethodInvocations necessary are independent and don't conflict. Check also
      * proxy exposure.
      */
     @Test
@@ -1136,17 +1136,7 @@ public abstract class AbstractAopProxyTests {
 
         /** Changes the name, then changes it back. */
         MethodInterceptor nameReverter =
-                new         class NameSaver implements MethodInterceptor {
-            private List<Object> names = new LinkedList<>();
-
-            @Override
-            public Object invoke(MethodInvocation mi) throws Throwable {
-                names.add(mi.getArguments()[0]);
-                return mi.proceed();
-            }
-        };
-
-MethodInterceptor() {
+                new MethodInterceptor() {
                     @Override
                     public Object invoke(MethodInvocation mi) throws Throwable {
                         MethodInvocation clone = ((ReflectiveMethodInvocation) mi).invocableClone();
@@ -1157,7 +1147,17 @@ MethodInterceptor() {
                         mi.proceed();
                         return clone.proceed();
                     }
-                }
+                };
+
+        class NameSaver implements MethodInterceptor {
+            private List<Object> names = new LinkedList<>();
+
+            @Override
+            public Object invoke(MethodInvocation mi) throws Throwable {
+                names.add(mi.getArguments()[0]);
+                return mi.proceed();
+            }
+        }
 
         NameSaver saver = new NameSaver();
 
@@ -1587,28 +1587,6 @@ MethodInterceptor() {
         assertThat(th.getCalls("remoteException")).isEqualTo(1);
     }
 
-    public interface INeedsToSeeProxy {
-
-        int getCount();
-
-        void incrementViaThis();
-
-        void incrementViaProxy();
-
-        void increment();
-    }
-
-    public static interface IOverloads {
-
-        void overload();
-
-        int overload(int i);
-
-        String overload(String foo);
-
-        void noAdvice();
-    }
-
     private static class CheckMethodInvocationIsSameInAndOutInterceptor
             implements MethodInterceptor {
 
@@ -1804,6 +1782,17 @@ MethodInterceptor() {
         public void absquatulate() {}
     }
 
+    public interface INeedsToSeeProxy {
+
+        int getCount();
+
+        void incrementViaThis();
+
+        void incrementViaProxy();
+
+        void increment();
+    }
+
     public static class NeedsToSeeProxy implements INeedsToSeeProxy {
 
         private int count;
@@ -1881,6 +1870,17 @@ MethodInterceptor() {
         }
     }
 
+    public static interface IOverloads {
+
+        void overload();
+
+        int overload(int i);
+
+        String overload(String foo);
+
+        void noAdvice();
+    }
+
     public static class Overloads implements IOverloads {
 
         @Override
@@ -1948,15 +1948,19 @@ MethodInterceptor() {
 
     static class MockTargetSource implements TargetSource {
 
+        private Object target;
+
         public int gets;
 
         public int releases;
 
-        private Object target;
-
         public void reset() {
             this.target = null;
             gets = releases = 0;
+        }
+
+        public void setTarget(Object target) {
+            this.target = target;
         }
 
         /** @see org.springframework.aop.TargetSource#getTargetClass() */
@@ -1970,10 +1974,6 @@ MethodInterceptor() {
         public Object getTarget() throws Exception {
             ++gets;
             return target;
-        }
-
-        public void setTarget(Object target) {
-            this.target = target;
         }
 
         /** @see org.springframework.aop.TargetSource#releaseTarget(java.lang.Object) */
