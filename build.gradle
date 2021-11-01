@@ -321,6 +321,7 @@ configure([rootProject] + javaProjects) { project ->
 		}
 	}
 
+	test.enabled = false
 	test {
 		useJUnitPlatform()
 		include(["**/*TestsZ.class", "**/*TestZ.class"])
@@ -389,6 +390,7 @@ configure(rootProject) {
 	apply from: "${rootDir}/gradle/publications.gradle"
 	apply from: "${rootDir}/gradle/docs.gradle"
 
+	test.enabled = false
 	nohttp {
 		source.exclude "**/test-output/**"
 		allowlistFile = project.file("src/nohttp/allowlist.lines")
