@@ -3,8 +3,13 @@
 1. pre-knowledge
 
 ```mermaid
-graph LR
-前置知识 --> 设计模式 & 数据结构 & 算法 & 反射 & 多线程 & jvm
+graph LR;
+前置知识 --> 设计模式
+前置知识 --> 数据结构
+前置知识 --> 算法
+前置知识 --> 反射
+前置知识 --> 多线程
+前置知识 --> jvm
 ```
 
 2. 注意点
@@ -16,6 +21,7 @@ graph LR
    - **画图: 时序图, 类图, 结构图**
 
    ```mermaid
-   graph LR
-   spring --> IOC & AOP
+   graph LR;
+   spring --> IOC
+   spring --> AOP
    ```
