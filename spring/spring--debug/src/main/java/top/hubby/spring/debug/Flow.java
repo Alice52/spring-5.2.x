@@ -1,22 +1,15 @@
 package top.hubby.spring.debug;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author zack <br>
  * @create 2021-11-01 22:07 <br>
  * @project spring <br>
  */
-@Slf4j
 public class Flow {
+    private static final Logger log = LoggerFactory.getLogger(Flow.class);
 
-    public static void main(String[] args) {
-
-        ApplicationContext ac = new ClassPathXmlApplicationContext("application.xml");
-        Object zack = ac.getBean("person4LifeCycle");
-
-        log.info("{}", zack);
-    }
+    public static void main(String[] args) {}
 }
