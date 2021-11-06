@@ -4,6 +4,7 @@ dependencies {
     compile(project(":spring-context")) {
         exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
     }
+    compile(project(":kotlin-coroutines"))
     compile 'cn.hutool:hutool-all:5.2.0'
     compile 'org.slf4j:slf4j-api:1.7.25'
     implementation 'ch.qos.logback:logback-classic:1.2.3'
