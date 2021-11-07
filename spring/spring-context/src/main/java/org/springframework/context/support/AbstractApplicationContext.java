@@ -173,6 +173,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
     private final Set<ApplicationListener<?>> applicationListeners = new LinkedHashSet<>();
 
     /** Unique id for this context, if any. */
+    // 分配一个唯一容器ID: DefaultListableBeanFactory 序列化时有使用到
     private String id = ObjectUtils.identityToString(this);
 
     /** Display name. */
@@ -210,6 +211,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
     /** Create a new AbstractApplicationContext with no parent. */
     public AbstractApplicationContext() {
+        // 资源模式处理器: 用来解析系统运行时需要解析的资源[配置文件]
         this.resourcePatternResolver = getResourcePatternResolver();
     }
 
@@ -590,8 +592,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
      * <pre>
      *    1. 设置容器创建时间
      *    2. 设置关闭和活跃标志位
-     *    3. 获取环境对象
-     *    4. 设置监听器和事件的集合对象
+     *    3. 创建并初始化环境对象 Environment
+     *    4. 准备监听器和事件的集合对象: 默认是空集合
      * </pre>
      *
      * Prepare this context for refreshing, setting its startup date and active flag as well as
@@ -612,23 +614,28 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
         }
 
         // Initialize any placeholder property sources in the context environment.
+        // 子类重写, 初始化属性资源, 比如 WebApplicationContextUtils 就重写了
         initPropertySources();
 
         // Validate that all properties marked as required are resolvable:
         // see ConfigurablePropertyResolver#setRequiredProperties
+        // 创建并获取环境对象, 验证必要属性的存在
         getEnvironment().validateRequiredProperties();
 
         // 存储预刷新的监听器: 为了扩展[spring boot]
         if (this.earlyApplicationListeners == null) {
+            // earlyApplicationListeners 刷新之前的
             this.earlyApplicationListeners = new LinkedHashSet<>(this.applicationListeners);
         } else {
             // Reset local application listeners to pre-refresh state.
+            // applicationListeners 是创建过程中的
             this.applicationListeners.clear();
             this.applicationListeners.addAll(this.earlyApplicationListeners);
         }
 
         // Allow for the collection of early ApplicationEvents,
         // to be published once the multicaster is available...
+        // 创建刷新前监听事件的集合
         this.earlyApplicationEvents = new LinkedHashSet<>();
     }
 
@@ -651,6 +658,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
      * @see #getBeanFactory()
      */
     protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+        // 初始化 BeanFactory, 读取 XML 获取 BeanDefinition 信息设置到 BeanFactory
         refreshBeanFactory();
         return getBeanFactory();
     }

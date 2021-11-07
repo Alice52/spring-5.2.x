@@ -25,7 +25,7 @@ public class BeanDefinitionReaderSample {
 
         // 装载构建 bean 定义: resource-loader && location
         DefaultResourceLoader loader = new DefaultResourceLoader();
-        xmlBeanDefinitionReader.loadBeanDefinitions(loader.getResource("beans.xml"));
+        xmlBeanDefinitionReader.loadBeanDefinitions(loader.getResource("beans-${username}.xml"));
 
         // org.springframework.context.annotation.internalCommonAnnotationProcessor
         // org.springframework.context.event.internalEventListenerProcessor

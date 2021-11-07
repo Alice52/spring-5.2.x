@@ -142,7 +142,18 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
             String[] configLocations, boolean refresh, @Nullable ApplicationContext parent)
             throws BeansException {
 
+        /**
+         * 调用父类构造函数, 初始化相关属性
+         *
+         * <pre>
+         *   1. 创建资源模式处理器 <br>
+         *   2. 为容器分配一个全局的ID, 可以参与后面的 BeanFactory 属性初始化[DLBF序列化]
+         *   3. 初始化 active, closed, 锁 等相关属性
+         *   4. 设置父容器对象[如果有的话], 并合并 Environment[如果可以的话]
+         * </pre>
+         */
         super(parent);
+        // 创建 Environment 并初始化相关属性, 及解析 location 中的 placeholder
         setConfigLocations(configLocations);
         if (refresh) {
             refresh();

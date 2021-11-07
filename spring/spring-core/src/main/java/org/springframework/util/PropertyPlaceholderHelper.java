@@ -123,6 +123,7 @@ public class PropertyPlaceholderHelper {
         return parseStringValue(value, placeholderResolver, null);
     }
 
+    // bean-${user-${za}} 也是可以的
     protected String parseStringValue(
             String value,
             PlaceholderResolver placeholderResolver,

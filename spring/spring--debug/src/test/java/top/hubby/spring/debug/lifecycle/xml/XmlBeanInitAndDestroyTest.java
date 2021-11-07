@@ -2,11 +2,11 @@ package top.hubby.spring.debug.lifecycle.xml;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import top.hubby.spring.debug.common.model.Person;
+import top.hubby.spring.debug.extension.CustomClassPathXmlApplicationContext;
 
 import java.util.Map;
 
@@ -18,7 +18,7 @@ import java.util.Map;
 @Slf4j
 public class XmlBeanInitAndDestroyTest {
 
-    ApplicationContext ac = new ClassPathXmlApplicationContext("beans.xml");
+    ApplicationContext ac = new CustomClassPathXmlApplicationContext("beans.xml");
 
     @Test
     public void testBeanInitAndDestroy() {
