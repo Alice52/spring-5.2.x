@@ -106,6 +106,9 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
     }
 
     /**
+     * 1. 如果存在则销毁重新创建 <br>
+     * 2. 创建 DefaultListableBeanFactory: 设置序列化 & BeanDefinitionOverriding & CircularReferences <br>
+     * 3. 加载解析配置文件: loadBeanDefinitions <br>
      * This implementation performs an actual refresh of this context's underlying bean factory,
      * shutting down the previous bean factory (if any) and initializing a fresh bean factory for
      * the next phase of the context's lifecycle.

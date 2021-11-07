@@ -1319,7 +1319,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport
     }
 
     /**
-     * Return a merged RootBeanDefinition, traversing the parent bean definition if the specified
+     * 将父类和子类的属性合并一下: 使用子类BeanDefinition[有些属性是继承父类的]
+     *
+     * <p>Return a merged RootBeanDefinition, traversing the parent bean definition if the specified
      * bean corresponds to a child bean definition.
      *
      * @param beanName the name of the bean to retrieve the merged definition for

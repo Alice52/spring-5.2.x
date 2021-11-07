@@ -1,5 +1,6 @@
 package top.hubby.spring.debug.lifecycle.xml;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +15,9 @@ import java.util.Map;
  * @create 2021-11-04 22:45 <br>
  * @project spring <br>
  */
+@Slf4j
 public class XmlBeanInitAndDestroyTest {
 
-    private static final Logger log = LoggerFactory.getLogger(XmlBeanInitAndDestroyTest.class);
     ApplicationContext ac = new ClassPathXmlApplicationContext("beans.xml");
 
     @Test
