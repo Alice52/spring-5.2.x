@@ -122,10 +122,14 @@ public abstract class AbstractXmlApplicationContext
      */
     protected void loadBeanDefinitions(XmlBeanDefinitionReader reader)
             throws BeansException, IOException {
+        // 以 Resource 的方式获取配置文件的资源位置: 一般是不会走进来的
+        // public ClassPathXmlApplicationContext(paths, clazz, ApplicationContext parent)
         Resource[] configResources = getConfigResources();
         if (configResources != null) {
             reader.loadBeanDefinitions(configResources);
         }
+
+        // 以 String 的方式获取配置文件的位置: refresh 之前有设置过[ClassPathXmlApplicationContext]
         String[] configLocations = getConfigLocations();
         if (configLocations != null) {
             reader.loadBeanDefinitions(configLocations);

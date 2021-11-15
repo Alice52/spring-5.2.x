@@ -234,6 +234,9 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
      * @see org.springframework.beans.factory.support.PropertiesBeanDefinitionReader
      * @see org.springframework.beans.factory.xml.XmlBeanDefinitionReader
      */
-    protected abstract void loadBeanDefinitions(DefaultListableBeanFactory beanFactory)
+    protected abstract void
+
+
+    loadBeanDefinitions(DefaultListableBeanFactory beanFactory)
             throws BeansException, IOException;
 }
