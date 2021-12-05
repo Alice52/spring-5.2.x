@@ -2,7 +2,6 @@ package top.hubby.spring.debug.extension;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -43,6 +42,7 @@ public class CustomClassPathXmlApplicationContext extends ClassPathXmlApplicatio
 
         /**
          * AllowBeanDefinitionOverriding
+         *
          * <pre>
          *    1. <lookup-method/> & <replace-method/>
          *    2. 允许 BeanDefinition 的重写
@@ -51,6 +51,7 @@ public class CustomClassPathXmlApplicationContext extends ClassPathXmlApplicatio
         beanFactory.setAllowBeanDefinitionOverriding(false);
         /**
          * AllowCircularReferences
+         *
          * <pre>
          *    1. 是否自动解决循环依赖
          * </pre>

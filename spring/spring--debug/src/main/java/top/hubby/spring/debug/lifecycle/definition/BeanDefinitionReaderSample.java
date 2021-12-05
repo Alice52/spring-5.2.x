@@ -1,12 +1,11 @@
 package top.hubby.spring.debug.lifecycle.definition;
 
-import java.util.Arrays;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.DefaultResourceLoader;
+
+import java.util.Arrays;
 
 /**
  * @author zack <br>
