@@ -1,0 +1,610 @@
+<svg host="65bd71144e"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1481px" height="1011px" viewBox="-0.5 -0.5 1481 1011" content="&lt;mxfile&gt;&lt;diagram id=&quot;Rr0s0ncod6BsEx-Vm_TL&quot; name=&quot;Page-1&quot;&gt;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&lt;/diagram&gt;&lt;/mxfile&gt;">
+  <defs/>
+  <g>
+    <path d="M 375 190 L 375 230 L 675 230 L 675 263.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    <path d="M 675 268.88 L 671.5 261.88 L 675 263.63 L 678.5 261.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 1px; height: 1px; padding-top: 231px; margin-left: 501px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 11px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; background-color: #ffffff; white-space: nowrap; ">
+                                需要验证授权
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="501" y="234" fill="#000000" font-family="Helvetica" font-size="11px" text-anchor="middle">
+                    需要验证授权
+        </text>
+      </switch>
+    </g>
+    <path d="M 375 190 L 375 230 L 80 230 L 80 990 L 113.63 990" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    <path d="M 118.88 990 L 111.88 993.5 L 113.63 990 L 111.88 986.5 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 1px; height: 1px; padding-top: 231px; margin-left: 161px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 11px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; background-color: #ffffff; white-space: nowrap; ">
+                                不要验证授权
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="161" y="234" fill="#000000" font-family="Helvetica" font-size="11px" text-anchor="middle">
+                    不要验证授权
+        </text>
+      </switch>
+    </g>
+    <rect x="100" y="150" width="550" height="40" rx="6" ry="6" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 548px; height: 1px; padding-top: 170px; margin-left: 101px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <pre style="background-color: #ffffff ; color: #080808 ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt"></pre>
+                <pre style="background-color: rgb(255 , 255 , 255) ; color: rgb(8 , 8 , 8) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                  <span style="color: rgb(0 , 0 , 0)">
+                                        AbstractAuthenticationProcessingFilter#
+                  </span>
+                                    requiresAuthentication
+                </pre>
+                <span style="color: rgba(0 , 0 , 0 , 0) ; font-family: monospace ; font-size: 0px"></span>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="375" y="174" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    AbstractAuthenticationProcessingFilter#requiresAuthentication
+        </text>
+      </switch>
+    </g>
+    <path d="M 675 310 L 675 353.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    <path d="M 675 358.88 L 671.5 351.88 L 675 353.63 L 678.5 351.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+    <rect x="400" y="270" width="550" height="40" rx="6" ry="6" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 548px; height: 1px; padding-top: 290px; margin-left: 401px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <pre style="background-color: #ffffff ; color: #080808 ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                  <span style="color: #000000">
+                                        AbstractAuthenticationProcessingFilter#
+                  </span>
+                                    attemptAuthentication
+                </pre>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="675" y="294" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    AbstractAuthenticationProcessingFilter#attemptAuthentication
+        </text>
+      </switch>
+    </g>
+    <path d="M 960 270 L 1043.63 270" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    <path d="M 1048.88 270 L 1041.88 273.5 L 1043.63 270 L 1041.88 266.5 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+    <rect x="840" y="260" width="120" height="20" fill="none" stroke="none" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 270px; margin-left: 841px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                抽象方法, 子类实现
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="900" y="274" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    抽象方法, 子类实现
+        </text>
+      </switch>
+    </g>
+    <rect x="120" y="970" width="930" height="40" rx="6" ry="6" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 928px; height: 1px; padding-top: 990px; margin-left: 121px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                Rest API
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="585" y="994" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    Rest API
+        </text>
+      </switch>
+    </g>
+    <rect x="0" y="0" width="150" height="30" fill="none" stroke="none" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 148px; height: 1px; padding-top: 15px; margin-left: 1px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <b>
+                  <font style="font-size: 14px">
+                                        grant_type: pasword
+                  </font>
+                </b>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="75" y="19" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    grant_type: pasword
+        </text>
+      </switch>
+    </g>
+    <path d="M 375 110 L 375 143.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    <path d="M 375 148.88 L 371.5 141.88 L 375 143.63 L 378.5 141.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+    <rect x="100" y="70" width="550" height="40" rx="6" ry="6" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 548px; height: 1px; padding-top: 90px; margin-left: 101px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <pre style="background-color: #ffffff ; color: #080808 ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                  <span style="color: #000000">
+                                        AbstractAuthenticationProcessingFilter#
+                  </span>
+                                    doFilter
+                </pre>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="375" y="94" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    AbstractAuthenticationProcessingFilter#doFilter
+        </text>
+      </switch>
+    </g>
+    <rect x="1050" y="210" width="370" height="120" fill="none" stroke="none" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe flex-start; justify-content: unsafe flex-start; width: 362px; height: 1px; padding-top: 200px; margin-left: 1055px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: left; max-height: 130px; overflow: hidden; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <h1>
+                                    典型实现
+                </h1>
+                <p>
+                  <span style="background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace">
+                    <font style="font-size: 12px">
+                                            1. OAuth2ClientAuthenticationProcessingFilter
+                    </font>
+                  </span>
+                </p>
+                <pre style="background-color: #ffffff ; color: #080808 ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                  <span style="color: #000000">
+                                        2. UsernamePasswordAuthenticationFilter
+                  </span>
+                </pre>
+                <pre style="background-color: rgb(255 , 255 , 255) ; color: rgb(8 , 8 , 8) ; font-family: &quot;jetbrains mono&quot; , monospace">
+                  <pre style="font-family: &quot;jetbrains mono&quot; , monospace">
+                    <span style="color: rgb(0 , 0 , 0)">
+                      <font style="font-size: 12px">
+                                                3. ClientCredentialsTokenEndpointFilter
+                      </font>
+                    </span>
+                  </pre>
+                </pre>
+                <p>
+                  <br/>
+                </p>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="1055" y="212" fill="#000000" font-family="Helvetica" font-size="12px">
+                    典型实现1. OAuth2ClientAuthenticationProcessingFilter...
+        </text>
+      </switch>
+    </g>
+    <path d="M 675 390 L 675 423.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    <path d="M 675 428.88 L 671.5 421.88 L 675 423.63 L 678.5 421.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+    <rect x="400" y="350" width="550" height="40" rx="6" ry="6" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 548px; height: 1px; padding-top: 370px; margin-left: 401px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <pre style="background-color: #ffffff ; color: #080808 ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                    UsernamePasswordAuthenticationFilter
+                  <span style="color: #000000">
+                                        #
+                  </span>
+                                    attemptAuthentication
+                </pre>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="675" y="374" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    UsernamePasswordAuthenticationFilter#attemptAuthentication
+        </text>
+      </switch>
+    </g>
+    <path d="M 675 470 L 675 503.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    <path d="M 675 508.88 L 671.5 501.88 L 675 503.63 L 678.5 501.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+    <rect x="400" y="430" width="550" height="40" rx="6" ry="6" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 548px; height: 1px; padding-top: 450px; margin-left: 401px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <pre style="background-color: #ffffff ; color: #080808 ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                    ProviderManager
+                  <span style="color: #000000">
+                                        #
+                  </span>
+                                    authenticate(Authentication
+                  <span style="font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        authentication
+                  </span>
+                                    )
+                </pre>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="675" y="454" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    ProviderManager#authenticate(Authentication authentication)
+        </text>
+      </switch>
+    </g>
+    <path d="M 950 430 L 1043.63 430" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    <path d="M 1048.88 430 L 1041.88 433.5 L 1043.63 430 L 1041.88 426.5 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+    <rect x="820" y="420" width="130" height="20" fill="none" stroke="none" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 128px; height: 1px; padding-top: 430px; margin-left: 821px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <pre style="background-color: rgb(255 , 255 , 255) ; color: rgb(8 , 8 , 8) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                    Authentication
+                </pre>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="885" y="434" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    Authentication
+        </text>
+      </switch>
+    </g>
+    <rect x="1050" y="370" width="430" height="120" fill="none" stroke="none" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe flex-start; justify-content: unsafe flex-start; width: 422px; height: 1px; padding-top: 360px; margin-left: 1055px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: left; max-height: 130px; overflow: hidden; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <h1>
+                                    认证信息
+                </h1>
+                <p>
+                                    1. 是接口, 实现类就是各种 token
+                </p>
+                <p>
+                                    2. 变量:
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace">
+                    <font style="font-size: 12px">
+                                            Authorities/
+                    </font>
+                  </span>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        Credentials/
+                  </span>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        Details[addtion-info]/
+                  </span>
+                </p>
+                <p>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        Principal[user]/
+                  </span>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        isAuthenticated
+                  </span>
+                </p>
+                <p>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="1055" y="372" fill="#000000" font-family="Helvetica" font-size="12px">
+                    认证信息1. 是接口, 实现类就是各种 token...
+        </text>
+      </switch>
+    </g>
+    <path d="M 675 550 L 675 570 L 675 560 L 675 573.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    <path d="M 675 578.88 L 671.5 571.88 L 675 573.63 L 678.5 571.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+    <rect x="400" y="510" width="550" height="40" rx="6" ry="6" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 548px; height: 1px; padding-top: 530px; margin-left: 401px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <pre style="background-color: #ffffff ; color: #080808 ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                    AbstractUserDetailsAuthenticationProvider
+                  <span style="color: #000000">
+                                        #
+                  </span>
+                                    authenticate
+                </pre>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="675" y="534" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    AbstractUserDetailsAuthenticationProvider#authenticate
+        </text>
+      </switch>
+    </g>
+    <path d="M 675 620 L 675 673.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    <path d="M 675 678.88 L 671.5 671.88 L 675 673.63 L 678.5 671.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+    <rect x="400" y="580" width="550" height="40" rx="6" ry="6" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 548px; height: 1px; padding-top: 600px; margin-left: 401px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <pre style="background-color: #ffffff ; color: #080808 ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                    AbstractUserDetailsAuthenticationProvider
+                  <span style="color: #000000">
+                                        #
+                  </span>
+                                    retrieveUser
+                </pre>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="675" y="604" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    AbstractUserDetailsAuthenticationProvider#retrieveUser
+        </text>
+      </switch>
+    </g>
+    <path d="M 955 580 L 1043.63 580" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    <path d="M 1048.88 580 L 1041.88 583.5 L 1043.63 580 L 1041.88 576.5 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+    <rect x="835" y="570" width="120" height="20" fill="none" stroke="none" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 580px; margin-left: 836px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                抽象方法, 子类实现
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="895" y="584" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    抽象方法, 子类实现
+        </text>
+      </switch>
+    </g>
+    <rect x="1050" y="520" width="430" height="120" fill="none" stroke="none" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe flex-start; justify-content: unsafe flex-start; width: 422px; height: 1px; padding-top: 510px; margin-left: 1055px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: left; max-height: 130px; overflow: hidden; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <h1>
+                                    获取用户信息
+                </h1>
+                <p>
+                                    1.
+                  <span style="background-color: rgb(255 , 255 , 255) ; color: rgb(8 , 8 , 8) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        UserDetails:
+                  </span>
+                </p>
+                <p>
+                                    2. 变量:
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace">
+                    <font style="font-size: 12px">
+                                            Authorities/
+                    </font>
+                  </span>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        Credentials/
+                  </span>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        Details[addtion-info]/
+                  </span>
+                </p>
+                <p>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        Principal[user]/
+                  </span>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        isAuthenticated
+                  </span>
+                </p>
+                <p>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="1055" y="522" fill="#000000" font-family="Helvetica" font-size="12px">
+                    获取用户信息1. UserDetails:...
+        </text>
+      </switch>
+    </g>
+    <path d="M 950 700 L 1043.63 700" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    <path d="M 1048.88 700 L 1041.88 703.5 L 1043.63 700 L 1041.88 696.5 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+    <path d="M 675 720 L 675 753.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    <path d="M 675 758.88 L 671.5 751.88 L 675 753.63 L 678.5 751.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+    <rect x="400" y="680" width="550" height="40" rx="6" ry="6" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 548px; height: 1px; padding-top: 700px; margin-left: 401px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <pre style="background-color: #ffffff ; color: #080808 ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                    UserDetailsService
+                  <span style="color: #000000">
+                                        #
+                  </span>
+                                    loadUserByUsername
+                </pre>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="675" y="704" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    UserDetailsService#loadUserByUsername
+        </text>
+      </switch>
+    </g>
+    <rect x="830" y="670" width="120" height="20" fill="none" stroke="none" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 680px; margin-left: 831px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                抽象方法, 子类实现
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="890" y="684" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    抽象方法, 子类实现
+        </text>
+      </switch>
+    </g>
+    <rect x="1050" y="640" width="430" height="120" fill="none" stroke="none" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe flex-start; justify-content: unsafe flex-start; width: 422px; height: 1px; padding-top: 630px; margin-left: 1055px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: left; max-height: 130px; overflow: hidden; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <h1>
+                                    典型实现
+                </h1>
+                <p>
+                                    1.
+                  <span style="background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        JdbcUserDetailsManager
+                  </span>
+                  <span style="background-color: rgb(255 , 255 , 255) ; color: rgb(8 , 8 , 8) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        :
+                  </span>
+                </p>
+                <p>
+                                    2. 变量:
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace">
+                    <font style="font-size: 12px">
+                                            Authorities/
+                    </font>
+                  </span>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        Credentials/
+                  </span>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        Details[addtion-info]/
+                  </span>
+                </p>
+                <p>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        Principal[user]/
+                  </span>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                                        isAuthenticated
+                  </span>
+                </p>
+                <p>
+                  <span style="color: rgb(0 , 98 , 122) ; background-color: rgb(255 , 255 , 255) ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="1055" y="642" fill="#000000" font-family="Helvetica" font-size="12px">
+                    典型实现1. JdbcUserDetailsManager:...
+        </text>
+      </switch>
+    </g>
+    <path d="M 675 800 L 675 843.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    <path d="M 675 848.88 L 671.5 841.88 L 675 843.63 L 678.5 841.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+    <rect x="400" y="760" width="550" height="40" rx="6" ry="6" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 548px; height: 1px; padding-top: 780px; margin-left: 401px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <pre style="background-color: #ffffff ; color: #080808 ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                  <span style="color: rgb(0 , 0 , 0) ; font-family: &quot;helvetica&quot; ; font-size: 12px ; background-color: rgb(248 , 249 , 250)">
+                                        从数据库查询之后验证, 登录成功
+                  </span>
+                  <br/>
+                </pre>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="675" y="784" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    从数据库查询之后验证, 登录成功
+        </text>
+      </switch>
+    </g>
+    <rect x="400" y="850" width="550" height="40" rx="6" ry="6" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+    <g transform="translate(-0.5 -0.5)">
+      <switch>
+        <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 548px; height: 1px; padding-top: 870px; margin-left: 401px;">
+            <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+              <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                <pre style="background-color: #ffffff ; color: #080808 ; font-family: &quot;jetbrains mono&quot; , monospace ; font-size: 10.5pt">
+                  <span style="color: rgb(0 , 0 , 0) ; font-family: &quot;helvetica&quot; ; font-size: 12px ; background-color: rgb(248 , 249 , 250)">
+                                        发放 token
+                  </span>
+                  <br/>
+                </pre>
+              </div>
+            </div>
+          </div>
+        </foreignObject>
+        <text x="675" y="874" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    发放 token
+        </text>
+      </switch>
+    </g>
+  </g>
+  <switch>
+    <g requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"/>
+    <a transform="translate(0,-5)" xlink:href="https://www.diagrams.net/doc/faq/svg-export-text-problems" target="_blank">
+      <text text-anchor="middle" font-size="10px" x="50%" y="100%">
+                Viewer does not support full SVG 1.1
+      </text>
+    </a>
+  </switch>
+</svg>

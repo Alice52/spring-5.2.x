@@ -1,0 +1,49 @@
+<svg host="65bd71144e"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="442px" height="212px" viewBox="-0.5 -0.5 442 212" content="&lt;mxfile&gt;&lt;diagram id=&quot;ABZ48ejMpnpE8r96kCEv&quot; name=&quot;Page-1&quot;&gt;tVZLb9swDP41AtpDB8cPRTpKjtPtMGBYDju7ieIYc6zAcZt0v34kJSVx7BXDgPXQ0J9E8uNDoliS78/PXXnYfbUb07A42pxZsmBxnGUp/Efg3QF8Fjmg6uqNg2ZXYFX/Mh4M217rjTkONvbWNn19GIJr27Zm3Q+wsuvsabhta5uh10NZmRGwWpfNGP1Rb/qdQ0UWXfHPpq52wfMs8iv7Mmz2wHFXbuzpBkoKluSdtb2T9ufcNJi7kBent/zD6oVYZ9r+bxRip/BWNq8htk/wvTp0dVuBwIo5E5JpyYqMCcGUZgVnMmEiY4VkMmN6qb59YQUsFUwXXlBAJCd1zpTAT1CXCybnZCdnkk+p8AZI65cOpAqlGLjwcn8AsX054g/ZiZgokJjOmRi6QGQ5tjOyglkZQU/32Pl8/m6q+th30KdqTGXueYOAnPgDctEJ0sEoOQYKmS9SSBJuxcylmEsEXTojyqJkKiUQNsDODAXMevH4H2IpOwqGSguetQ6ViCi5MyYFBSJzpnJc0ylFJDAKKWgJFJbOnOkeiQHxwKAiJmPiXwQhwsqjkEByHqhMMywTWMR0LBAB/5JqKpDIRNjJRCuMkg25hHJoRT4U+ciwwyDTsCTA+oKChc1QtQSpiZjUqRoTBpfUUvlgDyRGEGmhJrs2xRN0vJ4gZyyjjl1QH2RYbzUPpJZUCuCbUpYXlHeOThSxw/4QQy7QJa6xNLULGUR134m0JOh0COqz/EMXEg8mEpP4CdX9x667h55C/Hd0qerahU3NFUe5bd9Md6xtuzLdW702pCowP0qFDlGkKvFsfJCoEfns5krz9Yv8bYG9IqgzQ0Wldsdj+lbzTTMjt4q0BLbzYOlS3ksR5hg5HO2MuhZOvXAX4ZxqFW7EbDHmzif6nqxhJSmhmo9voiGHBV7Yo5MYboFx0xNtRQmBIolk6l4LV8Xd6RchoCUuX0tCs65/DwMUxt4Bxdb28KPhVrI/L6MUhqDe2rb3c3+W4g4nSxBPu7o3q0O5RuAE7wvAdv2+wa2oWTdNbhvbkadku93G6/XFx83Khr/wjHtfNziHP5jXiS6bumoBa8zWHYH70eqnLfRtb843kB+1z8buDc6OOPKr3E99/+wJ74XT9Q2Rph7b3bwfLu+e0r9bqovl62gHwU/38Hl9RdDazVMsKX4D&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs/>
+    <g>
+        <path d="M 1 1 L 432 1 L 441 10 L 441 211 L 1 211 L 1 1 Z" fill="#fff2cc" stroke="#d6b656" stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 432 1 L 432 10 L 441 10" fill="none" stroke="#d6b656" stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe flex-start; width: 438px; height: 1px; padding-top: 106px; margin-left: 3px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: left; ">
+                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: #666600; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                1. Spring 特别擅长API设计, 模块化设计
+                                <br/>
+                                2. 后缀模式
+                                <br/>
+                                - xxxRegistry: 管理(注册/修改/删除/查找)
+                                <br/>
+                                - xxxRegistrar: 登记员(本质还是Register) + 倒排思想(屏蔽实现)
+                                <br/>
+                                3. 注册顺序很重要。先注册，先服务
+                                <br/>
+                                4. spring 内置大量的转换器，可以处理一般的转换问题
+                                <br/>
+                                - 可以使用 ConversionService 自定义转换器
+                                <br/>
+                                5. Spring最强能力: API设计、抽象、大一统[标准化]
+                                <br/>
+                                6. 组件管理大体思想: 注册中心(注册员) + 分发器
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="3" y="110" fill="#666600" font-family="Helvetica" font-size="14px">
+                    1. Spring 特别擅长API设计, 模块化设计...
+                </text>
+            </switch>
+        </g>
+    </g>
+    <switch>
+        <g requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"/>
+        <a transform="translate(0,-5)" xlink:href="https://www.diagrams.net/doc/faq/svg-export-text-problems" target="_blank">
+            <text text-anchor="middle" font-size="10px" x="50%" y="100%">
+                Viewer does not support full SVG 1.1
+            </text>
+        </a>
+    </switch>
+</svg>
