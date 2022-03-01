@@ -1,0 +1,124 @@
+<svg host="65bd71144e"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="522px" height="502px" viewBox="-0.5 -0.5 522 502" content="&lt;mxfile&gt;&lt;diagram id=&quot;bl3kBp59A3l1r_KTkHgI&quot; name=&quot;Page-1&quot;&gt;zVhLc6M4EP41qpo5JIV5WRwBw8xh9pTDnGUQmF2MGCHbyf76aT14GZx1NtnapBK7abWk7tan/pogJz4+f+OkPfzBcloj28qfkbNDto0DFz6l4kUr/I2lFSWvcq3ajIqn6m9qlL3ZqcppNzMUjNWiaufKjDUNzcRMRzhnl7lZwer5ri0p6ULxlJF6qf1Z5eJgwvKsUf+dVuWh33ljmZEj6Y2NojuQnF0mKidBTswZE1o6Pse0lrnr86LnpTdGB8c4bcQ9E2w94UzqUx/bIzyjZIuiCOEUJR6KsPxNXBTtUJTKITi/ECshRNhVQqRsPITB3lHTN3IF26/Bj2jPQSqlBN/k2ILQ7LtWPVsrqgf4SxmHdImqKWPWnCnvKtY8UX6uMpqSTDD+ElHSICfUS6h9CgZhy3OvGVfh+L9OTG/rFIVlyXMYVcajxJeBBpYKMZGhQBzwiGM15Ko0LKNXsYaeElIUOmgb9Wlz+xUw2u563+AQtHtDIv5taua6HS3IqRavpEvnqGs5DKrDDaSXAcSAUZig0EVetJeQs3UOMMI7GTpYhCnydh/mati2dZURAa4tnfyoTX7S/X2LK01ena9VXQuwMjpb3wZfgtocuq+AgSUeQo0QEGx14oGygcSBfaCuTiyxcXNzgMR0s4l67tadN6a/iK7yKlHgvPZcp0ZQ/loICi8b+IJ6Ehux0WIzioW+he+540v/DIylfz4KLZnBIY/SJpbJ7R39ouAayzK0Eo1CchRm5686IIl/ubCdQn3slFAMu9kpaZoHCOm94eBAnX2A8Fb5vIROXzZti9Oy6gQn3JCBeOkZBnihlWLDBJWQFJz9NXCNbSqdIcaNKy20vAXxcqgEfWqJvPi7CxAw6A7iWEtTObOq63gokFAWCzvLhj0mI7m/9z3f7DXR+/ADhdSJSF2VgIddTQudp2vuMXSkAPc8URku+kbZkQqJIKsfxYYXTWOwcczzZaRZryfTw4RiB0IlhtrLYe2R/UAwBLhOht6CDBfnQnNoBMwj4+LAStaQOhm1EWenJqe5SfZo84Ox1ij/pEK8mMMjJ8Hm56P3lBvd5HSj6tiJZ8bKMW0Q4SU1Vu56qjmtoQKf56u/J23OIm13Uvd1cuep+wcY34DWSqJuo82fo811l2iztyto8z8AbO4K2CaUNMlL37BAoOLB3DlZz9S1W7YzKyymerqsr/zdW+nnP/JKcetQgTs9Haowe7hilv/Zz/vr/5JhVLOFHclNIARAY5bquoAJNootsGo8PdloAW18joCdxzk3fQqn3L4T012pbrAhjysEu2hvX2l1Pkdw3uMSUa86NtXd8QLwtijfU5avuoucUFysdhd+hum++KBCvrUfvVkp91YaB9v1lqV8eDV/Qy2Hx/ENXY1N/s3hJL8B&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs/>
+    <g>
+        <path d="M 20 1 L 513 1 L 520 8 L 520 221 L 20 221 L 20 1 Z" fill="#fff2cc" stroke="#d6b656" stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 513 1 L 513 8 L 520 8" fill="none" stroke="#d6b656" stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe flex-start; width: 498px; height: 1px; padding-top: 111px; margin-left: 22px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: left; ">
+                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: #666600; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                1. 经常使用的相关类
+                                <br/>
+                                - FormattingConversionServiceFactoryBean:
+                                <font color="#ff0000">
+                                    提供同意使用入口{组合}
+                                </font>
+                                <br/>
+                                - DefaultFormattingConversionService: spring 默认[boot 不是]
+                                <br/>
+                                - ApplicationConversionService
+                                <br/>
+                                - WebConversionService
+                                <br/>
+                                <div>
+                                    <span>
+                                        2. 注册转换器方式
+                                        <br/>
+                                    </span>
+                                </div>
+                                - 直接注册Converter转换器: 1:1, 1:n, n:n, factory
+                                <br/>
+                                - 注册Formatter格式化器(会转换为cv): printer/parser/formatter/ann-fac
+                                <br/>
+                                - 批量注册的 registrar
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="22" y="115" fill="#666600" font-family="Helvetica" font-size="14px">
+                    1. 经常使用的相关类...
+                </text>
+            </switch>
+        </g>
+        <path d="M 135 371 L 135 381 Q 135 391 135 386 L 135 383.5 Q 135 381 135 387.82 L 135 394.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 135 399.88 L 131.5 392.88 L 135 394.63 L 138.5 392.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="0" y="311" width="270" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 268px; height: 1px; padding-top: 341px; margin-left: 1px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                FormattingConversionServiceFactoryBean
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="135" y="345" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    FormattingConversionServiceFactoryBean
+                </text>
+            </switch>
+        </g>
+        <rect x="12.5" y="401" width="245" height="100" rx="15" ry="15" fill="#dae8fc" stroke="#6c8ebf" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 243px; height: 1px; padding-top: 451px; margin-left: 14px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                <div style="text-align: left">
+                                    <span>
+                                        1. converters
+                                    </span>
+                                </div>
+                                <div style="text-align: left">
+                                    <span>
+                                        2. formatters: anno-factory
+                                    </span>
+                                </div>
+                                <div style="text-align: left">
+                                    <span>
+                                        - printer/parser 都需要成对
+                                    </span>
+                                </div>
+                                <div style="text-align: left">
+                                    <span>
+                                        3. registrar
+                                    </span>
+                                </div>
+                                <div style="text-align: left">
+                                    <span>
+                                        4. 是否注册默认转换器
+                                    </span>
+                                </div>
+                                <div style="text-align: left">
+                                    <span>
+                                        5.
+                                    </span>
+                                    <span>
+                                        DefaultFormattingConversionService
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="135" y="455" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    1. converters...
+                </text>
+            </switch>
+        </g>
+    </g>
+    <switch>
+        <g requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"/>
+        <a transform="translate(0,-5)" xlink:href="https://www.diagrams.net/doc/faq/svg-export-text-problems" target="_blank">
+            <text text-anchor="middle" font-size="10px" x="50%" y="100%">
+                Viewer does not support full SVG 1.1
+            </text>
+        </a>
+    </switch>
+</svg>
