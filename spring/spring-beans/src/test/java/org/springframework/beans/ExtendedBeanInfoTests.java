@@ -79,9 +79,9 @@ public class ExtendedBeanInfoTests {
         class C {
             public String getFoo() {
                 return null;
-            }            public void setFoo(String f) {}
+            }
 
-
+            public void setFoo(String f) {}
         }
 
         BeanInfo bi = Introspector.getBeanInfo(C.class);
@@ -586,16 +586,16 @@ public class ExtendedBeanInfoTests {
             // indexed read method
             public String getFoos(int i) {
                 return null;
-            }            // non-standard write method
-            public C setFoos(String[] foos) {
-                return this;
-            }
+            } // non-standard write method
 
             // non-standard indexed write method
             public C setFoos(int i, String foo) {
                 return this;
             }
 
+            public C setFoos(String[] foos) {
+                return this;
+            }
         }
 
         BeanInfo bi = Introspector.getBeanInfo(C.class);
@@ -625,9 +625,9 @@ public class ExtendedBeanInfoTests {
                 // indexed read method
                 public String getFoos(int i) {
                     return null;
-                }                // VOID-RETURNING, NON-INDEXED write method
-                public void setFoos(String[] foos) {}
+                } // VOID-RETURNING, NON-INDEXED write method
 
+                public void setFoos(String[] foos) {}
             }
 
             BeanInfo bi = Introspector.getBeanInfo(C.class);
@@ -648,11 +648,11 @@ public class ExtendedBeanInfoTests {
                 // indexed read method
                 public String getFoos(int i) {
                     return null;
-                }                // NON-VOID-RETURNING, NON-INDEXED write method
+                } // NON-VOID-RETURNING, NON-INDEXED write method
+
                 public C setFoos(String[] foos) {
                     return this;
                 }
-
             }
 
             BeanInfo bi = Introspector.getBeanInfo(C.class);

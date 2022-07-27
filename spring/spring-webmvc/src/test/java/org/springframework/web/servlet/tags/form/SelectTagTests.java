@@ -200,12 +200,12 @@ public class SelectTagTests extends AbstractFormTagTests {
                             @Override
                             public String getAsText() {
                                 return ((Country) getValue()).getName();
-                            }                            @Override
+                            }
+
+                            @Override
                             public void setAsText(String text) throws IllegalArgumentException {
                                 setValue(Country.getCountryWithIsoCode(text));
                             }
-
-
                         });
         getPageContext()
                 .getRequest()
@@ -237,12 +237,12 @@ public class SelectTagTests extends AbstractFormTagTests {
                             @Override
                             public String getAsText() {
                                 return ((Country) getValue()).getName();
-                            }                            @Override
+                            }
+
+                            @Override
                             public void setAsText(String text) throws IllegalArgumentException {
                                 setValue(Country.getCountryWithIsoCode(text));
                             }
-
-
                         });
         getPageContext()
                 .getRequest()
@@ -279,7 +279,9 @@ public class SelectTagTests extends AbstractFormTagTests {
                                     return null;
                                 }
                                 return value.getName();
-                            }                            @Override
+                            }
+
+                            @Override
                             public void setAsText(String text) throws IllegalArgumentException {
                                 if (text == null || text.length() == 0) {
                                     setValue(null);
@@ -287,8 +289,6 @@ public class SelectTagTests extends AbstractFormTagTests {
                                 }
                                 setValue(Country.getCountryWithIsoCode(text));
                             }
-
-
                         });
         getPageContext()
                 .getRequest()
@@ -319,12 +319,12 @@ public class SelectTagTests extends AbstractFormTagTests {
                             @Override
                             public String getAsText() {
                                 return ((Country) getValue()).getName();
-                            }                            @Override
+                            }
+
+                            @Override
                             public void setAsText(String text) throws IllegalArgumentException {
                                 setValue(Country.getCountryWithIsoCode(text));
                             }
-
-
                         });
         getPageContext()
                 .getRequest()
@@ -358,12 +358,12 @@ public class SelectTagTests extends AbstractFormTagTests {
                                     return "";
                                 }
                                 return value.getName();
-                            }                            @Override
+                            }
+
+                            @Override
                             public void setAsText(String text) throws IllegalArgumentException {
                                 setValue(Country.getCountryWithIsoCode(text));
                             }
-
-
                         });
         getPageContext()
                 .getRequest()
@@ -794,13 +794,13 @@ public class SelectTagTests extends AbstractFormTagTests {
                                 @Override
                                 public String getAsText() {
                                     return ((Country) getValue()).getIsoCode();
-                                }                                @Override
+                                }
+
+                                @Override
                                 public void setAsText(final String text)
                                         throws IllegalArgumentException {
                                     setValue(Country.getCountryWithIsoCode(text));
                                 }
-
-
                             });
             exposeBindingResult(bindingResult);
 

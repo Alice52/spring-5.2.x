@@ -89,10 +89,8 @@ public class AsyncTests {
         this.mockMvc
                 .perform(get("/1").param("streaming", "true"))
                 .andExpect(request().asyncStarted())
-                .andDo(
-                        MvcResult
-                                ::getAsyncResult) // fetch async result similar to "asyncDispatch"
-                                                  // builder
+                .andDo(MvcResult::getAsyncResult) // fetch async result similar to "asyncDispatch"
+                // builder
                 .andExpect(status().isOk())
                 .andExpect(content().string("name=Joe"));
     }

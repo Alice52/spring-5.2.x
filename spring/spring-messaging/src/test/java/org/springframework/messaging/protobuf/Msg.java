@@ -62,6 +62,7 @@ public final class Msg extends com.google.protobuf.GeneratedMessage implements M
     private Msg(boolean noInit) {
         this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
+
     private Msg(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)

@@ -298,7 +298,7 @@ public class ServiceLocatorFactoryBeanTests {
                                 locator.getTestService(
                                         "not",
                                         "allowed")); // bad method (too many args, doesn't obey
-                                                     // class contract)
+        // class contract)
     }
 
     @Test

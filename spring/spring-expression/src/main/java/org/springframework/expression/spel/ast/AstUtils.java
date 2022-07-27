@@ -56,9 +56,8 @@ public abstract class AstUtils {
                 if (targetType != null) {
                     int pos = 0;
                     for (Class<?> clazz : targets) {
-                        if (clazz
-                                == targetType) { // put exact matches on the front to be tried
-                                                 // first?
+                        if (clazz == targetType) { // put exact matches on the front to be tried
+                            // first?
                             specificAccessors.add(pos++, resolver);
                         } else if (clazz.isAssignableFrom(
                                 targetType)) { // put supertype matches at the end of the

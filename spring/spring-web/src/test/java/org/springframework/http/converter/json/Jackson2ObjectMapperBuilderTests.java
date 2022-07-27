@@ -735,6 +735,7 @@ public class Jackson2ObjectMapperBuilderTests {
         private String property2;
 
         public JacksonFilteredBean() {}
+
         public JacksonFilteredBean(String property1, String property2) {
             this.property1 = property1;
             this.property2 = property2;

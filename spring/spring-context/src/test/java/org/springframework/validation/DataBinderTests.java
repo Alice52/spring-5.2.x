@@ -288,12 +288,12 @@ public class DataBinderTests {
                     @Override
                     public String getAsText() {
                         return getValue().toString().substring(7);
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue("prefix_" + text);
                     }
-
-
                 });
         binder.registerCustomEditor(
                 TestBean.class,
@@ -302,12 +302,12 @@ public class DataBinderTests {
                     @Override
                     public String getAsText() {
                         return ((TestBean) getValue()).getName();
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue(new TestBean(text, 0));
                     }
-
-
                 });
         MutablePropertyValues pvs = new MutablePropertyValues();
         pvs.add("name", "Rod");
@@ -948,12 +948,12 @@ public class DataBinderTests {
                     @Override
                     public String getAsText() {
                         return ((String) getValue()).substring(6);
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue("prefix" + text);
                     }
-
-
                 });
 
         MutablePropertyValues pvs = new MutablePropertyValues();
@@ -994,12 +994,12 @@ public class DataBinderTests {
                     @Override
                     public String getAsText() {
                         return "argh";
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue(99);
                     }
-
-
                 });
 
         MutablePropertyValues pvs = new MutablePropertyValues();
@@ -1022,12 +1022,12 @@ public class DataBinderTests {
                     @Override
                     public String getAsText() {
                         return ((String) getValue()).substring(6);
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue("prefix" + text);
                     }
-
-
                 });
 
         MutablePropertyValues pvs = new MutablePropertyValues();
@@ -1606,12 +1606,12 @@ public class DataBinderTests {
                     @Override
                     public String getAsText() {
                         return ((String) getValue()).substring(4);
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue("list" + text);
                     }
-
-
                 });
         MutablePropertyValues pvs = new MutablePropertyValues();
         pvs.add("array[0].nestedIndexedBean.list[0].name", "test1");
@@ -1644,12 +1644,12 @@ public class DataBinderTests {
                     @Override
                     public String getAsText() {
                         return ((String) getValue()).substring(4);
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue("list" + text);
                     }
-
-
                 });
         MutablePropertyValues pvs = new MutablePropertyValues();
         pvs.add("array[0].nestedIndexedBean.list[0].name", "test1");
@@ -1682,12 +1682,12 @@ public class DataBinderTests {
                     @Override
                     public String getAsText() {
                         return ((String) getValue()).substring(4);
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue("list" + text);
                     }
-
-
                 });
         MutablePropertyValues pvs = new MutablePropertyValues();
         pvs.add("array[0].nestedIndexedBean.list[0].name", "test1");
@@ -1718,14 +1718,14 @@ public class DataBinderTests {
                     @Override
                     public String getAsText() {
                         return ((TestBean) getValue()).getName();
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         DerivedTestBean tb = new DerivedTestBean();
                         tb.setName("array" + text);
                         setValue(tb);
                     }
-
-
                 });
         MutablePropertyValues pvs = new MutablePropertyValues();
         pvs.add("array[0]", "a");
@@ -1779,14 +1779,14 @@ public class DataBinderTests {
                     @Override
                     public String getAsText() {
                         return ((TestBean) getValue()).getName();
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         DerivedTestBean tb = new DerivedTestBean();
                         tb.setName("array" + text);
                         setValue(tb);
                     }
-
-
                 });
         Errors errors = binder.getBindingResult();
         errors.rejectValue("map[key0]", "NOT_NULL", "should not be null");
@@ -1816,14 +1816,14 @@ public class DataBinderTests {
                     @Override
                     public String getAsText() {
                         return ((TestBean) getValue()).getName();
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         DerivedTestBean tb = new DerivedTestBean();
                         tb.setName("array" + text);
                         setValue(tb);
                     }
-
-
                 });
         Errors errors = binder.getBindingResult();
         errors.rejectValue("map[key0]", "NOT_NULL", "should not be null");
@@ -1852,14 +1852,14 @@ public class DataBinderTests {
                     @Override
                     public String getAsText() {
                         return ((TestBean) getValue()).getName();
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         DerivedTestBean tb = new DerivedTestBean();
                         tb.setName("array" + text);
                         setValue(tb);
                     }
-
-
                 });
         MutablePropertyValues pvs = new MutablePropertyValues();
         pvs.add("array[0]", "a");

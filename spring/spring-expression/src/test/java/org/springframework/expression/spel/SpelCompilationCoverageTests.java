@@ -5060,7 +5060,7 @@ public class SpelCompilationCoverageTests extends AbstractExpressionTests {
         Reg r = (Reg) ctx.getRootObject().getValue();
         r.setValue2(
                 1); // having a value in value2 fields will enable compilation to succeed, then can
-                    // switch it to null
+        // switch it to null
         SpelExpression fast = (SpelExpression) parser.parseExpression(expressionText);
         SpelExpression slow = (SpelExpression) parser.parseExpression(expressionText);
         fast.getValue(ctx);

@@ -123,7 +123,7 @@ public final class RequestMethodsRequestCondition
                     && !DispatcherType.ERROR.equals(request.getDispatcherType())) {
 
                 return null; // We handle OPTIONS transparently, so don't match if no explicit
-                             // declarations
+                // declarations
             }
             return this;
         }

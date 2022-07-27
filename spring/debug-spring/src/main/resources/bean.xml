@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--    <bean id="apple" class="top.hubby.methodOverrides.lookup.Apple" scope="prototype"/>-->
+    <!--    <bean id="banana" class="top.hubby.methodOverrides.lookup.Banana" scope="prototype" />-->
+
+    <!--    <bean id="fruitPlate1" class="top.hubby.methodOverrides.lookup.FruitPlate">-->
+    <!--        <lookup-method name="getFruit" bean="apple"/>-->
+    <!--    </bean>-->
+    <!--    <bean id="fruitPlate2" class="top.hubby.methodOverrides.lookup.FruitPlate">-->
+    <!--        <lookup-method name="getFruit" bean="banana"/>-->
+    <!--    </bean>-->
+    <bean id="dogReplaceMethod" class="top.hubby.methodOverrides.replace.ReplaceDog"/>
+    <bean id="originalDogReplaceMethod" class="top.hubby.methodOverrides.replace.OriginalDog">
+        <replaced-method name="sayHello" replacer="dogReplaceMethod">
+            <arg-type match="java.lang.String"></arg-type>
+        </replaced-method>
+    </bean>
+</beans>

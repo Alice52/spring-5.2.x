@@ -300,7 +300,7 @@ public class AspectJExpressionPointcutTests {
                         () ->
                                 getPointcut(expression)
                                         .getClassFilter()) // call to getClassFilter forces
-                                                           // resolution...
+                // resolution...
                 .satisfies(
                         ex ->
                                 assertThat(ex.getUnsupportedPrimitive())
