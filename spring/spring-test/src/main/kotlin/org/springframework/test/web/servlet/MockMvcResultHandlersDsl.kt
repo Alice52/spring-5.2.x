@@ -26,40 +26,40 @@ import java.io.Writer
  * @author Sebastien Deleuze
  * @since 5.2
  */
-class MockMvcResultHandlersDsl internal constructor (private val actions: ResultActions) {
+class MockMvcResultHandlersDsl internal constructor(private val actions: ResultActions) {
 
-	/**
-	 * @see MockMvcResultHandlers.print
-	 */
-	fun print() {
-		actions.andDo(MockMvcResultHandlers.print())
-	}
+    /**
+     * @see MockMvcResultHandlers.print
+     */
+    fun print() {
+        actions.andDo(MockMvcResultHandlers.print())
+    }
 
-	/**
-	 * @see MockMvcResultHandlers.print
-	 */
-	fun print(stream: OutputStream) {
-		actions.andDo(MockMvcResultHandlers.print(stream))
-	}
+    /**
+     * @see MockMvcResultHandlers.print
+     */
+    fun print(stream: OutputStream) {
+        actions.andDo(MockMvcResultHandlers.print(stream))
+    }
 
-	/**
-	 * @see MockMvcResultHandlers.print
-	 */
-	fun print(writer: Writer) {
-		actions.andDo(MockMvcResultHandlers.print(writer))
-	}
+    /**
+     * @see MockMvcResultHandlers.print
+     */
+    fun print(writer: Writer) {
+        actions.andDo(MockMvcResultHandlers.print(writer))
+    }
 
-	/**
-	 * @see MockMvcResultHandlers.log
-	 */
-	fun log() {
-		actions.andDo(MockMvcResultHandlers.log())
-	}
+    /**
+     * @see MockMvcResultHandlers.log
+     */
+    fun log() {
+        actions.andDo(MockMvcResultHandlers.log())
+    }
 
-	/**
-	 * @see ResultActions.andDo
-	 */
-	fun handle(resultHandler: ResultHandler) {
-		actions.andDo(resultHandler)
-	}
+    /**
+     * @see ResultActions.andDo
+     */
+    fun handle(resultHandler: ResultHandler) {
+        actions.andDo(resultHandler)
+    }
 }

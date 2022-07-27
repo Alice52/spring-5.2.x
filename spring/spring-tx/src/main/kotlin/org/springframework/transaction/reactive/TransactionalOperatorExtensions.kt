@@ -15,7 +15,7 @@ import org.springframework.transaction.ReactiveTransaction
  * @since 5.2
  */
 fun <T : Any> Flow<T>.transactional(operator: TransactionalOperator): Flow<T> =
-		operator.transactional(asFlux()).asFlow()
+        operator.transactional(asFlux()).asFlow()
 
 /**
  * Coroutines variant of [TransactionalOperator.execute] with a suspending lambda
@@ -25,4 +25,4 @@ fun <T : Any> Flow<T>.transactional(operator: TransactionalOperator): Flow<T> =
  * @since 5.2
  */
 suspend fun <T : Any> TransactionalOperator.executeAndAwait(f: suspend (ReactiveTransaction) -> T?): T? =
-		execute { status -> mono(Dispatchers.Unconfined) { f(status) } }.awaitFirstOrNull()
+        execute { status -> mono(Dispatchers.Unconfined) { f(status) } }.awaitFirstOrNull()

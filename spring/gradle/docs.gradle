@@ -47,7 +47,7 @@ task api(type: Javadoc) {
 		splitIndex = true
 		links(project.ext.javadocLinks)
 		addStringOption('Xdoclint:none', '-quiet')
-		if(JavaVersion.current().isJava9Compatible()) {
+		if (JavaVersion.current().isJava9Compatible()) {
 			addBooleanOption('html5', true)
 		}
 	}
@@ -129,19 +129,19 @@ asciidoctorj {
 	fatalWarnings ".*"
 	options doctype: 'book', eruby: 'erubis'
 	attributes([
-			icons: 'font',
-			idprefix: '',
-			idseparator: '-',
-			docinfo: 'shared',
-			revnumber: project.version,
-			sectanchors: '',
-			sectnums: '',
+			icons               : 'font',
+			idprefix            : '',
+			idseparator         : '-',
+			docinfo             : 'shared',
+			revnumber           : project.version,
+			sectanchors         : '',
+			sectnums            : '',
 			'source-highlighter': 'highlight.js',
-			highlightjsdir: 'js/highlight',
-			'highlightjs-theme': 'github', // 'googlecode',
-			stylesdir: 'css/',
-			stylesheet: 'stylesheet.css',
-			'spring-version': project.version
+			highlightjsdir      : 'js/highlight',
+			'highlightjs-theme' : 'github', // 'googlecode',
+			stylesdir           : 'css/',
+			stylesheet          : 'stylesheet.css',
+			'spring-version'    : project.version
 	])
 }
 
@@ -192,16 +192,16 @@ task docsZip(type: Zip, dependsOn: ['api', 'asciidoctor', 'asciidoctorPdf', 'dok
 	from("src/dist") {
 		include "changelog.txt"
 	}
-	from (api) {
+	from(api) {
 		into "javadoc-api"
 	}
-	from ("$asciidoctor.outputDir") {
+	from("$asciidoctor.outputDir") {
 		into "spring-framework-reference"
 	}
-	from ("$asciidoctorPdf.outputDir") {
+	from("$asciidoctorPdf.outputDir") {
 		into "spring-framework-reference/pdf"
 	}
-	from (dokka) {
+	from(dokka) {
 		into "kdoc-api"
 	}
 }
@@ -227,10 +227,10 @@ task schemaZip(type: Zip) {
 			def shortName = key.replaceAll(/http.*schema.(.*).spring-.*/, '$1')
 			assert shortName != key
 			File xsdFile = module.sourceSets.main.resources.find {
-				(it.path.endsWith(schemas.get(key)) || it.path.endsWith(schemas.get(key).replaceAll('\\/','\\\\')))
+				(it.path.endsWith(schemas.get(key)) || it.path.endsWith(schemas.get(key).replaceAll('\\/', '\\\\')))
 			}
 			assert xsdFile != null
-			into (shortName) {
+			into(shortName) {
 				from xsdFile.path
 			}
 		}
@@ -267,7 +267,7 @@ task distZip(type: Zip, dependsOn: [docsZip, schemaZip]) {
 	}
 
 	moduleProjects.each { module ->
-		into ("${baseDir}/libs") {
+		into("${baseDir}/libs") {
 			from module.jar
 			if (module.tasks.findByPath("sourcesJar")) {
 				from module.sourcesJar

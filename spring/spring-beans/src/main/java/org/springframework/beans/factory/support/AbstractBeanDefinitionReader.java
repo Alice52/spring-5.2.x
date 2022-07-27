@@ -230,7 +230,8 @@ public abstract class AbstractBeanDefinitionReader
         if (resourceLoader instanceof ResourcePatternResolver) {
             // Resource pattern matching available.
             try {
-                // 在创建 ClassPathXmlApplicationContext 的父类构造方法内有初始化 PathMatchingResourcePatternResolver
+                // 在创建 ClassPathXmlApplicationContext 的父类构造方法内有初始化
+                // PathMatchingResourcePatternResolver
                 // 使用 DefaultClassLoader 的 getResource 完成 Resource 的定位
                 Resource[] resources =
                         ((ResourcePatternResolver) resourceLoader).getResources(location);

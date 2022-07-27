@@ -271,8 +271,8 @@ public abstract class AbstractAopProxyTests {
     }
 
     /**
-     * MockWebSessionCheck that the two MethodInvocations necessary are independent and don't conflict. Check also
-     * proxy exposure.
+     * MockWebSessionCheck that the two MethodInvocations necessary are independent and don't
+     * conflict. Check also proxy exposure.
      */
     @Test
     public void testOneAdvisedObjectCallsAnother() {
@@ -1136,7 +1136,17 @@ public abstract class AbstractAopProxyTests {
 
         /** Changes the name, then changes it back. */
         MethodInterceptor nameReverter =
-                new MethodInterceptor() {
+                new         class NameSaver implements MethodInterceptor {
+            private List<Object> names = new LinkedList<>();
+
+            @Override
+            public Object invoke(MethodInvocation mi) throws Throwable {
+                names.add(mi.getArguments()[0]);
+                return mi.proceed();
+            }
+        };
+
+MethodInterceptor() {
                     @Override
                     public Object invoke(MethodInvocation mi) throws Throwable {
                         MethodInvocation clone = ((ReflectiveMethodInvocation) mi).invocableClone();
@@ -1147,17 +1157,7 @@ public abstract class AbstractAopProxyTests {
                         mi.proceed();
                         return clone.proceed();
                     }
-                };
-
-        class NameSaver implements MethodInterceptor {
-            private List<Object> names = new LinkedList<>();
-
-            @Override
-            public Object invoke(MethodInvocation mi) throws Throwable {
-                names.add(mi.getArguments()[0]);
-                return mi.proceed();
-            }
-        }
+                }
 
         NameSaver saver = new NameSaver();
 
@@ -1587,6 +1587,28 @@ public abstract class AbstractAopProxyTests {
         assertThat(th.getCalls("remoteException")).isEqualTo(1);
     }
 
+    public interface INeedsToSeeProxy {
+
+        int getCount();
+
+        void incrementViaThis();
+
+        void incrementViaProxy();
+
+        void increment();
+    }
+
+    public static interface IOverloads {
+
+        void overload();
+
+        int overload(int i);
+
+        String overload(String foo);
+
+        void noAdvice();
+    }
+
     private static class CheckMethodInvocationIsSameInAndOutInterceptor
             implements MethodInterceptor {
 
@@ -1782,17 +1804,6 @@ public abstract class AbstractAopProxyTests {
         public void absquatulate() {}
     }
 
-    public interface INeedsToSeeProxy {
-
-        int getCount();
-
-        void incrementViaThis();
-
-        void incrementViaProxy();
-
-        void increment();
-    }
-
     public static class NeedsToSeeProxy implements INeedsToSeeProxy {
 
         private int count;
@@ -1870,17 +1881,6 @@ public abstract class AbstractAopProxyTests {
         }
     }
 
-    public static interface IOverloads {
-
-        void overload();
-
-        int overload(int i);
-
-        String overload(String foo);
-
-        void noAdvice();
-    }
-
     public static class Overloads implements IOverloads {
 
         @Override
@@ -1948,19 +1948,15 @@ public abstract class AbstractAopProxyTests {
 
     static class MockTargetSource implements TargetSource {
 
-        private Object target;
-
         public int gets;
 
         public int releases;
 
+        private Object target;
+
         public void reset() {
             this.target = null;
             gets = releases = 0;
-        }
-
-        public void setTarget(Object target) {
-            this.target = target;
         }
 
         /** @see org.springframework.aop.TargetSource#getTargetClass() */
@@ -1974,6 +1970,10 @@ public abstract class AbstractAopProxyTests {
         public Object getTarget() throws Exception {
             ++gets;
             return target;
+        }
+
+        public void setTarget(Object target) {
+            this.target = target;
         }
 
         /** @see org.springframework.aop.TargetSource#releaseTarget(java.lang.Object) */

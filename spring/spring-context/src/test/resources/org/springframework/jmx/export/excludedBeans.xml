@@ -3,25 +3,25 @@
 
 <beans>
 
-	<bean id="server" class="org.springframework.jmx.support.MBeanServerFactoryBean"/>
+    <bean id="server" class="org.springframework.jmx.support.MBeanServerFactoryBean"/>
 
-	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
-		<property name="server">
-			<ref bean="server"/>
-		</property>
-		<property name="autodetect">
-			<value>true</value>
-		</property>
-		<property name="excludedBeans" value="spring:mbean=false"/>
-	</bean>
+    <bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
+        <property name="server">
+            <ref bean="server"/>
+        </property>
+        <property name="autodetect">
+            <value>true</value>
+        </property>
+        <property name="excludedBeans" value="spring:mbean=false"/>
+    </bean>
 
-	<bean name="spring:mbean=true" class="org.springframework.jmx.export.TestDynamicMBean"/>
-	<bean name="spring:mbean=false" class="org.springframework.jmx.export.TestDynamicMBean"/>
+    <bean name="spring:mbean=true" class="org.springframework.jmx.export.TestDynamicMBean"/>
+    <bean name="spring:mbean=false" class="org.springframework.jmx.export.TestDynamicMBean"/>
 
-	<bean id="connector" class="org.springframework.jmx.support.ConnectorServerFactoryBean">
-		<property name="server">
-			<ref bean="server"/>
-		</property>
-	</bean>
+    <bean id="connector" class="org.springframework.jmx.support.ConnectorServerFactoryBean">
+        <property name="server">
+            <ref bean="server"/>
+        </property>
+    </bean>
 
 </beans>

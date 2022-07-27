@@ -28,6 +28,7 @@
 // -----------------------------------------------------------------------------
 
 import org.gradle.internal.os.OperatingSystem
+
 // import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
 
 def customJavaHome = System.getProperty("customJavaHome")
@@ -41,7 +42,7 @@ if (customJavaHome) {
 		options.forkOptions.javaHome = customJavaHomeDir
 		inputs.property("customJavaHome", customJavaHome)
 		if (customJavaSourceVersion) {
-			options.compilerArgs += [ "--release", customJavaSourceVersion]
+			options.compilerArgs += ["--release", customJavaSourceVersion]
 			inputs.property("customJavaSourceVersion", customJavaSourceVersion)
 		}
 	}
@@ -51,7 +52,7 @@ if (customJavaHome) {
 		options.forkOptions.javaHome = customJavaHomeDir
 		inputs.property("customJavaHome", customJavaHome)
 		if (customJavaSourceVersion) {
-			options.compilerArgs += [ "--release", customJavaSourceVersion]
+			options.compilerArgs += ["--release", customJavaSourceVersion]
 			inputs.property("customJavaSourceVersion", customJavaSourceVersion)
 		}
 	}

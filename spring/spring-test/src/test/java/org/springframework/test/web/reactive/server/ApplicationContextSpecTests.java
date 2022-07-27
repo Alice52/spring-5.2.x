@@ -38,20 +38,21 @@ public class ApplicationContextSpecTests {
 
     @Test // SPR-17094
     public void sessionManagerBean() {
-//        ApplicationContext context = new AnnotationConfigApplicationContext(WebConfig.class);
-//        ApplicationContextSpec spec = new ApplicationContextSpec(context);
-//        WebTestClient testClient = spec.configureClient().build();
-//
-//        for (int i = 0; i < 2; i++) {
-//            testClient
-//                    .get()
-//                    .uri("/sessionClassName")
-//                    .exchange()
-//                    .expectStatus()
-//                    .isOk()
-//                    .expectBody(String.class)
-//                    .isEqualTo("MockWebSession");
-//        }
+        //        ApplicationContext context = new
+        // AnnotationConfigApplicationContext(WebConfig.class);
+        //        ApplicationContextSpec spec = new ApplicationContextSpec(context);
+        //        WebTestClient testClient = spec.configureClient().build();
+        //
+        //        for (int i = 0; i < 2; i++) {
+        //            testClient
+        //                    .get()
+        //                    .uri("/sessionClassName")
+        //                    .exchange()
+        //                    .expectStatus()
+        //                    .isOk()
+        //                    .expectBody(String.class)
+        //                    .isEqualTo("MockWebSession");
+        //        }
     }
 
     @Configuration

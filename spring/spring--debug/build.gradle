@@ -1,20 +1,20 @@
 description = "Spring Debug"
 
 dependencies {
-    compile(project(":spring-context")) {
-        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
-    }
-    compile(project(":kotlin-coroutines"))
-    compile 'cn.hutool:hutool-all:5.2.0'
-    compile 'org.slf4j:slf4j-api:1.7.25'
-    implementation 'ch.qos.logback:logback-classic:1.2.3'
-    implementation 'ch.qos.logback:logback-core:1.2.3'
+	compile(project(":spring-context")) {
+		exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+	}
+	compile(project(":kotlin-coroutines"))
+	compile 'cn.hutool:hutool-all:5.2.0'
+	compile 'org.slf4j:slf4j-api:1.7.25'
+	implementation 'ch.qos.logback:logback-classic:1.2.3'
+	implementation 'ch.qos.logback:logback-core:1.2.3'
 
-    compile 'junit:junit:4.12'
-    compile group: 'org.hamcrest', name: 'hamcrest-core', version: '1.3'
+	compile 'junit:junit:4.12'
+	compile group: 'org.hamcrest', name: 'hamcrest-core', version: '1.3'
 
-    annotationProcessor 'org.projectlombok:lombok:1.18.10'
-    compile 'org.projectlombok:lombok:1.18.10'
+	annotationProcessor 'org.projectlombok:lombok:1.18.10'
+	compile 'org.projectlombok:lombok:1.18.10'
 }
 
 test.enabled = true
