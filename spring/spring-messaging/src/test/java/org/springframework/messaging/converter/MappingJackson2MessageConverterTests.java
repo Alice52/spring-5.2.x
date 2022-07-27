@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,8 +89,13 @@ public class MappingJackson2MessageConverterTests {
     public void fromMessage() {
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
         String payload =
-                "{\"bytes\":\"AQI=\",\"array\":[\"Foo\",\"Bar\"],"
-                        + "\"number\":42,\"string\":\"Foo\",\"bool\":true,\"fraction\":42.0}";
+                "{"
+                        + "\"bytes\":\"AQI=\","
+                        + "\"array\":[\"Foo\",\"Bar\"],"
+                        + "\"number\":42,"
+                        + "\"string\":\"Foo\","
+                        + "\"bool\":true,"
+                        + "\"fraction\":42.0}";
         Message<?> message =
                 MessageBuilder.withPayload(payload.getBytes(StandardCharsets.UTF_8)).build();
         MyBean actual = (MyBean) converter.fromMessage(message, MyBean.class);
@@ -217,7 +222,7 @@ public class MappingJackson2MessageConverterTests {
         Message<?> message = converter.toMessage(payload, headers);
 
         assertThat(new String((byte[]) message.getPayload(), StandardCharsets.UTF_16BE))
-                .isEqualTo("\"" + payload + "\"");
+                .isEqualTo(("\"" + payload + "\""));
         assertThat(message.getHeaders().get(MessageHeaders.CONTENT_TYPE)).isEqualTo(contentType);
     }
 
@@ -233,7 +238,7 @@ public class MappingJackson2MessageConverterTests {
         String payload = "H\u00e9llo W\u00f6rld";
         Message<?> message = converter.toMessage(payload, headers);
 
-        assertThat(message.getPayload()).isEqualTo("\"" + payload + "\"");
+        assertThat(message.getPayload()).isEqualTo(("\"" + payload + "\""));
         assertThat(message.getHeaders().get(MessageHeaders.CONTENT_TYPE)).isEqualTo(contentType);
     }
 

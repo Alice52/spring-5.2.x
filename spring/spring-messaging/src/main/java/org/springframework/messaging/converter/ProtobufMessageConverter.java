@@ -110,10 +110,10 @@ public class ProtobufMessageConverter extends AbstractMessageConverter {
 
     @Override
     protected boolean canConvertTo(Object payload, @Nullable MessageHeaders headers) {
-        MimeType contentType = getMimeType(headers);
+        MimeType mimeType = getMimeType(headers);
         return (super.canConvertTo(payload, headers)
                 || this.protobufFormatSupport != null
-                        && this.protobufFormatSupport.supportsWriteOnly(contentType));
+                        && this.protobufFormatSupport.supportsWriteOnly(mimeType));
     }
 
     @Override

@@ -523,8 +523,8 @@ class RouterFunctionDsl internal constructor(private val init: (RouterFunctionDs
      */
     fun filter(filterFunction: (ServerRequest, (ServerRequest) -> ServerResponse) -> ServerResponse) {
         builder.filter { request, next ->
-            filterFunction(request) { handlerRequest ->
-                next.handle(handlerRequest)
+            filterFunction(request) {
+                next.handle(request)
             }
         }
     }

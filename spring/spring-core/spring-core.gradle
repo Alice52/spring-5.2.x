@@ -9,7 +9,7 @@ description = "Spring Core"
 apply plugin: "kotlin"
 
 // spring-core includes asm and repackages cglib, inlining both into the spring-core jar.
-// cglib itself depends on asm and is therefore further transformed by the ShadowJar task to
+// cglib itself depends on asm and is therefore further transformed by the JarJar task to
 // depend on org.springframework.asm; this avoids including two different copies of asm.
 def cglibVersion = "3.3.0"
 def objenesisVersion = "3.1"
@@ -53,27 +53,27 @@ dependencies {
 	optional("io.reactivex:rxjava-reactive-streams")
 	optional("io.reactivex.rxjava2:rxjava")
 	optional("io.netty:netty-buffer")
-	testCompile(project(":kotlin-coroutines"))
+	testCompile("io.projectreactor:reactor-test")
 	testCompile("javax.annotation:javax.annotation-api")
-	testCompile("javax.xml.bind:jaxb-api")
 	testCompile("com.google.code.findbugs:jsr305")
-	testCompile("com.fasterxml.woodstox:woodstox-core")
 	testCompile("org.xmlunit:xmlunit-assertj")
 	testCompile("org.xmlunit:xmlunit-matchers")
-	testCompile("io.projectreactor:reactor-test")
+	testCompile("javax.xml.bind:jaxb-api")
+	testCompile("com.fasterxml.woodstox:woodstox-core")
+	testCompile(project(":kotlin-coroutines"))
 	testCompile("io.projectreactor.tools:blockhound")
 	testFixturesImplementation("com.google.code.findbugs:jsr305")
+	testFixturesImplementation("io.projectreactor:reactor-test")
+	testFixturesImplementation("org.assertj:assertj-core")
 	testFixturesImplementation("org.junit.platform:junit-platform-launcher")
 	testFixturesImplementation("org.junit.jupiter:junit-jupiter-api")
 	testFixturesImplementation("org.junit.jupiter:junit-jupiter-params")
-	testFixturesImplementation("org.assertj:assertj-core")
 	testFixturesImplementation("org.xmlunit:xmlunit-assertj")
-	testFixturesImplementation("io.projectreactor:reactor-test")
 }
 
 jar {
 	reproducibleFileOrder = true
-	preserveFileTimestamps = false  // maybe not necessary here, but good for reproducibility
+	preserveFileTimestamps = false // maybe not necessary here, but good for reproducibility
 
 	// Inline repackaged cglib classes directly into spring-core jar
 	dependsOn cglibRepackJar

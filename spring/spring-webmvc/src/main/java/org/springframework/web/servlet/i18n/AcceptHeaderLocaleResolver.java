@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.LocaleResolver;
 
 /**
- * {@link LocaleResolver} implementation that simply uses the primary locale specified in the
+ * 直接使用Header里的accept language值，不可以在程序中修改
+ *
+ * <p>{@link LocaleResolver} implementation that simply uses the primary locale specified in the
  * "accept-language" header of the HTTP request (that is, the locale sent by the client browser,
  * normally that of the client's OS).
  *
@@ -57,7 +59,9 @@ public class AcceptHeaderLocaleResolver implements LocaleResolver {
     }
 
     /**
-     * Configure supported locales to check against the requested locales determined via {@link
+     * 配置支持的区域列表
+     *
+     * <p>Configure supported locales to check against the requested locales determined via {@link
      * HttpServletRequest#getLocales()}. If this is not configured then {@link
      * HttpServletRequest#getLocale()} is used instead.
      *
@@ -82,10 +86,12 @@ public class AcceptHeaderLocaleResolver implements LocaleResolver {
     }
 
     /**
-     * Configure a fixed default locale to fall back on if the request does not have an
+     * 如果 HTTP 请求头没有 Accept-Language，则使用该默认的语言环境设置
+     *
+     * <p>Configure a fixed default locale to fall back on if the request does not have an
      * "Accept-Language" header.
      *
-     * <p>By default this is not set in which case when there is no "Accept-Language" header, the
+     * <p>By default this is not set in which case when there is "Accept-Language" header, the
      * default locale for the server is used as defined in {@link HttpServletRequest#getLocale()}.
      *
      * @param defaultLocale the default locale to use
@@ -97,19 +103,27 @@ public class AcceptHeaderLocaleResolver implements LocaleResolver {
 
     @Override
     public Locale resolveLocale(HttpServletRequest request) {
+        // 获取默认的语言环境
         Locale defaultLocale = getDefaultLocale();
+        // 如果请求头 'Accept-Language' 为空，且默认语言环境不为空，则返回默认的
         if (defaultLocale != null && request.getHeader("Accept-Language") == null) {
             return defaultLocale;
         }
+        // 从请求中获取 Locale 对象 `requestLocale`
         Locale requestLocale = request.getLocale();
+        // 获取当前支持的 `supportedLocales` 集合
         List<Locale> supportedLocales = getSupportedLocales();
+        // 如果支持的 `supportedLocales` 集合为空，或者包含请求中的 `requestLocale` ，则返回请求中的语言环境
         if (supportedLocales.isEmpty() || supportedLocales.contains(requestLocale)) {
             return requestLocale;
         }
+        // 从请求中的 Locale 们和支持的 Locale 集合进行匹配
         Locale supportedLocale = findSupportedLocale(request, supportedLocales);
+        // 如果匹配到了则直接返回匹配结果
         if (supportedLocale != null) {
             return supportedLocale;
         }
+        // 默认的 `defaultLocale` 不为空则直接返回，否则返回请求中获取到的 `requestLocale` 对象
         return (defaultLocale != null ? defaultLocale : requestLocale);
     }
 

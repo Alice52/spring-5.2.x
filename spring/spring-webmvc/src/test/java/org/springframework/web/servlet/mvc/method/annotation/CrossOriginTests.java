@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 /**
- * Tests for {@link CrossOrigin @CrossOrigin} annotated methods.
+ * Test fixture for {@link CrossOrigin @CrossOrigin} annotated methods.
  *
  * @author Sebastien Deleuze
  * @author Sam Brannen
@@ -321,27 +321,6 @@ public class CrossOriginTests {
         assertThat(this.handlerMapping.getHandler(request)).isNull();
     }
 
-    @Test
-    public void maxAgeWithDefaultOrigin() throws Exception {
-        this.handlerMapping.registerHandler(new MaxAgeWithDefaultOriginController());
-
-        this.request.setRequestURI("/classAge");
-        HandlerExecutionChain chain = this.handlerMapping.getHandler(request);
-        CorsConfiguration config = getCorsConfiguration(chain, false);
-        assertThat(config).isNotNull();
-        assertThat(config.getAllowedMethods()).containsExactly("GET");
-        assertThat(config.getAllowedOrigins()).containsExactly("*");
-        assertThat(config.getMaxAge()).isEqualTo(10);
-
-        this.request.setRequestURI("/methodAge");
-        chain = this.handlerMapping.getHandler(request);
-        config = getCorsConfiguration(chain, false);
-        assertThat(config).isNotNull();
-        assertThat(config.getAllowedMethods()).containsExactly("GET");
-        assertThat(config.getAllowedOrigins()).containsExactly("*");
-        assertThat(config.getMaxAge()).isEqualTo(100);
-    }
-
     private CorsConfiguration getCorsConfiguration(
             HandlerExecutionChain chain, boolean isPreFlightRequest) {
         if (isPreFlightRequest) {
@@ -453,19 +432,6 @@ public class CrossOriginTests {
         @CrossOrigin(allowCredentials = "true")
         @RequestMapping(path = "/baz", method = RequestMethod.GET)
         public void baz() {}
-    }
-
-    @Controller
-    @CrossOrigin(maxAge = 10)
-    private static class MaxAgeWithDefaultOriginController {
-
-        @CrossOrigin
-        @GetMapping("/classAge")
-        void classAge() {}
-
-        @CrossOrigin(maxAge = 100)
-        @GetMapping("/methodAge")
-        void methodAge() {}
     }
 
     @Controller

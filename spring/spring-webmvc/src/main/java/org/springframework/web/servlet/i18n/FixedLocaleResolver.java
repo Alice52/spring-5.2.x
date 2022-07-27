@@ -27,8 +27,10 @@ import org.springframework.context.i18n.TimeZoneAwareLocaleContext;
 import org.springframework.lang.Nullable;
 
 /**
- * {@link org.springframework.web.servlet.LocaleResolver} implementation that always returns a fixed
- * default locale and optionally time zone. Default is the current JVM's default locale.
+ * 用于解析出固定的Locale,也就是在创建时就设置好确定的Locale，之后无法修改
+ *
+ * <p>{@link org.springframework.web.servlet.LocaleResolver} implementation that always returns a
+ * fixed default locale and optionally time zone. Default is the current JVM's default locale.
  *
  * <p>Note: Does not support {@code setLocale(Context)}, as the fixed locale and time zone cannot be
  * changed.

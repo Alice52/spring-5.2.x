@@ -35,8 +35,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Abstract base class for bean definition readers which implement the {@link BeanDefinitionReader}
- * interface.
+ * 对environmentCapable、BeanDefinitionReader类定义的功能进行实现
+ *
+ * <p>Abstract base class for bean definition readers which implement the {@link
+ * BeanDefinitionReader} interface.
  *
  * <p>Provides common properties like the bean factory to work on and the class loader to use for
  * loading bean classes.
@@ -218,7 +220,7 @@ public abstract class AbstractBeanDefinitionReader
      */
     public int loadBeanDefinitions(String location, @Nullable Set<Resource> actualResources)
             throws BeanDefinitionStoreException {
-        // 第一步 loadBeanDefinitions 设置过 resourceLoader 为 AbstractXmlApplicationContext
+        // 此处获取resourceLoader对象
         ResourceLoader resourceLoader = getResourceLoader();
         if (resourceLoader == null) {
             throw new BeanDefinitionStoreException(
@@ -230,9 +232,7 @@ public abstract class AbstractBeanDefinitionReader
         if (resourceLoader instanceof ResourcePatternResolver) {
             // Resource pattern matching available.
             try {
-                // 在创建 ClassPathXmlApplicationContext 的父类构造方法内有初始化
-                // PathMatchingResourcePatternResolver
-                // 使用 DefaultClassLoader 的 getResource 完成 Resource 的定位
+                // 调用DefaultResourceLoader的getResource完成具体的Resource定位
                 Resource[] resources =
                         ((ResourcePatternResolver) resourceLoader).getResources(location);
                 int count = loadBeanDefinitions(resources);

@@ -33,11 +33,17 @@ package org.springframework.aop;
 @FunctionalInterface
 public interface ClassFilter {
 
-    /** Canonical instance of a ClassFilter that matches all classes. */
+    /**
+     * ClassFilter的规范实例能够匹配所有的类
+     *
+     * <p>Canonical instance of a ClassFilter that matches all classes.
+     */
     ClassFilter TRUE = TrueClassFilter.INSTANCE;
 
     /**
-     * Should the pointcut apply to the given interface or target class?
+     * 是否应该将pointcut应用到给定的接口或者类上
+     *
+     * <p>Should the pointcut apply to the given interface or target class?
      *
      * @param clazz the candidate target class
      * @return whether the advice should apply to the given target class

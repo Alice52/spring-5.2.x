@@ -29,7 +29,9 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.bind.support.SimpleSessionStatus;
 
 /**
- * Records model and view related decisions made by {@link HandlerMethodArgumentResolver
+ * 在控制器的调用过程中， 记录视图和model信息
+ *
+ * <p>Records model and view related decisions made by {@link HandlerMethodArgumentResolver
  * HandlerMethodArgumentResolvers} and {@link HandlerMethodReturnValueHandler
  * HandlerMethodReturnValueHandlers} during the course of invocation of a controller method.
  *
@@ -47,6 +49,7 @@ import org.springframework.web.bind.support.SimpleSessionStatus;
  */
 public class ModelAndViewContainer {
 
+    // 默认使用的model对象,使用的情况最多
     private final ModelMap defaultModel = new BindingAwareModelMap();
 
     private final Set<String> noBinding = new HashSet<>(4);
@@ -55,16 +58,22 @@ public class ModelAndViewContainer {
 
     private final SessionStatus sessionStatus = new SimpleSessionStatus();
 
+    // 如果为true则在处理器返回redirect视图时一定不适用defaultModel
     private boolean ignoreDefaultModelOnRedirect = false;
 
+    // 视图对象，object类型，可以是实际视图，也可以是string类型的逻辑视图
     @Nullable private Object view;
 
+    // redirect类型的model
     @Nullable private ModelMap redirectModel;
 
+    // 处理器返回redirect视图的标志
     private boolean redirectModelScenario = false;
 
+    // 用于设置sessionAttribute使用完的标志
     @Nullable private HttpStatus status;
 
+    // 请求是否已经处理完的标志
     private boolean requestHandled = false;
 
     /**
@@ -126,15 +135,21 @@ public class ModelAndViewContainer {
     }
 
     /**
-     * Return the model to use -- either the "default" or the "redirect" model. The default model is
-     * used if {@code redirectModelScenario=false} or there is no redirect model (i.e.
+     * 返回要使用的视图，要么是默认的model，要么是传递redirect参数的model 根据getDefaultModel方法来做判断
+     *
+     * <p>Return the model to use -- either the "default" or the "redirect" model. The default model
+     * is used if {@code redirectModelScenario=false} or there is no redirect model (i.e.
      * RedirectAttributes was not declared as a method argument) and {@code
      * ignoreDefaultModelOnRedirect=false}.
      */
     public ModelMap getModel() {
+        // 1、处理器返回的不是redirect视图
+        // 2、处理器返回的是redirect视图单是redirectModel为空，并且ignoreDefaultModelOnRedirect也是false
         if (useDefaultModel()) {
             return this.defaultModel;
         } else {
+            // 1、处理器返回redirect视图，并且redirectModel不为null，
+            // 2、处理器返回的是redirect视图，并且ignoreDefaultModelOnRedirect也是true
             if (this.redirectModel == null) {
                 this.redirectModel = new ModelMap();
             }
@@ -142,7 +157,13 @@ public class ModelAndViewContainer {
         }
     }
 
-    /** Whether to use the default model or the redirect model. */
+    /**
+     * 如果redirectModelScenario为false，也就是返回的不是redirect视图的时候一定返回的是defaultModel,如果返回redirect视图的情况下需要根据
+     * redirectModel和ignoreDefaultModelOnRedirect的情况进一步判断，如果redirectModel不为空和ignoreDefaultModelOnRedirect设置为true
+     * 这两个条件中有一个亨利则返回redirectModel否则返回的就是defaultModel
+     *
+     * <p>Whether to use the default model or the redirect model.
+     */
     private boolean useDefaultModel() {
         return (!this.redirectModelScenario
                 || (this.redirectModel == null && !this.ignoreDefaultModelOnRedirect));

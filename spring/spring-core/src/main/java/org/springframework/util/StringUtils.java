@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -600,7 +600,7 @@ public abstract class StringUtils {
 
         char[] chars = str.toCharArray();
         chars[0] = updatedChar;
-        return new String(chars);
+        return new String(chars, 0, chars.length);
     }
 
     /**
@@ -1427,8 +1427,8 @@ public abstract class StringUtils {
         }
 
         StringJoiner sj = new StringJoiner(delim);
-        for (Object elem : arr) {
-            sj.add(String.valueOf(elem));
+        for (Object o : arr) {
+            sj.add(String.valueOf(o));
         }
         return sj.toString();
     }

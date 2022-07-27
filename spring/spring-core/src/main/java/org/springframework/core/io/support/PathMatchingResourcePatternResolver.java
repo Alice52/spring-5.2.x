@@ -179,6 +179,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 
     private final ResourceLoader resourceLoader;
 
+    // 创建ant方式的路径匹配器
     private PathMatcher pathMatcher = new AntPathMatcher();
 
     /**
@@ -427,10 +428,6 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
                         // duplicate detection
                         filePath = StringUtils.capitalize(filePath);
                     }
-                    // # can appear in directories/filenames, java.net.URL should not treat it as a
-                    // fragment
-                    filePath = StringUtils.replace(filePath, "#", "%23");
-                    // Build URL that points to the root of the jar file
                     UrlResource jarResource =
                             new UrlResource(
                                     ResourceUtils.JAR_URL_PREFIX

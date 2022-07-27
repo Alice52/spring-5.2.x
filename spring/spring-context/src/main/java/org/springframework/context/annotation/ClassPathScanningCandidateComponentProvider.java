@@ -182,7 +182,9 @@ public class ClassPathScanningCandidateComponentProvider
     }
 
     /**
-     * Register the default filter for {@link Component @Component}.
+     * 注册默认过滤器，主要是@component
+     *
+     * <p>Register the default filter for {@link Component @Component}.
      *
      * <p>This will implicitly register all annotations that have the {@link Component @Component}
      * meta-annotation including the {@link Repository @Repository}, {@link Service @Service}, and
@@ -193,9 +195,11 @@ public class ClassPathScanningCandidateComponentProvider
      */
     @SuppressWarnings("unchecked")
     protected void registerDefaultFilters() {
+        // 添加@Component注解Filter到includeFilters中
         this.includeFilters.add(new AnnotationTypeFilter(Component.class));
         ClassLoader cl = ClassPathScanningCandidateComponentProvider.class.getClassLoader();
         try {
+            // 添加@ManagedBean注解Filter到includeFilters中
             this.includeFilters.add(
                     new AnnotationTypeFilter(
                             ((Class<? extends Annotation>)
@@ -207,6 +211,7 @@ public class ClassPathScanningCandidateComponentProvider
             // JSR-250 1.1 API (as included in Java EE 6) not available - simply skip.
         }
         try {
+            // 添加@Named注解filter到includeFilters中
             this.includeFilters.add(
                     new AnnotationTypeFilter(
                             ((Class<? extends Annotation>)
@@ -253,8 +258,10 @@ public class ClassPathScanningCandidateComponentProvider
     }
 
     /**
-     * Set the {@link ResourceLoader} to use for resource locations. This will typically be a {@link
-     * ResourcePatternResolver} implementation.
+     * 创建了ResourcePatternResolver,用来解析URL资源，
+     *
+     * <p>Set the {@link ResourceLoader} to use for resource locations. This will typically be a
+     * {@link ResourcePatternResolver} implementation.
      *
      * <p>Default is a {@code PathMatchingResourcePatternResolver}, also capable of resource pattern
      * resolving through the {@code ResourcePatternResolver} interface.
@@ -266,7 +273,9 @@ public class ClassPathScanningCandidateComponentProvider
     public void setResourceLoader(@Nullable ResourceLoader resourceLoader) {
         this.resourcePatternResolver =
                 ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
+        // 创建CachingMetadataReaderFactory，用来做字节码文件元数据的缓存
         this.metadataReaderFactory = new CachingMetadataReaderFactory(resourceLoader);
+        // 创建CandidateComponentsIndexLoader，spring内部定义的组件，读取META-INF/spring.components下的信息
         this.componentsIndex =
                 CandidateComponentsIndexLoader.loadIndex(
                         this.resourcePatternResolver.getClassLoader());
@@ -376,26 +385,34 @@ public class ClassPathScanningCandidateComponentProvider
         Set<BeanDefinition> candidates = new LinkedHashSet<>();
         try {
             Set<String> types = new HashSet<>();
+            // 遍历包含的过滤器
             for (TypeFilter filter : this.includeFilters) {
+                // 提取对应的类型
                 String stereotype = extractStereotype(filter);
                 if (stereotype == null) {
                     throw new IllegalArgumentException(
                             "Failed to extract stereotype from " + filter);
                 }
+                // 添加到类型集合中
                 types.addAll(index.getCandidateTypes(basePackage, stereotype));
             }
             boolean traceEnabled = logger.isTraceEnabled();
             boolean debugEnabled = logger.isDebugEnabled();
+            // 遍历匹配所有的类资源
             for (String type : types) {
+                // 使用metadataReader读取资源，metadataReader是专门用来访问元数据的类
                 MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(type);
+                // 使用过滤器检查给定的类是否我候选类（候选类，与excludeFilters的所有Filter不匹配，并且与includeFilters的至少一个Filter匹配）
                 if (isCandidateComponent(metadataReader)) {
                     ScannedGenericBeanDefinition sbd =
                             new ScannedGenericBeanDefinition(metadataReader);
                     sbd.setSource(metadataReader.getResource());
+                    // 判断sbd是否为候选类
                     if (isCandidateComponent(sbd)) {
                         if (debugEnabled) {
                             logger.debug("Using candidate component class from index: " + type);
                         }
+                        // 确定为候选类，则添加到candidates
                         candidates.add(sbd);
                     } else {
                         if (debugEnabled) {
@@ -536,6 +553,10 @@ public class ClassPathScanningCandidateComponentProvider
      */
     protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
         AnnotationMetadata metadata = beanDefinition.getMetadata();
+        /**
+         * isIndependent:确定底层类是否是独立的，即它是否是顶级类或者嵌套类，他可以独立于封闭类构造 isConcrete：判断底层类是否表示具体类，即：既不是接口也不是抽象类
+         * isAbstract：是否被标记为抽象类 hasAnnotatedMethods：确定基础类是否具有使用给定注解@Lookup类型进行数据的任何方法
+         */
         return (metadata.isIndependent()
                 && (metadata.isConcrete()
                         || (metadata.isAbstract()

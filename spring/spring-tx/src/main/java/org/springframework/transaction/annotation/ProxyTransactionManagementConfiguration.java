@@ -26,8 +26,10 @@ import org.springframework.transaction.interceptor.TransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 /**
- * {@code @Configuration} class that registers the Spring infrastructure beans necessary to enable
- * proxy-based annotation-driven transaction management.
+ * 代理事务配置，注册事务需要用的一些类，而且Role=ROLE_INFRASTRUCTURE都是属于内部级别的
+ *
+ * <p>{@code @Configuration} class that registers the Spring infrastructure beans necessary to
+ * enable proxy-based annotation-driven transaction management.
  *
  * @author Chris Beams
  * @author Sebastien Deleuze

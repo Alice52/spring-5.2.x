@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,10 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.lang.Nullable;
 
 /**
- * Abstract base class for factories that can create Spring AOP Advisors given AspectJ classes from
- * classes honoring the AspectJ 5 annotation syntax.
+ * AspectJAdvisorFactory的子类。使用AspectJ注解 生成Advisor的工厂类
+ *
+ * <p>Abstract base class for factories that can create Spring AOP Advisors given AspectJ classes
+ * from classes honoring the AspectJ 5 annotation syntax.
  *
  * <p>This class handles annotation parsing and validation functionality. It does not actually
  * generate Spring AOP Advisors, which is deferred to subclasses.
@@ -82,6 +84,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
     @SuppressWarnings("unchecked")
     @Nullable
     protected static AspectJAnnotation<?> findAspectJAnnotationOnMethod(Method method) {
+        // 遍历所有注解，找到就返回
         for (Class<?> clazz : ASPECTJ_ANNOTATION_CLASSES) {
             AspectJAnnotation<?> foundAnnotation =
                     findAnnotation(method, (Class<Annotation>) clazz);
@@ -92,6 +95,14 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
         return null;
     }
 
+    /**
+     * 获取指定方法上的注解并使用AspectAnnotation封装
+     *
+     * @param method
+     * @param toLookFor
+     * @param <A>
+     * @return
+     */
     @Nullable
     private static <A extends Annotation> AspectJAnnotation<A> findAnnotation(
             Method method, Class<A> toLookFor) {
@@ -104,9 +115,11 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
     }
 
     /**
-     * We consider something to be an AspectJ aspect suitable for use by the Spring AOP system if it
-     * has the @Aspect annotation, and was not compiled by ajc. The reason for this latter test is
-     * that aspects written in the code-style (AspectJ language) also have the annotation present
+     * 主要是看是否有@Aspect注解，还有就是没有ajc$开头的属性名
+     *
+     * <p>We consider something to be an AspectJ aspect suitable for use by the Spring AOP system if
+     * it has the @Aspect annotation, and was not compiled by ajc. The reason for this latter test
+     * is that aspects written in the code-style (AspectJ language) also have the annotation present
      * when compiled by ajc with the -1.5 flag, yet they cannot be consumed by Spring AOP.
      */
     @Override
@@ -139,14 +152,13 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
     @Override
     public void validate(Class<?> aspectClass) throws AopConfigException {
         // If the parent has the annotation and isn't abstract it's an error
-        Class<?> superclass = aspectClass.getSuperclass();
-        if (superclass.getAnnotation(Aspect.class) != null
-                && !Modifier.isAbstract(superclass.getModifiers())) {
+        if (aspectClass.getSuperclass().getAnnotation(Aspect.class) != null
+                && !Modifier.isAbstract(aspectClass.getSuperclass().getModifiers())) {
             throw new AopConfigException(
                     "["
                             + aspectClass.getName()
                             + "] cannot extend concrete aspect ["
-                            + superclass.getName()
+                            + aspectClass.getSuperclass().getName()
                             + "]");
         }
 
@@ -189,6 +201,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
      */
     protected static class AspectJAnnotation<A extends Annotation> {
 
+        // 切点表达式所在的属性,pointcut会覆盖value的值,通知类型注解中的属性
         private static final String[] EXPRESSION_ATTRIBUTES = new String[] {"pointcut", "value"};
 
         private static Map<Class<?>, AspectJAnnotationType> annotationTypeMap = new HashMap<>(8);
@@ -202,11 +215,15 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
         private final String argumentNames;
 
         public AspectJAnnotation(A annotation) {
+            // 注解信息
             this.annotation = annotation;
+            // 根据注解类型获取通知类型
             this.annotationType = determineAnnotationType(annotation);
             try {
+                // 从通知类型注解上面获取切点表达式
                 this.pointcutExpression = resolveExpression(annotation);
                 Object argNames = AnnotationUtils.getValue(annotation, "argNames");
+                // 获取参数的名字
                 this.argumentNames = (argNames instanceof String ? (String) argNames : "");
             } catch (Exception ex) {
                 throw new IllegalArgumentException(
@@ -222,7 +239,9 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
             throw new IllegalStateException("Unknown annotation type: " + annotation);
         }
 
+        // 从这个获取切点表达式的代码中我们可以看到 pointcut的属性会覆盖value的属性值
         private String resolveExpression(A annotation) {
+            // 循环上面的切点属性
             for (String attributeName : EXPRESSION_ATTRIBUTES) {
                 Object val = AnnotationUtils.getValue(annotation, attributeName);
                 if (val instanceof String) {
@@ -257,6 +276,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
         }
 
         static {
+            // 初始化通知类型
             annotationTypeMap.put(Pointcut.class, AspectJAnnotationType.AtPointcut);
             annotationTypeMap.put(Around.class, AspectJAnnotationType.AtAround);
             annotationTypeMap.put(Before.class, AspectJAnnotationType.AtBefore);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,13 +83,11 @@ public interface TestExecutionListener {
     default void beforeTestClass(TestContext testContext) throws Exception {}
 
     /**
-     * Prepares the {@linkplain Object test instance} of the supplied {@linkplain TestContext test
-     * context} &mdash; for example, to inject dependencies.
+     * Prepares the {@link Object test instance} of the supplied {@link TestContext test context},
+     * for example by injecting dependencies.
      *
-     * <p>This method should be called immediately after instantiation of the test class or as soon
-     * after instantiation as possible (as is the case with the {@link
-     * org.springframework.test.context.junit4.rules.SpringMethodRule SpringMethodRule}). In any
-     * case, this method must be called prior to any framework-specific lifecycle callbacks.
+     * <p>This method should be called immediately after instantiation of the test instance but
+     * prior to any framework-specific lifecycle callbacks.
      *
      * <p>The default implementation is <em>empty</em>. Can be overridden by concrete classes as
      * necessary.
@@ -123,8 +121,8 @@ public interface TestExecutionListener {
     default void beforeTestMethod(TestContext testContext) throws Exception {}
 
     /**
-     * Pre-processes a test <em>immediately before</em> execution of the {@linkplain
-     * java.lang.reflect.Method test method} in the supplied {@linkplain TestContext test context}
+     * Pre-processes a test <em>immediately before</em> execution of the {@link
+     * java.lang.reflect.Method test method} in the supplied {@link TestContext test context}
      * &mdash; for example, for timing or logging purposes.
      *
      * <p>This method <strong>must</strong> be called after framework-specific <em>before</em>
@@ -144,8 +142,8 @@ public interface TestExecutionListener {
     default void beforeTestExecution(TestContext testContext) throws Exception {}
 
     /**
-     * Post-processes a test <em>immediately after</em> execution of the {@linkplain
-     * java.lang.reflect.Method test method} in the supplied {@linkplain TestContext test context}
+     * Post-processes a test <em>immediately after</em> execution of the {@link
+     * java.lang.reflect.Method test method} in the supplied {@link TestContext test context}
      * &mdash; for example, for timing or logging purposes.
      *
      * <p>This method <strong>must</strong> be called before framework-specific <em>after</em>

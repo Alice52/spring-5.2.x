@@ -29,6 +29,7 @@ eclipse.classpath.file.whenMerged { classpath ->
 	classpath.entries.removeAll { entry -> (entry.path =~ /(?!.*?repack.*\.jar).*?\/([^\/]+)\/build\/libs\/[^\/]+\.jar/) }
 }
 
+
 // Use separate main/test outputs (prevents WTP from packaging test classes)
 eclipse.classpath.defaultOutputDir = file(project.name + "/bin/eclipse")
 eclipse.classpath.file.beforeMerged { classpath ->

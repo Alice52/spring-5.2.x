@@ -22,8 +22,10 @@ import org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor;
 import org.springframework.lang.Nullable;
 
 /**
- * Advisor driven by a {@link CacheOperationSource}, used to include a cache advice bean for methods
- * that are cacheable.
+ * Spring的整个org.springframework.cache.Cache体系都是从这里开始的
+ *
+ * <p>Advisor driven by a {@link CacheOperationSource}, used to include a cache advice bean for
+ * methods that are cacheable.
  *
  * @author Costin Leau
  * @since 3.1
@@ -33,6 +35,7 @@ public class BeanFactoryCacheOperationSourceAdvisor extends AbstractBeanFactoryP
 
     @Nullable private CacheOperationSource cacheOperationSource;
 
+    // Pointcut使用的是CacheOperationSourcePointcut
     private final CacheOperationSourcePointcut pointcut =
             new CacheOperationSourcePointcut() {
                 @Override

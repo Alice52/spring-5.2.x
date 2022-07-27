@@ -19,7 +19,9 @@ package org.springframework.context;
 import org.springframework.lang.Nullable;
 
 /**
- * Interface for objects that are suitable for message resolution in a {@link MessageSource}.
+ * 解析消息要素的包装类：code，arguments,默认消息
+ *
+ * <p>Interface for objects that are suitable for message resolution in a {@link MessageSource}.
  *
  * <p>Spring's own validation error classes implement this interface.
  *
@@ -32,8 +34,10 @@ import org.springframework.lang.Nullable;
 public interface MessageSourceResolvable {
 
     /**
-     * Return the codes to be used to resolve this message, in the order that they should get tried.
-     * The last code will therefore be the default one.
+     * 返回用于解决此消息的代码，按照指定的顺序，因此，最后一个代码将是默认代码
+     *
+     * <p>Return the codes to be used to resolve this message, in the order that they should get
+     * tried. The last code will therefore be the default one.
      *
      * @return a String array of codes which are associated with this message
      */
@@ -41,7 +45,9 @@ public interface MessageSourceResolvable {
     String[] getCodes();
 
     /**
-     * Return the array of arguments to be used to resolve this message.
+     * 返回要用于解析此消息的参数数组
+     *
+     * <p>Return the array of arguments to be used to resolve this message.
      *
      * <p>The default implementation simply returns {@code null}.
      *
@@ -55,7 +61,9 @@ public interface MessageSourceResolvable {
     }
 
     /**
-     * Return the default message to be used to resolve this message.
+     * 返回用于解析此消息的默认消息
+     *
+     * <p>Return the default message to be used to resolve this message.
      *
      * <p>The default implementation simply returns {@code null}. Note that the default message may
      * be identical to the primary message code ({@link #getCodes()}), which effectively enforces

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -138,13 +138,14 @@ public abstract class ObjectUtils {
      * @see CollectionUtils#isEmpty(java.util.Collection)
      * @see CollectionUtils#isEmpty(java.util.Map)
      */
+    @SuppressWarnings("rawtypes")
     public static boolean isEmpty(@Nullable Object obj) {
         if (obj == null) {
             return true;
         }
 
         if (obj instanceof Optional) {
-            return !((Optional<?>) obj).isPresent();
+            return !((Optional) obj).isPresent();
         }
         if (obj instanceof CharSequence) {
             return ((CharSequence) obj).length() == 0;
@@ -153,10 +154,10 @@ public abstract class ObjectUtils {
             return Array.getLength(obj) == 0;
         }
         if (obj instanceof Collection) {
-            return ((Collection<?>) obj).isEmpty();
+            return ((Collection) obj).isEmpty();
         }
         if (obj instanceof Map) {
-            return ((Map<?, ?>) obj).isEmpty();
+            return ((Map) obj).isEmpty();
         }
 
         // else
@@ -625,17 +626,24 @@ public abstract class ObjectUtils {
     // ---------------------------------------------------------------------
 
     /**
-     * Return a String representation of an object's overall identity.
+     * 可得到(obj的全类名+'@'+obj的hashCode的十六进制字符串),如果obj为null，返回空字符串
+     *
+     * <p>Return a String representation of an object's overall identity.
      *
      * @param obj the object (may be {@code null})
      * @return the object's identity as String representation, or an empty String if the object was
      *     {@code null}
      */
     public static String identityToString(@Nullable Object obj) {
+        // 如果对象为null
         if (obj == null) {
+            // 返回空字符串
             return EMPTY_STRING;
         }
-        return obj.getClass().getName() + "@" + getIdentityHexString(obj);
+        // 拼接obj的全类名+'@'+obj的hashCode的十六进制字符串，然后返回出去
+        String className = obj.getClass().getName();
+        String identityHexString = getIdentityHexString(obj);
+        return className + '@' + identityHexString;
     }
 
     /**

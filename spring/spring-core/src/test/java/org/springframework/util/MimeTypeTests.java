@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
-import org.springframework.core.testfixture.io.SerializationTestUtils;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -344,7 +343,6 @@ class MimeTypeTests {
     private void testWithQuotedParameters(String... mimeTypes) {
         String s = String.join(",", mimeTypes);
         List<MimeType> actual = MimeTypeUtils.parseMimeTypes(s);
-
         assertThat(actual.size()).isEqualTo(mimeTypes.length);
         for (int i = 0; i < mimeTypes.length; i++) {
             assertThat(actual.get(i).toString()).isEqualTo(mimeTypes[i]);
@@ -375,7 +373,6 @@ class MimeTypeTests {
 
         List<MimeType> result = new ArrayList<>(expected);
         Random rnd = new Random();
-
         // shuffle & sort 10 times
         for (int i = 0; i < 10; i++) {
             Collections.shuffle(result, rnd);
@@ -407,7 +404,12 @@ class MimeTypeTests {
         assertThat(m2.compareTo(m1) != 0).as("Invalid comparison result").isTrue();
     }
 
-    @Test // SPR-13157
+    /**
+     * SPR-13157
+     *
+     * @since 4.2
+     */
+    @Test
     void equalsIsCaseInsensitiveForCharsets() {
         MimeType m1 = new MimeType("text", "plain", singletonMap("charset", "UTF-8"));
         MimeType m2 = new MimeType("text", "plain", singletonMap("charset", "utf-8"));
@@ -415,13 +417,5 @@ class MimeTypeTests {
         assertThat(m1).isEqualTo(m2);
         assertThat(m1.compareTo(m2)).isEqualTo(0);
         assertThat(m2.compareTo(m1)).isEqualTo(0);
-    }
-
-    @Test // gh-26127
-    void serialize() throws Exception {
-        MimeType original = new MimeType("text", "plain", StandardCharsets.UTF_8);
-        MimeType deserialized = (MimeType) SerializationTestUtils.serializeAndDeserialize(original);
-        assertThat(deserialized).isEqualTo(original);
-        assertThat(original).isEqualTo(deserialized);
     }
 }

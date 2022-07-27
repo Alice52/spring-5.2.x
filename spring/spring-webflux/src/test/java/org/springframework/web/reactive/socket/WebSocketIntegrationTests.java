@@ -270,8 +270,9 @@ class WebSocketIntegrationTests extends AbstractWebSocketIntegrationTests {
                             .onErrorResume(
                                     ex ->
                                             session.close(
-                                                    CloseStatus.GOING_AWAY)) // SPR-17306 (nested
-                            // close)
+                                                    CloseStatus
+                                                            .GOING_AWAY)) // SPR-17306 (nested
+                                                                          // close)
                             .cast(WebSocketMessage.class));
         }
     }

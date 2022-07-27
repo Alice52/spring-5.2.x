@@ -23,19 +23,21 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.FileCopyUtils;
 
 /**
- * {@code ClassLoader} that does <i>not</i> always delegate to the parent loader as normal class
- * loaders do. This enables, for example, instrumentation to be forced in the overriding
- * ClassLoader, or a "throwaway" class loading behavior where selected application classes are
- * temporarily loaded in the overriding {@code ClassLoader} for introspection purposes before
- * eventually loading an instrumented version of the class in the given parent {@code ClassLoader}.
- *
+ * @code ClassLoader}并不总是想普通的类加载器一样委托给父加载器。例如这使得可以
+ *     覆盖的ClassLoader中强制执行检查，或者执行'丢弃'类的加载行为。在此行为中，处于自省目的， 以进行自省，然后最终将类的检查版本加载到给定的父级的ClassLoader
+ *     <p>{@code ClassLoader} that does <i>not</i> always delegate to the parent loader as normal
+ *     class loaders do. This enables, for example, instrumentation to be forced in the overriding
+ *     ClassLoader, or a "throwaway" class loading behavior where selected application classes are
+ *     temporarily loaded in the overriding {@code ClassLoader} for introspection purposes before
+ *     eventually loading an instrumented version of the class in the given parent {@code
+ *     ClassLoader}.
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @since 2.0.1
  */
 public class OverridingClassLoader extends DecoratingClassLoader {
 
-    /** Packages that are excluded by default. */
+    /** 默认情况下排除的软件包 Packages that are excluded by default. */
     public static final String[] DEFAULT_EXCLUDED_PACKAGES =
             new String[] {
                 "java.", "javax.", "sun.", "oracle.", "javassist.", "org.aspectj.", "net.sf.cglib."
@@ -78,6 +80,8 @@ public class OverridingClassLoader extends DecoratingClassLoader {
         return super.loadClass(name);
     }
 
+    // reslove为true时，会对指定类优先执行链接功能。默认情况下是false
+    // ClassLoad的链接功能会调用resolveClass(Class<?>)，
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         if (isEligibleForOverriding(name)) {
@@ -93,18 +97,23 @@ public class OverridingClassLoader extends DecoratingClassLoader {
     }
 
     /**
-     * Determine whether the specified class is eligible for overriding by this class loader.
+     * 确定指定的类是否适合该类加载器加载
+     *
+     * <p>Determine whether the specified class is eligible for overriding by this class loader.
      *
      * @param className the class name to check
      * @return whether the specified class is eligible
      * @see #isExcluded
      */
     protected boolean isEligibleForOverriding(String className) {
+        // 只要没有添加到excludedPackages或excludedClasses的类都适合加载
         return !isExcluded(className);
     }
 
     /**
-     * Load the specified class for overriding purposes in this ClassLoader.
+     * 在此ClassLoader中加载指定的类以进行覆盖
+     *
+     * <p>Load the specified class for overriding purposes in this ClassLoader.
      *
      * <p>The default implementation delegates to {@link #findLoadedClass}, {@link
      * #loadBytesForClass} and {@link #defineClass}.
@@ -115,10 +124,15 @@ public class OverridingClassLoader extends DecoratingClassLoader {
      */
     @Nullable
     protected Class<?> loadClassForOverriding(String name) throws ClassNotFoundException {
+        // 看看该类名是否已经加载过
         Class<?> result = findLoadedClass(name);
+        // 如果没有加载过
         if (result == null) {
+            // 加载给定类名的字节
             byte[] bytes = loadBytesForClass(name);
+            // 如果加载成功
             if (bytes != null) {
+                // 根据字节构建类对象
                 result = defineClass(name, bytes, 0, bytes.length);
             }
         }
@@ -126,7 +140,9 @@ public class OverridingClassLoader extends DecoratingClassLoader {
     }
 
     /**
-     * Load the defining bytes for the given class, to be turned into a Class object through a
+     * 加载给定类的定义字节，以通过defineClass调用将其转换为Class对象
+     *
+     * <p>Load the defining bytes for the given class, to be turned into a Class object through a
      * {@link #defineClass} call.
      *
      * <p>The default implementation delegates to {@link #openStreamForClass} and {@link
@@ -139,14 +155,18 @@ public class OverridingClassLoader extends DecoratingClassLoader {
      */
     @Nullable
     protected byte[] loadBytesForClass(String name) throws ClassNotFoundException {
+        // 打开指定类的InputStream。默认实现通过父ClassLoader的getResourceAsStream方法加载标准类文件。
         InputStream is = openStreamForClass(name);
+        // 如果输入流打不开，返回null
         if (is == null) {
             return null;
         }
         try {
             // Load the raw bytes.
+            // 记载原始字节
             byte[] bytes = FileCopyUtils.copyToByteArray(is);
             // Transform if necessary and use the potentially transformed bytes.
+            // 必须是进行转换，并使用转换后的字节，钩子方法，默认直接返回参数bytes
             return transformIfNecessary(name, bytes);
         } catch (IOException ex) {
             throw new ClassNotFoundException("Cannot load resource for class [" + name + "]", ex);
@@ -154,7 +174,9 @@ public class OverridingClassLoader extends DecoratingClassLoader {
     }
 
     /**
-     * Open an InputStream for the specified class.
+     * 打开指定类的InputStream
+     *
+     * <p>Open an InputStream for the specified class.
      *
      * <p>The default implementation loads a standard class file through the parent ClassLoader's
      * {@code getResourceAsStream} method.
@@ -164,12 +186,16 @@ public class OverridingClassLoader extends DecoratingClassLoader {
      */
     @Nullable
     protected InputStream openStreamForClass(String name) {
+        // 将给定类名的'.'覆盖成'/'后，后面拼接上'.class'，以形成类路径
         String internalName = name.replace('.', '/') + CLASS_FILE_SUFFIX;
+        // 通过父ClassLoader的getResourceAsStream方法加载标准类文件
         return getParent().getResourceAsStream(internalName);
     }
 
     /**
-     * Transformation hook to be implemented by subclasses.
+     * 转换将由子类实现，钩子方法
+     *
+     * <p>Transformation hook to be implemented by subclasses.
      *
      * <p>The default implementation simply returns the given bytes as-is.
      *
@@ -183,6 +209,7 @@ public class OverridingClassLoader extends DecoratingClassLoader {
     }
 
     static {
+        // 通过该方法，可以使得ClassLoader执行并行加载机制，提高加载效率
         ClassLoader.registerAsParallelCapable();
     }
 }

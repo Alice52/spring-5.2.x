@@ -55,7 +55,7 @@ class MergedContextConfigurationTests {
                 new MergedContextConfiguration(null, null, null, null, null);
         MergedContextConfiguration mergedConfig2 =
                 new MergedContextConfiguration(null, null, null, null, null);
-        assertThat(mergedConfig2).hasSameHashCodeAs(mergedConfig1);
+        assertThat(mergedConfig2.hashCode()).isEqualTo(mergedConfig1.hashCode());
     }
 
     @Test
@@ -64,7 +64,7 @@ class MergedContextConfigurationTests {
                 new MergedContextConfiguration(getClass(), null, null, null, loader);
         MergedContextConfiguration mergedConfig2 =
                 new MergedContextConfiguration(getClass(), null, null, null, loader);
-        assertThat(mergedConfig2).hasSameHashCodeAs(mergedConfig1);
+        assertThat(mergedConfig2.hashCode()).isEqualTo(mergedConfig1.hashCode());
     }
 
     @Test
@@ -83,7 +83,7 @@ class MergedContextConfigurationTests {
                         EMPTY_CLASS_ARRAY,
                         EMPTY_STRING_ARRAY,
                         loader);
-        assertThat(mergedConfig2).hasSameHashCodeAs(mergedConfig1);
+        assertThat(mergedConfig2.hashCode()).isEqualTo(mergedConfig1.hashCode());
     }
 
     @Test
@@ -102,7 +102,7 @@ class MergedContextConfigurationTests {
                         EMPTY_CLASS_ARRAY,
                         EMPTY_STRING_ARRAY,
                         new AnnotationConfigContextLoader());
-        assertThat(mergedConfig2.hashCode()).isNotEqualTo(mergedConfig1.hashCode());
+        assertThat(mergedConfig2.hashCode()).isNotEqualTo((long) mergedConfig1.hashCode());
     }
 
     @Test
@@ -114,7 +114,7 @@ class MergedContextConfigurationTests {
         MergedContextConfiguration mergedConfig2 =
                 new MergedContextConfiguration(
                         getClass(), locations, EMPTY_CLASS_ARRAY, EMPTY_STRING_ARRAY, loader);
-        assertThat(mergedConfig2).hasSameHashCodeAs(mergedConfig1);
+        assertThat(mergedConfig2.hashCode()).isEqualTo(mergedConfig1.hashCode());
     }
 
     @Test
@@ -127,7 +127,7 @@ class MergedContextConfigurationTests {
         MergedContextConfiguration mergedConfig2 =
                 new MergedContextConfiguration(
                         getClass(), locations2, EMPTY_CLASS_ARRAY, EMPTY_STRING_ARRAY, loader);
-        assertThat(mergedConfig2.hashCode()).isNotEqualTo(mergedConfig1.hashCode());
+        assertThat(mergedConfig2.hashCode()).isNotEqualTo((long) mergedConfig1.hashCode());
     }
 
     @Test
@@ -139,7 +139,7 @@ class MergedContextConfigurationTests {
         MergedContextConfiguration mergedConfig2 =
                 new MergedContextConfiguration(
                         getClass(), EMPTY_STRING_ARRAY, classes, EMPTY_STRING_ARRAY, loader);
-        assertThat(mergedConfig2).hasSameHashCodeAs(mergedConfig1);
+        assertThat(mergedConfig2.hashCode()).isEqualTo(mergedConfig1.hashCode());
     }
 
     @Test
@@ -152,7 +152,7 @@ class MergedContextConfigurationTests {
         MergedContextConfiguration mergedConfig2 =
                 new MergedContextConfiguration(
                         getClass(), EMPTY_STRING_ARRAY, classes2, EMPTY_STRING_ARRAY, loader);
-        assertThat(mergedConfig2.hashCode()).isNotEqualTo(mergedConfig1.hashCode());
+        assertThat(mergedConfig2.hashCode()).isNotEqualTo((long) mergedConfig1.hashCode());
     }
 
     @Test
@@ -164,7 +164,7 @@ class MergedContextConfigurationTests {
         MergedContextConfiguration mergedConfig2 =
                 new MergedContextConfiguration(
                         getClass(), EMPTY_STRING_ARRAY, EMPTY_CLASS_ARRAY, activeProfiles, loader);
-        assertThat(mergedConfig2).hasSameHashCodeAs(mergedConfig1);
+        assertThat(mergedConfig2.hashCode()).isEqualTo(mergedConfig1.hashCode());
     }
 
     @Test
@@ -177,7 +177,7 @@ class MergedContextConfigurationTests {
         MergedContextConfiguration mergedConfig2 =
                 new MergedContextConfiguration(
                         getClass(), EMPTY_STRING_ARRAY, EMPTY_CLASS_ARRAY, activeProfiles2, loader);
-        assertThat(mergedConfig2.hashCode()).isNotEqualTo(mergedConfig1.hashCode());
+        assertThat(mergedConfig2.hashCode()).isNotEqualTo((long) mergedConfig1.hashCode());
     }
 
     @Test
@@ -191,7 +191,7 @@ class MergedContextConfigurationTests {
         MergedContextConfiguration mergedConfig2 =
                 new MergedContextConfiguration(
                         getClass(), EMPTY_STRING_ARRAY, EMPTY_CLASS_ARRAY, activeProfiles2, loader);
-        assertThat(mergedConfig2).hasSameHashCodeAs(mergedConfig1);
+        assertThat(mergedConfig2.hashCode()).isEqualTo(mergedConfig1.hashCode());
     }
 
     @Test
@@ -204,7 +204,7 @@ class MergedContextConfigurationTests {
         MergedContextConfiguration mergedConfig2 =
                 new MergedContextConfiguration(
                         getClass(), EMPTY_STRING_ARRAY, EMPTY_CLASS_ARRAY, activeProfiles2, loader);
-        assertThat(mergedConfig2.hashCode()).isNotEqualTo(mergedConfig1.hashCode());
+        assertThat(mergedConfig2.hashCode()).isNotEqualTo((long) mergedConfig1.hashCode());
     }
 
     @Test
@@ -235,7 +235,7 @@ class MergedContextConfigurationTests {
                         initializerClasses2,
                         EMPTY_STRING_ARRAY,
                         loader);
-        assertThat(mergedConfig2).hasSameHashCodeAs(mergedConfig1);
+        assertThat(mergedConfig2.hashCode()).isEqualTo(mergedConfig1.hashCode());
     }
 
     @Test
@@ -264,7 +264,7 @@ class MergedContextConfigurationTests {
                         initializerClasses2,
                         EMPTY_STRING_ARRAY,
                         loader);
-        assertThat(mergedConfig2.hashCode()).isNotEqualTo(mergedConfig1.hashCode());
+        assertThat(mergedConfig2.hashCode()).isNotEqualTo((long) mergedConfig1.hashCode());
     }
 
     /** @since 3.2.2 */
@@ -298,7 +298,7 @@ class MergedContextConfigurationTests {
                         loader,
                         null,
                         parent);
-        assertThat(mergedConfig2).hasSameHashCodeAs(mergedConfig1);
+        assertThat(mergedConfig2.hashCode()).isEqualTo(mergedConfig1.hashCode());
     }
 
     /** @since 3.2.2 */
@@ -339,7 +339,7 @@ class MergedContextConfigurationTests {
                         loader,
                         null,
                         parent2);
-        assertThat(mergedConfig2.hashCode()).isNotEqualTo(mergedConfig1.hashCode());
+        assertThat(mergedConfig2.hashCode()).isNotEqualTo((long) mergedConfig1.hashCode());
     }
 
     @Test

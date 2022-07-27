@@ -1199,12 +1199,12 @@ public class CustomEditorTests {
                     @Override
                     public String getAsText() {
                         return ((String) getValue()).substring(5);
-                    }
-
-                    @Override
+                    }                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue("array" + text);
                     }
+
+
                 });
         bw.registerCustomEditor(
                 String.class,
@@ -1213,12 +1213,12 @@ public class CustomEditorTests {
                     @Override
                     public String getAsText() {
                         return ((String) getValue()).substring(4);
-                    }
-
-                    @Override
+                    }                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue("list" + text);
                     }
+
+
                 });
         bw.registerCustomEditor(
                 String.class,
@@ -1227,12 +1227,12 @@ public class CustomEditorTests {
                     @Override
                     public String getAsText() {
                         return ((String) getValue()).substring(4);
-                    }
-
-                    @Override
+                    }                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue("map" + text);
                     }
+
+
                 });
         assertThat(tb0.getName()).isEqualTo("name0");
         assertThat(tb1.getName()).isEqualTo("name1");
@@ -1360,12 +1360,12 @@ public class CustomEditorTests {
                     @Override
                     public String getAsText() {
                         return ((TestBean) getValue()).getName();
-                    }
-
-                    @Override
+                    }                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue(new TestBean("array" + text, 99));
                     }
+
+
                 });
         bw.registerCustomEditor(
                 TestBean.class,
@@ -1374,12 +1374,12 @@ public class CustomEditorTests {
                     @Override
                     public String getAsText() {
                         return ((TestBean) getValue()).getName();
-                    }
-
-                    @Override
+                    }                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue(new TestBean("list" + text, 99));
                     }
+
+
                 });
         bw.registerCustomEditor(
                 TestBean.class,
@@ -1388,12 +1388,12 @@ public class CustomEditorTests {
                     @Override
                     public String getAsText() {
                         return ((TestBean) getValue()).getName();
-                    }
-
-                    @Override
+                    }                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue(new TestBean("map" + text, 99));
                     }
+
+
                 });
 
         MutablePropertyValues pvs = new MutablePropertyValues();
@@ -1423,12 +1423,12 @@ public class CustomEditorTests {
                     @Override
                     public String getAsText() {
                         return ((TestBean) getValue()).getName();
-                    }
-
-                    @Override
+                    }                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue(new TestBean("array0" + text, 99));
                     }
+
+
                 });
         bw.registerCustomEditor(
                 TestBean.class,
@@ -1437,12 +1437,12 @@ public class CustomEditorTests {
                     @Override
                     public String getAsText() {
                         return ((TestBean) getValue()).getName();
-                    }
-
-                    @Override
+                    }                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue(new TestBean("array1" + text, 99));
                     }
+
+
                 });
         bw.registerCustomEditor(
                 TestBean.class,
@@ -1451,12 +1451,12 @@ public class CustomEditorTests {
                     @Override
                     public String getAsText() {
                         return ((TestBean) getValue()).getName();
-                    }
-
-                    @Override
+                    }                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue(new TestBean("list0" + text, 99));
                     }
+
+
                 });
         bw.registerCustomEditor(
                 TestBean.class,
@@ -1465,12 +1465,12 @@ public class CustomEditorTests {
                     @Override
                     public String getAsText() {
                         return ((TestBean) getValue()).getName();
-                    }
-
-                    @Override
+                    }                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue(new TestBean("list1" + text, 99));
                     }
+
+
                 });
         bw.registerCustomEditor(
                 TestBean.class,
@@ -1479,12 +1479,12 @@ public class CustomEditorTests {
                     @Override
                     public String getAsText() {
                         return ((TestBean) getValue()).getName();
-                    }
-
-                    @Override
+                    }                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue(new TestBean("mapkey1" + text, 99));
                     }
+
+
                 });
         bw.registerCustomEditor(
                 TestBean.class,
@@ -1493,12 +1493,12 @@ public class CustomEditorTests {
                     @Override
                     public String getAsText() {
                         return ((TestBean) getValue()).getName();
-                    }
-
-                    @Override
+                    }                    @Override
                     public void setAsText(String text) throws IllegalArgumentException {
                         setValue(new TestBean("mapkey2" + text, 99));
                     }
+
+
                 });
 
         MutablePropertyValues pvs = new MutablePropertyValues();

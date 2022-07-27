@@ -26,7 +26,9 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.annotation.AbstractWebArgumentResolverAdapter;
 
 /**
- * A Servlet-specific {@link
+ * 给父类提供了request
+ *
+ * <p>A Servlet-specific {@link
  * org.springframework.web.method.annotation.AbstractWebArgumentResolverAdapter} that creates a
  * {@link NativeWebRequest} from {@link ServletRequestAttributes}.
  *

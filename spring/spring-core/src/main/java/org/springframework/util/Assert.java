@@ -86,8 +86,8 @@ public abstract class Assert {
      * assertion failure.
      *
      * <pre class="code">
-     * Assert.state(entity.getId() == null,
-     *     () -&gt; "ID for entity " + entity.getName() + " must not already be initialized");
+     * Assert.state(id == null,
+     *     () -&gt; "ID for " + entity.getName() + " must not already be initialized");
      * </pre>
      *
      * @param expression a boolean expression
@@ -220,8 +220,7 @@ public abstract class Assert {
      * Assert that an object is not {@code null}.
      *
      * <pre class="code">
-     * Assert.notNull(entity.getId(),
-     *     () -&gt; "ID for entity " + entity.getName() + " must not be null");
+     * Assert.notNull(clazz, () -&gt; "The class '" + clazz.getName() + "' must not be null");
      * </pre>
      *
      * @param object the object to check
@@ -267,8 +266,7 @@ public abstract class Assert {
      * empty String.
      *
      * <pre class="code">
-     * Assert.hasLength(account.getName(),
-     *     () -&gt; "Name for account '" + account.getId() + "' must not be empty");
+     * Assert.hasLength(name, () -&gt; "Name for account '" + account.getId() + "' must not be empty");
      * </pre>
      *
      * @param text the String to check
@@ -318,8 +316,7 @@ public abstract class Assert {
      * null} and must contain at least one non-whitespace character.
      *
      * <pre class="code">
-     * Assert.hasText(account.getName(),
-     *     () -&gt; "Name for account '" + account.getId() + "' must not be empty");
+     * Assert.hasText(name, () -&gt; "Name for account '" + account.getId() + "' must not be empty");
      * </pre>
      *
      * @param text the String to check

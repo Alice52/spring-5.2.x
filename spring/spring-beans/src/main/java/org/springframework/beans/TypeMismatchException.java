@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,11 +34,11 @@ public class TypeMismatchException extends PropertyAccessException {
     /** Error code that a type mismatch error will be registered with. */
     public static final String ERROR_CODE = "typeMismatch";
 
-    @Nullable private final transient Object value;
-
-    @Nullable private final Class<?> requiredType;
-
     @Nullable private String propertyName;
+
+    @Nullable private transient Object value;
+
+    @Nullable private Class<?> requiredType;
 
     /**
      * Create a new {@code TypeMismatchException}.

@@ -28,8 +28,10 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
- * Base class with common functionality for proxy processors, in particular ClassLoader management
- * and the {@link #evaluateProxyInterfaces} algorithm.
+ * ProxyConfig的子类
+ *
+ * <p>Base class with common functionality for proxy processors, in particular ClassLoader
+ * management and the {@link #evaluateProxyInterfaces} algorithm.
  *
  * @author Juergen Hoeller
  * @since 4.1
@@ -93,8 +95,10 @@ public class ProxyProcessorSupport extends ProxyConfig
     }
 
     /**
-     * Check the interfaces on the given bean class and apply them to the {@link ProxyFactory}, if
-     * appropriate.
+     * 判断接口是不是需要设置ProxyTargetClass=true，判断它的接口不是内部的回调接口和内部语言接口，就添加接口否则就设置ProxyTargetClass=true
+     *
+     * <p>Check the interfaces on the given bean class and apply them to the {@link ProxyFactory},
+     * if appropriate.
      *
      * <p>Calls {@link #isConfigurationCallbackInterface} and {@link #isInternalLanguageInterface}
      * to filter for reasonable proxy interfaces, falling back to a target-class proxy otherwise.
@@ -110,10 +114,12 @@ public class ProxyProcessorSupport extends ProxyConfig
             if (!isConfigurationCallbackInterface(ifc)
                     && !isInternalLanguageInterface(ifc)
                     && ifc.getMethods().length > 0) {
+                // 用接口代理，也就是jdk
                 hasReasonableProxyInterface = true;
                 break;
             }
         }
+        // 有接口
         if (hasReasonableProxyInterface) {
             // Must allow for introductions; can't just set interfaces to the target's interfaces
             // only.
@@ -121,12 +127,15 @@ public class ProxyProcessorSupport extends ProxyConfig
                 proxyFactory.addInterface(ifc);
             }
         } else {
+            // 没接口就设置true
             proxyFactory.setProxyTargetClass(true);
         }
     }
 
     /**
-     * Determine whether the given interface is just a container callback and therefore not to be
+     * 是不是内部语言的一些接口
+     *
+     * <p>Determine whether the given interface is just a container callback and therefore not to be
      * considered as a reasonable proxy interface.
      *
      * <p>If no reasonable proxy interface is found for a given bean, it will get proxied with its

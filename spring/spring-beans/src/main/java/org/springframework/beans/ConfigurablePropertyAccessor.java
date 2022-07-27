@@ -33,12 +33,18 @@ import org.springframework.lang.Nullable;
 public interface ConfigurablePropertyAccessor
         extends PropertyAccessor, PropertyEditorRegistry, TypeConverter {
 
-    /** Return the associated ConversionService, if any. */
+    /**
+     * 返回关联的ConversionService
+     *
+     * <p>Return the associated ConversionService, if any.
+     */
     @Nullable
     ConversionService getConversionService();
 
     /**
-     * Specify a Spring 3.0 ConversionService to use for converting property values, as an
+     * 指定ConversionService类转换属性值，替代PropertyEditor
+     *
+     * <p>Specify a Spring 3.0 ConversionService to use for converting property values, as an
      * alternative to JavaBeans PropertyEditors.
      */
     void setConversionService(@Nullable ConversionService conversionService);
@@ -50,8 +56,10 @@ public interface ConfigurablePropertyAccessor
     boolean isExtractOldValueForEditor();
 
     /**
-     * Set whether to extract the old property value when applying a property editor to a new value
-     * for a property.
+     * 设置在将属性编辑器应用于属性的新值时，是否提取旧值
+     *
+     * <p>Set whether to extract the old property value when applying a property editor to a new
+     * value for a property.
      */
     void setExtractOldValueForEditor(boolean extractOldValueForEditor);
 

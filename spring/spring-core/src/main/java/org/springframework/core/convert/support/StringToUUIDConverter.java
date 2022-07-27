@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.springframework.core.convert.support;
 import java.util.UUID;
 
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 /**
@@ -32,7 +31,6 @@ import org.springframework.util.StringUtils;
 final class StringToUUIDConverter implements Converter<String, UUID> {
 
     @Override
-    @Nullable
     public UUID convert(String source) {
         return (StringUtils.hasText(source) ? UUID.fromString(source.trim()) : null);
     }

@@ -34,7 +34,11 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringValueResolver;
 
 /**
- * {@link BeanPostProcessor} implementation that supplies the {@code ApplicationContext}, {@link
+ * 此类用来完成以下功能，向某些实现了Aware的接口的bean设置ApplicationContext中的相应属性 EnvironmentAware
+ * EmbeddedValueResolverAware ResourceLoaderAware ApplicationEventPublisherAware MessageSourceAware
+ * ApplicationContextAware
+ *
+ * <p>{@link BeanPostProcessor} implementation that supplies the {@code ApplicationContext}, {@link
  * org.springframework.core.env.Environment Environment}, or {@link StringValueResolver} for the
  * {@code ApplicationContext} to beans that implement the {@link EnvironmentAware}, {@link
  * EmbeddedValueResolverAware}, {@link ResourceLoaderAware}, {@link ApplicationEventPublisherAware},
@@ -69,6 +73,14 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
         this.embeddedValueResolver = new EmbeddedValueResolver(applicationContext.getBeanFactory());
     }
 
+    /**
+     * 接口beanPostProcessor规定的方法，会在bean创建时，实例化后，初始化前，对bean对象应用
+     *
+     * @param bean the new bean instance
+     * @param beanName the name of the bean
+     * @return
+     * @throws BeansException
+     */
     @Override
     @Nullable
     public Object postProcessBeforeInitialization(Object bean, String beanName)
@@ -92,6 +104,7 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
             AccessController.doPrivileged(
                     (PrivilegedAction<Object>)
                             () -> {
+                                // 检测bean上是否实现了某个aware接口，有的话进行相关的调用
                                 invokeAwareInterfaces(bean);
                                 return null;
                             },
@@ -103,6 +116,11 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
         return bean;
     }
 
+    /**
+     * 如果某个bean实现了某个aware接口，给指定的bean设置相应的属性值
+     *
+     * @param bean
+     */
     private void invokeAwareInterfaces(Object bean) {
         if (bean instanceof EnvironmentAware) {
             ((EnvironmentAware) bean).setEnvironment(this.applicationContext.getEnvironment());

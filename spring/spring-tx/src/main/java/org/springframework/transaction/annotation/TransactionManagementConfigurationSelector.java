@@ -39,7 +39,9 @@ public class TransactionManagementConfigurationSelector
         extends AdviceModeImportSelector<EnableTransactionManagement> {
 
     /**
-     * Returns {@link ProxyTransactionManagementConfiguration} or {@code
+     * 此处是AdviceMode的作用，默认是用代理，另外一个是ASPECTJ
+     *
+     * <p>Returns {@link ProxyTransactionManagementConfiguration} or {@code
      * AspectJ(Jta)TransactionManagementConfiguration} for {@code PROXY} and {@code ASPECTJ} values
      * of {@link EnableTransactionManagement#mode()}, respectively.
      */

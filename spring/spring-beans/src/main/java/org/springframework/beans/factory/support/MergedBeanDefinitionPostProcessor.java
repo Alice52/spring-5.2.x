@@ -38,7 +38,9 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 public interface MergedBeanDefinitionPostProcessor extends BeanPostProcessor {
 
     /**
-     * Post-process the given merged bean definition for the specified bean.
+     * spring通过此方法找出所有需要注入的字段，同时做缓存
+     *
+     * <p>Post-process the given merged bean definition for the specified bean.
      *
      * @param beanDefinition the merged bean definition for the bean
      * @param beanType the actual type of the managed bean instance
@@ -49,8 +51,10 @@ public interface MergedBeanDefinitionPostProcessor extends BeanPostProcessor {
             RootBeanDefinition beanDefinition, Class<?> beanType, String beanName);
 
     /**
-     * A notification that the bean definition for the specified name has been reset, and that this
-     * post-processor should clear any metadata for the affected bean.
+     * 用于在BeanDefinition被修改后，清除容器的缓存
+     *
+     * <p>A notification that the bean definition for the specified name has been reset, and that
+     * this post-processor should clear any metadata for the affected bean.
      *
      * <p>The default implementation is empty.
      *

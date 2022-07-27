@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,12 +44,15 @@ public class InvocableHandlerMethod extends HandlerMethod {
 
     private static final Object[] EMPTY_ARGS = new Object[0];
 
+    // WebDataBinderFactory类型，可以创建WebDataBinder，用于参数解析器ArgumentResolver中
+    @Nullable private WebDataBinderFactory dataBinderFactory;
+
+    // 用于解析参数
     private HandlerMethodArgumentResolverComposite resolvers =
             new HandlerMethodArgumentResolverComposite();
 
+    // 获取参数名，用于MethodParameter中
     private ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
-
-    @Nullable private WebDataBinderFactory dataBinderFactory;
 
     /** Create an instance from a {@code HandlerMethod}. */
     public InvocableHandlerMethod(HandlerMethod handlerMethod) {
@@ -76,8 +79,18 @@ public class InvocableHandlerMethod extends HandlerMethod {
     }
 
     /**
-     * Set {@link HandlerMethodArgumentResolver HandlerMethodArgumentResolvers} to use for resolving
-     * method argument values.
+     * Set the {@link WebDataBinderFactory} to be passed to argument resolvers allowing them to
+     * create a {@link WebDataBinder} for data binding and type conversion purposes.
+     *
+     * @param dataBinderFactory the data binder factory.
+     */
+    public void setDataBinderFactory(WebDataBinderFactory dataBinderFactory) {
+        this.dataBinderFactory = dataBinderFactory;
+    }
+
+    /**
+     * Set {@link HandlerMethodArgumentResolver HandlerMethodArgumentResolvers} to use to use for
+     * resolving method argument values.
      */
     public void setHandlerMethodArgumentResolvers(
             HandlerMethodArgumentResolverComposite argumentResolvers) {
@@ -92,14 +105,6 @@ public class InvocableHandlerMethod extends HandlerMethod {
      */
     public void setParameterNameDiscoverer(ParameterNameDiscoverer parameterNameDiscoverer) {
         this.parameterNameDiscoverer = parameterNameDiscoverer;
-    }
-
-    /**
-     * Set the {@link WebDataBinderFactory} to be passed to argument resolvers allowing them to
-     * create a {@link WebDataBinder} for data binding and type conversion purposes.
-     */
-    public void setDataBinderFactory(WebDataBinderFactory dataBinderFactory) {
-        this.dataBinderFactory = dataBinderFactory;
     }
 
     /**
@@ -130,10 +135,12 @@ public class InvocableHandlerMethod extends HandlerMethod {
             Object... providedArgs)
             throws Exception {
 
+        // 准备方法所需要的参数
         Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);
         if (logger.isTraceEnabled()) {
             logger.trace("Arguments: " + Arrays.toString(args));
         }
+        // 具体调用method
         return doInvoke(args);
     }
 
@@ -151,19 +158,24 @@ public class InvocableHandlerMethod extends HandlerMethod {
             Object... providedArgs)
             throws Exception {
 
+        // 获取方法的参数
         MethodParameter[] parameters = getMethodParameters();
         if (ObjectUtils.isEmpty(parameters)) {
             return EMPTY_ARGS;
         }
 
+        // 用于保存解析出参数的值
         Object[] args = new Object[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             MethodParameter parameter = parameters[i];
+            // 给parameter设置参数名解析器
             parameter.initParameterNameDiscovery(this.parameterNameDiscoverer);
+            // 如果相应类型的参数已经在providedArgs中提供了，则直接设置到parameter
             args[i] = findProvidedArgument(parameter, providedArgs);
             if (args[i] != null) {
                 continue;
             }
+            // 使用argumentResolvers解析参数
             if (!this.resolvers.supportsParameter(parameter)) {
                 throw new IllegalStateException(
                         formatArgumentError(parameter, "No suitable resolver"));
@@ -190,8 +202,10 @@ public class InvocableHandlerMethod extends HandlerMethod {
     /** Invoke the handler method with the given argument values. */
     @Nullable
     protected Object doInvoke(Object... args) throws Exception {
+        // 强制方法可调用
         ReflectionUtils.makeAccessible(getBridgedMethod());
         try {
+            // 执行
             return getBridgedMethod().invoke(getBean(), args);
         } catch (IllegalArgumentException ex) {
             assertTargetBean(getBridgedMethod(), getBean(), args);

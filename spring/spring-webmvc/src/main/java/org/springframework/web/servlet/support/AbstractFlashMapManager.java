@@ -81,17 +81,29 @@ public abstract class AbstractFlashMapManager implements FlashMapManager {
         this.urlPathHelper = urlPathHelper;
     }
 
+    /**
+     * @param request the current request
+     * @param response the current response
+     * @return 本方法是从 session 中获取所有 FlashMap，然后删除过期的 FlashMap；寻找匹配当前请求的 FlashMap ；并将匹配上的 FlashMap
+     *     也删除（删除的时候加锁） FlashMap 中有 失效时间，目标请求参数，目标请求路径 该方法用于重定向后 获取 flashMap，从而获取重定向前设置的参数
+     */
     @Override
     @Nullable
     public final FlashMap retrieveAndUpdate(
             HttpServletRequest request, HttpServletResponse response) {
+        // retrieveFlashMaps子类实现
+        //  从 session 中获取 FLASH_MAPS_SESSION_ATTRIBUTE = SessionFlashMapManager.class.getName() +
+        // ".FLASH_MAPS";
         List<FlashMap> allFlashMaps = retrieveFlashMaps(request);
         if (CollectionUtils.isEmpty(allFlashMaps)) {
             return null;
         }
 
+        // 获取已经过期的FlashMap进行移除
         List<FlashMap> mapsToRemove = getExpiredFlashMaps(allFlashMaps);
+        // 获取和当前请求匹配的FlashMap,目标url匹配，目标参数匹配
         FlashMap match = getMatchingFlashMap(allFlashMaps, request);
+        // 匹配上之后，传递参数的责任完成，加入待移除队列
         if (match != null) {
             mapsToRemove.add(match);
         }
@@ -99,10 +111,14 @@ public abstract class AbstractFlashMapManager implements FlashMapManager {
         if (!mapsToRemove.isEmpty()) {
             Object mutex = getFlashMapsMutex(request);
             if (mutex != null) {
+                // 加锁
                 synchronized (mutex) {
+                    // retrieveFlashMaps子类实现
                     allFlashMaps = retrieveFlashMaps(request);
                     if (allFlashMaps != null) {
+                        // 移除后，更新sessino
                         allFlashMaps.removeAll(mapsToRemove);
+                        // 子类实现
                         updateFlashMaps(allFlashMaps, request, response);
                     }
                 }
@@ -189,17 +205,22 @@ public abstract class AbstractFlashMapManager implements FlashMapManager {
             return;
         }
 
+        // 首先对flashMap中的转发地址和参数进行编码，这里的request主要用来获取当前编码方式
         String path = decodeAndNormalizePath(flashMap.getTargetRequestPath(), request);
         flashMap.setTargetRequestPath(path);
 
+        // 设置有效期
         flashMap.startExpirationPeriod(getFlashMapTimeout());
 
+        // 用于获取互斥变量，是模板方法，如果子类返回值不为null则同步执行，否则不需要同步
         Object mutex = getFlashMapsMutex(request);
         if (mutex != null) {
             synchronized (mutex) {
+                // 获取保存的List<FlashMap>,如果没有获取到则新建一个，然后添加现有的flashmap
                 List<FlashMap> allFlashMaps = retrieveFlashMaps(request);
                 allFlashMaps = (allFlashMaps != null ? allFlashMaps : new CopyOnWriteArrayList<>());
                 allFlashMaps.add(flashMap);
+                // 将添加完的List<FlashMap>更新到存储介质中，是模板方法，由子类实现
                 updateFlashMaps(allFlashMaps, request, response);
             }
         } else {

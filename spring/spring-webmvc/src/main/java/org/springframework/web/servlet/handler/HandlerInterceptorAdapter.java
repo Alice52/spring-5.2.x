@@ -59,7 +59,11 @@ public abstract class HandlerInterceptorAdapter implements AsyncHandlerIntercept
             @Nullable Exception ex)
             throws Exception {}
 
-    /** This implementation is empty. */
+    /**
+     * 方法在Controller方法异步执行时开始执行，而Interceptor的postHandle方法需要等到Controller的异步执行完之后才能执行
+     *
+     * <p>This implementation is empty.
+     */
     @Override
     public void afterConcurrentHandlingStarted(
             HttpServletRequest request, HttpServletResponse response, Object handler)

@@ -31,7 +31,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Interceptor to wrap an after-throwing advice.
+ * 后置异常通知Interceptor。 实现了MethodInterceptor和AfterAdvice接口。要求方法名为：afterThrowing
+ *
+ * <p>Interceptor to wrap an after-throwing advice.
  *
  * <p>The signatures on handler methods on the {@code ThrowsAdvice} implementation method argument
  * must be of the form:<br>

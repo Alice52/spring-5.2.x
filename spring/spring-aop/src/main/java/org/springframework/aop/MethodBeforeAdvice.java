@@ -21,7 +21,9 @@ import java.lang.reflect.Method;
 import org.springframework.lang.Nullable;
 
 /**
- * Advice invoked before a method is invoked. Such advices cannot prevent the method call
+ * BeforeAdvice的子类。定义了方法before。执行前置通知
+ *
+ * <p>Advice invoked before a method is invoked. Such advices cannot prevent the method call
  * proceeding, unless they throw a Throwable.
  *
  * @author Rod Johnson

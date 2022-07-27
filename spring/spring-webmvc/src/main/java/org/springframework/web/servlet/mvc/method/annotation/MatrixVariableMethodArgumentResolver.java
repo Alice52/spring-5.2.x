@@ -36,7 +36,9 @@ import org.springframework.web.method.annotation.AbstractNamedValueMethodArgumen
 import org.springframework.web.servlet.HandlerMapping;
 
 /**
- * Resolves arguments annotated with {@link MatrixVariable @MatrixVariable}.
+ * 解析注解@MatrixVariable而且不是Map类型的参数，Map类型使用MatrixVariableMapMethodArgumentResolver解析
+ *
+ * <p>Resolves arguments annotated with {@link MatrixVariable @MatrixVariable}.
  *
  * <p>If the method parameter is of type {@link Map} it will by resolved by {@link
  * MatrixVariableMapMethodArgumentResolver} instead unless the annotation specifies a name in which

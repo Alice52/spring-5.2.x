@@ -21,7 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.lang.Nullable;
 
 /**
- * Contract for request mapping conditions.
+ * 此接口专门用于保存从request提取出的用于匹配handler的条件
+ *
+ * <p>Contract for request mapping conditions.
  *
  * <p>Request conditions can be combined via {@link #combine(Object)}, matched to a request via
  * {@link #getMatchingCondition(HttpServletRequest)}, and compared to each other via {@link

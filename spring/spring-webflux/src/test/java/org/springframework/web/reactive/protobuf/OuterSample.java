@@ -16,7 +16,6 @@ public class OuterSample {
             internal_static_SecondMsg_fieldAccessorTable;
 
     private static com.google.protobuf.Descriptors.FileDescriptor descriptor;
-
     private OuterSample() {}
 
     public static void registerAllExtensions(com.google.protobuf.ExtensionRegistry registry) {}

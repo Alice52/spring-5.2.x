@@ -76,7 +76,7 @@ public abstract class ClassVisitor {
                 && api != Opcodes.ASM8_EXPERIMENTAL) {
             throw new IllegalArgumentException("Unsupported api " + api);
         }
-        // SPRING PATCH: no preview mode check for ASM experimental
+        // SPRING PATCH: no preview mode check for ASM 8 experimental
         this.api = api;
         this.cv = classVisitor;
     }

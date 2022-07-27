@@ -27,9 +27,11 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.core.NamedThreadLocal;
 
 /**
- * Alternative to an object pool. This {@link org.springframework.aop.TargetSource} uses a threading
- * model in which every thread has its own copy of the target. There's no contention for targets.
- * Target object creation is kept to a minimum on the running server.
+ * AbstractPrototypeBasedTargetSource的子类。和线程上下文相结合的类
+ *
+ * <p>Alternative to an object pool. This {@link org.springframework.aop.TargetSource} uses a
+ * threading model in which every thread has its own copy of the target. There's no contention for
+ * targets. Target object creation is kept to a minimum on the running server.
  *
  * <p>Application code is written as to a normal pool; callers can't assume they will be dealing
  * with the same instance in invocations in different threads. However, state can be relied on

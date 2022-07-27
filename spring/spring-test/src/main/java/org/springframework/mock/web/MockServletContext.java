@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -307,8 +307,8 @@ public class MockServletContext implements ServletContext {
             }
             return resourcePaths;
         } catch (InvalidPathException | IOException ex) {
-            if (logger.isDebugEnabled()) {
-                logger.debug(
+            if (logger.isWarnEnabled()) {
+                logger.warn(
                         "Could not get resource paths for "
                                 + (resource != null ? resource : resourceLocation),
                         ex);
@@ -331,8 +331,8 @@ public class MockServletContext implements ServletContext {
         } catch (MalformedURLException ex) {
             throw ex;
         } catch (InvalidPathException | IOException ex) {
-            if (logger.isDebugEnabled()) {
-                logger.debug(
+            if (logger.isWarnEnabled()) {
+                logger.warn(
                         "Could not get URL for resource "
                                 + (resource != null ? resource : resourceLocation),
                         ex);
@@ -353,8 +353,8 @@ public class MockServletContext implements ServletContext {
             }
             return resource.getInputStream();
         } catch (InvalidPathException | IOException ex) {
-            if (logger.isDebugEnabled()) {
-                logger.debug(
+            if (logger.isWarnEnabled()) {
+                logger.warn(
                         "Could not open InputStream for resource "
                                 + (resource != null ? resource : resourceLocation),
                         ex);
@@ -480,8 +480,8 @@ public class MockServletContext implements ServletContext {
             resource = this.resourceLoader.getResource(resourceLocation);
             return resource.getFile().getAbsolutePath();
         } catch (InvalidPathException | IOException ex) {
-            if (logger.isDebugEnabled()) {
-                logger.debug(
+            if (logger.isWarnEnabled()) {
+                logger.warn(
                         "Could not determine real path of resource "
                                 + (resource != null ? resource : resourceLocation),
                         ex);

@@ -64,14 +64,18 @@ public class HandlerMethod {
 
     private final Object bean;
 
+    // 此属性用于新建HandlerMethod时传入的Handler是String的情况，需要使用beanFactory根据传入的String作为beanName获取到对应的bean，并设置为Handler
     @Nullable private final BeanFactory beanFactory;
 
+    // bean类型
     private final Class<?> beanType;
 
     private final Method method;
 
+    // 如果method是bridge method，则设置为其所对应的原有方法，否则直接设置为method
     private final Method bridgedMethod;
 
+    // 处理请求的方法的参数
     private final MethodParameter[] parameters;
 
     private final String description;
@@ -329,16 +333,20 @@ public class HandlerMethod {
     }
 
     /**
-     * If the provided instance contains a bean name rather than an object instance, the bean name
-     * is resolved before a {@link HandlerMethod} is created and returned.
+     * 如果handler是string类型，那么将其通过beanFactory变成具体的对象，并且跟属性一起变成HandlerMethod对象
+     *
+     * <p>If the provided instance contains a bean name rather than an object instance, the bean
+     * name is resolved before a {@link HandlerMethod} is created and returned.
      */
     public HandlerMethod createWithResolvedBean() {
         Object handler = this.bean;
+        // handler为String类型，从容器中获取bean
         if (this.bean instanceof String) {
             Assert.state(this.beanFactory != null, "Cannot resolve bean name without BeanFactory");
             String beanName = (String) this.bean;
             handler = this.beanFactory.getBean(beanName);
         }
+        // 使用当前HandlerMethod和handler创建一个HandlerMethod
         return new HandlerMethod(this, handler);
     }
 

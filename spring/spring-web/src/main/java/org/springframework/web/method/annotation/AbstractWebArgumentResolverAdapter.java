@@ -30,7 +30,9 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
- * An abstract base class adapting a {@link WebArgumentResolver} to the {@link
+ * 用作WebArgumentResolver解析器的适配器
+ *
+ * <p>An abstract base class adapting a {@link WebArgumentResolver} to the {@link
  * HandlerMethodArgumentResolver} contract.
  *
  * <p><strong>Note:</strong> This class is provided for backwards compatibility. However it is

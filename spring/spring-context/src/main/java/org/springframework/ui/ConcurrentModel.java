@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,8 +62,7 @@ public class ConcurrentModel extends ConcurrentHashMap<String, Object> implement
     }
 
     @Override
-    @Nullable
-    public Object put(String key, @Nullable Object value) {
+    public Object put(String key, Object value) {
         if (value != null) {
             return super.put(key, value);
         } else {

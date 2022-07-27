@@ -38,8 +38,10 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.function.SingletonSupplier;
 
 /**
- * Advisor that activates asynchronous method execution through the {@link Async} annotation. This
- * annotation can be used at the method and type level in implementation classes as well as in
+ * 跟@Async相关
+ *
+ * <p>Advisor that activates asynchronous method execution through the {@link Async} annotation.
+ * This annotation can be used at the method and type level in implementation classes as well as in
  * service interfaces.
  *
  * <p>This advisor detects the EJB 3.1 {@code javax.ejb.Asynchronous} annotation as well, treating
@@ -98,6 +100,7 @@ public class AsyncAnnotationAdvisor extends AbstractPointcutAdvisor implements B
 
         Set<Class<? extends Annotation>> asyncAnnotationTypes = new LinkedHashSet<>(2);
         asyncAnnotationTypes.add(Async.class);
+        // 支持EJB的注解：@Asynchronous
         try {
             asyncAnnotationTypes.add(
                     (Class<? extends Annotation>)

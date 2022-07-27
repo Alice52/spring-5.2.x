@@ -19,7 +19,9 @@ package org.springframework.core;
 import org.springframework.lang.Nullable;
 
 /**
- * Interface defining a generic contract for attaching and accessing metadata to/from arbitrary
+ * 定义用于附加和访问BeanDefinition元数据的通用的接口，来自任何对象
+ *
+ * <p>Interface defining a generic contract for attaching and accessing metadata to/from arbitrary
  * objects.
  *
  * @author Rob Harrop
@@ -28,8 +30,10 @@ import org.springframework.lang.Nullable;
 public interface AttributeAccessor {
 
     /**
-     * Set the attribute defined by {@code name} to the supplied {@code value}. If {@code value} is
-     * {@code null}, the attribute is {@link #removeAttribute removed}.
+     * 设置属性
+     *
+     * <p>Set the attribute defined by {@code name} to the supplied {@code value}. If {@code value}
+     * is {@code null}, the attribute is {@link #removeAttribute removed}.
      *
      * <p>In general, users should take care to prevent overlaps with other metadata attributes by
      * using fully-qualified names, perhaps using class or package names as prefix.
@@ -40,7 +44,9 @@ public interface AttributeAccessor {
     void setAttribute(String name, @Nullable Object value);
 
     /**
-     * Get the value of the attribute identified by {@code name}. Return {@code null} if the
+     * 获取属性
+     *
+     * <p>Get the value of the attribute identified by {@code name}. Return {@code null} if the
      * attribute doesn't exist.
      *
      * @param name the unique attribute key
@@ -50,8 +56,10 @@ public interface AttributeAccessor {
     Object getAttribute(String name);
 
     /**
-     * Remove the attribute identified by {@code name} and return its value. Return {@code null} if
-     * no attribute under {@code name} is found.
+     * 移除属性
+     *
+     * <p>Remove the attribute identified by {@code name} and return its value. Return {@code null}
+     * if no attribute under {@code name} is found.
      *
      * @param name the unique attribute key
      * @return the last value of the attribute, if any
@@ -60,13 +68,19 @@ public interface AttributeAccessor {
     Object removeAttribute(String name);
 
     /**
-     * Return {@code true} if the attribute identified by {@code name} exists. Otherwise return
+     * 判断是否包含属性
+     *
+     * <p>Return {@code true} if the attribute identified by {@code name} exists. Otherwise return
      * {@code false}.
      *
      * @param name the unique attribute key
      */
     boolean hasAttribute(String name);
 
-    /** Return the names of all attributes. */
+    /**
+     * 返回所有的属性名称
+     *
+     * <p>Return the names of all attributes.
+     */
     String[] attributeNames();
 }

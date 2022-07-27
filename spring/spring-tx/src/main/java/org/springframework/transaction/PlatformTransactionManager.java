@@ -30,7 +30,7 @@ import org.springframework.lang.Nullable;
  * transaction, for example: begin, suspend, resume, commit.
  *
  * <p>The default implementations of this strategy interface are {@link
- * org.springframework.transaction.jta.JtaTransactionManager} and {@link
+ * org.springframework.transaction.jta.JtaTransactionManager} and {link
  * org.springframework.jdbc.datasource.DataSourceTransactionManager}, which can serve as an
  * implementation guide for other transaction strategies.
  *
@@ -44,7 +44,9 @@ import org.springframework.lang.Nullable;
 public interface PlatformTransactionManager extends TransactionManager {
 
     /**
-     * Return a currently active transaction or create a new one, according to the specified
+     * 获取事务
+     *
+     * <p>Return a currently active transaction or create a new one, according to the specified
      * propagation behavior.
      *
      * <p>Note that parameters like isolation level or timeout will only be applied to new
@@ -74,8 +76,10 @@ public interface PlatformTransactionManager extends TransactionManager {
             throws TransactionException;
 
     /**
-     * Commit the given transaction, with regard to its status. If the transaction has been marked
-     * rollback-only programmatically, perform a rollback.
+     * 提交事务
+     *
+     * <p>Commit the given transaction, with regard to its status. If the transaction has been
+     * marked rollback-only programmatically, perform a rollback.
      *
      * <p>If the transaction wasn't a new one, omit the commit for proper participation in the
      * surrounding transaction. If a previous transaction has been suspended to be able to create a
@@ -105,7 +109,9 @@ public interface PlatformTransactionManager extends TransactionManager {
     void commit(TransactionStatus status) throws TransactionException;
 
     /**
-     * Perform a rollback of the given transaction.
+     * 回滚事务
+     *
+     * <p>Perform a rollback of the given transaction.
      *
      * <p>If the transaction wasn't a new one, just set it rollback-only for proper participation in
      * the surrounding transaction. If a previous transaction has been suspended to be able to

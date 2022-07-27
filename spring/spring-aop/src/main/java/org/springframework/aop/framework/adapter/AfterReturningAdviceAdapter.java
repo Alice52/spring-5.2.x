@@ -25,8 +25,12 @@ import org.springframework.aop.Advisor;
 import org.springframework.aop.AfterReturningAdvice;
 
 /**
- * Adapter to enable {@link org.springframework.aop.AfterReturningAdvice} to be used in the Spring
- * AOP framework.
+ * 后置返回通知的适配器。支持后置返回通知类。有一个getInterceptor方法：将Advisor适配为MethodInterceptor。
+ * Advisor持有Advice类型的实例，获取AfterReturningAdvice，
+ * 将AfterReturningAdvice适配为AfterReturningAdviceInterceptor。AOP的拦截过程通过MethodInterceptor来完成
+ *
+ * <p>Adapter to enable {@link org.springframework.aop.AfterReturningAdvice} to be used in the
+ * Spring AOP framework.
  *
  * @author Rod Johnson
  * @author Juergen Hoeller

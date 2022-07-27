@@ -47,10 +47,12 @@ import org.springframework.core.io.support.ResourceArrayPropertyEditor;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 /**
- * PropertyEditorRegistrar implementation that populates a given {@link
+ * 属性编辑注册器用来填充具体的属性在bean创建的时候
+ *
+ * <p>PropertyEditorRegistrar implementation that populates a given {@link
  * org.springframework.beans.PropertyEditorRegistry} (typically a {@link
- * org.springframework.beans.BeanWrapper} used for bean creation within an {@link
- * org.springframework.context.ApplicationContext}) with resource editors. Used by {@link
+ * org.springframework.beans.BeanWrapper} used for bean creation within an {link
+ * org.springframework.context.ApplicationContext}) with resource editors. Used by {link
  * org.springframework.context.support.AbstractApplicationContext}.
  *
  * @author Juergen Hoeller
@@ -71,8 +73,8 @@ public class ResourceEditorRegistrar implements PropertyEditorRegistrar {
      *     (usually an ApplicationContext)
      * @param propertyResolver the PropertyResolver (usually an Environment)
      * @see org.springframework.core.env.Environment
-     * @see org.springframework.core.io.support.ResourcePatternResolver
-     * @see org.springframework.context.ApplicationContext
+     * @see org.springframework.core.io.support.ResourcePatternResolver see
+     *     org.springframework.context.ApplicationContext
      */
     public ResourceEditorRegistrar(
             ResourceLoader resourceLoader, PropertyResolver propertyResolver) {
@@ -81,7 +83,9 @@ public class ResourceEditorRegistrar implements PropertyEditorRegistrar {
     }
 
     /**
-     * Populate the given {@code registry} with the following resource editors: ResourceEditor,
+     * 填充以下的资源编辑器
+     *
+     * <p>Populate the given {@code registry} with the following resource editors: ResourceEditor,
      * InputStreamEditor, InputSourceEditor, FileEditor, URLEditor, URIEditor, ClassEditor,
      * ClassArrayEditor.
      *
@@ -125,8 +129,10 @@ public class ResourceEditorRegistrar implements PropertyEditorRegistrar {
     }
 
     /**
-     * Override default editor, if possible (since that's what we really mean to do here); otherwise
-     * register as a custom editor.
+     * 覆盖默认的编辑器，否则注册作为一个定制的编辑器
+     *
+     * <p>Override default editor, if possible (since that's what we really mean to do here);
+     * otherwise register as a custom editor.
      */
     private void doRegisterEditor(
             PropertyEditorRegistry registry, Class<?> requiredType, PropertyEditor editor) {

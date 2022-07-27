@@ -38,6 +38,7 @@ import org.springframework.util.StringUtils;
 public abstract class AbstractRefreshableConfigApplicationContext
         extends AbstractRefreshableApplicationContext implements BeanNameAware, InitializingBean {
 
+    // 定义配置路径，默认是个字符串数组
     @Nullable private String[] configLocations;
 
     private boolean setIdCalled = false;
@@ -82,7 +83,9 @@ public abstract class AbstractRefreshableConfigApplicationContext
     }
 
     /**
-     * Set the config locations for this application context.
+     * 设置应用程序上下文的配置路径
+     *
+     * <p>Set the config locations for this application context.
      *
      * <p>If not set, the implementation may use a default as appropriate.
      */

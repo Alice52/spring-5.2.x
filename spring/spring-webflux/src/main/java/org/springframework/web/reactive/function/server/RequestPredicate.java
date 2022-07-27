@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,8 @@ public interface RequestPredicate {
 
     /**
      * Transform the given request into a request used for a nested route. For instance, a
-     * path-based predicate can return a {@code ServerRequest} with a path remaining after a match.
+     * path-based predicate can return a {@code ServerRequest} with a the path remaining after a
+     * match.
      *
      * <p>The default implementation returns an {@code Optional} wrapping the given request if
      * {@link #test(ServerRequest)} evaluates to {@code true}; or {@link Optional#empty()} if it

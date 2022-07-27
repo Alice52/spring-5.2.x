@@ -19,9 +19,11 @@ package org.springframework.aop;
 import org.aopalliance.aop.Advice;
 
 /**
- * Base interface holding AOP <b>advice</b> (action to take at a joinpoint) and a filter determining
- * the applicability of the advice (such as a pointcut). <i>This interface is not for use by Spring
- * users, but to allow for commonality in support for different types of advice.</i>
+ * aop的顶级接口，用来管理Advice和Pointcut
+ *
+ * <p>Base interface holding AOP <b>advice</b> (action to take at a joinpoint) and a filter
+ * determining the applicability of the advice (such as a pointcut). <i>This interface is not for
+ * use by Spring users, but to allow for commonality in support for different types of advice.</i>
  *
  * <p>Spring AOP is based around <b>around advice</b> delivered via method <b>interception</b>,
  * compliant with the AOP Alliance interception API. The Advisor interface allows support for
@@ -34,15 +36,19 @@ import org.aopalliance.aop.Advice;
 public interface Advisor {
 
     /**
-     * Common placeholder for an empty {@code Advice} to be returned from {@link #getAdvice()} if no
-     * proper advice has been configured (yet).
+     * 如果没有配置过通知，那么返回空通知对象
+     *
+     * <p>Common placeholder for an empty {@code Advice} to be returned from {@link #getAdvice()} if
+     * no proper advice has been configured (yet).
      *
      * @since 5.0
      */
     Advice EMPTY_ADVICE = new Advice() {};
 
     /**
-     * Return the advice part of this aspect. An advice may be an interceptor, a before advice, a
+     * 返回切面对应的通知
+     *
+     * <p>Return the advice part of this aspect. An advice may be an interceptor, a before advice, a
      * throws advice, etc.
      *
      * @return the advice that should apply if the pointcut matches

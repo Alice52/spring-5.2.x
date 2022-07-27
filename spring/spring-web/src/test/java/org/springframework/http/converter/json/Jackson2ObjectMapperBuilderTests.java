@@ -438,7 +438,8 @@ public class Jackson2ObjectMapperBuilderTests {
 
     @Test
     public void propertyNamingStrategy() {
-        PropertyNamingStrategy strategy = new PropertyNamingStrategy.SnakeCaseStrategy();
+        PropertyNamingStrategy strategy =
+                new PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy();
         ObjectMapper objectMapper =
                 Jackson2ObjectMapperBuilder.json().propertyNamingStrategy(strategy).build();
         assertThat(objectMapper.getSerializationConfig().getPropertyNamingStrategy())
@@ -734,7 +735,6 @@ public class Jackson2ObjectMapperBuilderTests {
         private String property2;
 
         public JacksonFilteredBean() {}
-
         public JacksonFilteredBean(String property1, String property2) {
             this.property1 = property1;
             this.property2 = property2;

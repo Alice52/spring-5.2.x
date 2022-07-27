@@ -21,7 +21,9 @@ import java.lang.reflect.Method;
 import org.springframework.lang.Nullable;
 
 /**
- * After returning advice is invoked only on normal method return, not if an exception is thrown.
+ * 后置返回通知类。 直接继承了AfterAdvice接口
+ *
+ * <p>After returning advice is invoked only on normal method return, not if an exception is thrown.
  * Such advice can see the return value, but cannot change it.
  *
  * @author Rod Johnson

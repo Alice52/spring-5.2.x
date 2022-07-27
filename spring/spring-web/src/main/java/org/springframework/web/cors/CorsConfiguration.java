@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,8 @@ public class CorsConfiguration {
                     Arrays.asList(
                             HttpMethod.GET.name(), HttpMethod.HEAD.name(), HttpMethod.POST.name()));
 
-    private static final List<String> DEFAULT_PERMIT_ALL = Collections.singletonList(ALL);
+    private static final List<String> DEFAULT_PERMIT_ALL =
+            Collections.unmodifiableList(Collections.singletonList(ALL));
 
     @Nullable private List<String> allowedOrigins;
 
@@ -250,22 +251,26 @@ public class CorsConfiguration {
      * {@code Content-Language}, {@code Content-Type}, {@code Expires}, {@code Last-Modified}, or
      * {@code Pragma}) that an actual response might have and can be exposed.
      *
-     * <p>The special value {@code "*"} allows all headers to be exposed for non-credentialed
-     * requests.
+     * <p>Note that {@code "*"} is not a valid exposed header value.
      *
      * <p>By default this is not set.
      */
     public void setExposedHeaders(@Nullable List<String> exposedHeaders) {
+        if (exposedHeaders != null && exposedHeaders.contains(ALL)) {
+            throw new IllegalArgumentException("'*' is not a valid exposed header value");
+        }
         this.exposedHeaders = (exposedHeaders != null ? new ArrayList<>(exposedHeaders) : null);
     }
 
     /**
      * Add a response header to expose.
      *
-     * <p>The special value {@code "*"} allows all headers to be exposed for non-credentialed
-     * requests.
+     * <p>Note that {@code "*"} is not a valid exposed header value.
      */
     public void addExposedHeader(String exposedHeader) {
+        if (ALL.equals(exposedHeader)) {
+            throw new IllegalArgumentException("'*' is not a valid exposed header value");
+        }
         if (this.exposedHeaders == null) {
             this.exposedHeaders = new ArrayList<>(4);
         }

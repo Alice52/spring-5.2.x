@@ -114,7 +114,7 @@ public class ScenariosForSpringSecurityExpressionTests extends AbstractExpressio
         ctx.setRootObject(
                 new Supervisor(
                         "Ben")); // so non-qualified references 'hasRole()' 'hasIpAddress()' are
-        // invoked against it
+                                 // invoked against it
         value = expr.getValue(ctx, Boolean.class);
         assertThat((boolean) value).isTrue();
 
@@ -133,11 +133,11 @@ public class ScenariosForSpringSecurityExpressionTests extends AbstractExpressio
         ctx.setRootObject(
                 new Supervisor(
                         "Ben")); // so non-qualified references 'hasRole()' 'hasIpAddress()' are
-        // invoked against it);
+                                 // invoked against it);
 
         ctx.addMethodResolver(
                 new MyMethodResolver()); // NEEDS TO OVERRIDE THE REFLECTION ONE - SHOW REORDERING
-        // MECHANISM
+                                         // MECHANISM
         // Might be better with a as a variable although it would work as a property too...
         // Variable references using a '#'
         //		SpelExpression expr = parser.parseExpression("(hasRole('SUPERVISOR') or (#a <  1.042))

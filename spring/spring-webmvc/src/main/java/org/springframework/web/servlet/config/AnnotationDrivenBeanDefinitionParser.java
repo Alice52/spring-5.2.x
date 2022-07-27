@@ -165,8 +165,6 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
     private static final boolean javaxValidationPresent;
 
-    private static final boolean romePresent;
-
     private static final boolean jaxb2Present;
 
     private static final boolean jackson2Present;
@@ -178,6 +176,8 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
     private static final boolean jackson2CborPresent;
 
     private static final boolean gsonPresent;
+
+    private static boolean romePresent;
 
     @Override
     @Nullable
@@ -202,8 +202,8 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
                 .add("contentNegotiationManager", contentNegotiationManager);
 
         if (element.hasAttribute("enable-matrix-variables")) {
-            boolean enableMatrixVariables =
-                    Boolean.parseBoolean(element.getAttribute("enable-matrix-variables"));
+            Boolean enableMatrixVariables =
+                    Boolean.valueOf(element.getAttribute("enable-matrix-variables"));
             handlerMappingDef
                     .getPropertyValues()
                     .add("removeSemicolonContent", !enableMatrixVariables);

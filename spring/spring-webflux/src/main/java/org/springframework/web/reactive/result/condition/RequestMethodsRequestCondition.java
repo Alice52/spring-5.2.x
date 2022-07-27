@@ -117,7 +117,7 @@ public final class RequestMethodsRequestCondition
         if (getMethods().isEmpty()) {
             if (RequestMethod.OPTIONS.name().equals(exchange.getRequest().getMethodValue())) {
                 return null; // We handle OPTIONS transparently, so don't match if no explicit
-                // declarations
+                             // declarations
             }
             return this;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,10 +57,9 @@ public abstract aspect AbstractTransactionAspect extends TransactionAspectSuppor
         setTransactionAttributeSource(tas);
     }
 
-    InvocationCallback() {
-        public Object proceedWithInvocation () throws Throwable {
-            return proceed(txObject);
-        }
+    @Override
+    public void destroy() {
+        clearTransactionManagerCache(); // An aspect is basically a singleton
     }
 
     @SuppressAjWarnings("adviceDidNotMatch")
@@ -69,15 +68,21 @@ public abstract aspect AbstractTransactionAspect extends TransactionAspectSuppor
         // Adapt to TransactionAspectSupport's invokeWithinTransaction...
         try {
             return invokeWithinTransaction(methodSignature.getMethod(), txObject.getClass(), new
-                    /**
-                     * Ugly but safe workaround: We need to be able to propagate checked exceptions,
-                     * despite AspectJ around advice supporting specifically declared exceptions only.
-                     */
+    /**
+     * Ugly but safe workaround: We need to be able to propagate checked exceptions,
+     * despite AspectJ around advice supporting specifically declared exceptions only.
+     */
+    private static class Rethrower {
 
-    @Override
-    public void destroy() {
-        // An aspect is basically a singleton -> cleanup on destruction
-        clearTransactionManagerCache();
+        public static void rethrow(final Throwable exception) {
+            class CheckedExceptionRethrower<T extends Throwable> {
+                @SuppressWarnings("unchecked")
+                private void rethrow(Throwable exception) throws T {
+                    throw (T) exception;
+                }
+            }
+            new CheckedExceptionRethrower<RuntimeException>().rethrow(exception);
+        }
     });
         }
         catch (RuntimeException | Error ex) {
@@ -96,16 +101,10 @@ public abstract aspect AbstractTransactionAspect extends TransactionAspectSuppor
      */
     protected abstract pointcut transactionalMethodExecution(Object txObject);
 
-private static class Rethrower {
 
-                public static void rethrow(final Throwable exception) {
-                    class CheckedExceptionRethrower<T extends Throwable> {
-                        @SuppressWarnings("unchecked")
-                        private void rethrow(Throwable exception) throws T {
-                            throw (T) exception;
-                        }
-                    }
-                    new CheckedExceptionRethrower<RuntimeException>().rethrow(exception);
+InvocationCallback() {
+                public Object proceedWithInvocation() throws Throwable {
+                    return proceed(txObject);
                 }
             }
 

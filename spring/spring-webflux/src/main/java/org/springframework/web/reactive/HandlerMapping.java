@@ -21,7 +21,9 @@ import reactor.core.publisher.Mono;
 import org.springframework.web.server.ServerWebExchange;
 
 /**
- * Interface to be implemented by objects that define a mapping between requests and handler
+ * 根据request找到响应的处理器handler和interceptors
+ *
+ * <p>Interface to be implemented by objects that define a mapping between requests and handler
  * objects.
  *
  * @author Rossen Stoyanchev

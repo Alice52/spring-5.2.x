@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,14 +62,13 @@ import org.springframework.util.StringUtils;
  * <p>Individual expressions can be compiled by calling {@code SpelCompiler.compile(expression)}.
  *
  * @author Andy Clement
- * @author Juergen Hoeller
  * @since 4.1
  */
 public final class SpelCompiler implements Opcodes {
 
-    private static final int CLASSES_DEFINED_LIMIT = 100;
-
     private static final Log logger = LogFactory.getLog(SpelCompiler.class);
+
+    private static final int CLASSES_DEFINED_LIMIT = 100;
 
     // A compiler is created for each classloader, it manages a child class loader of that
     // classloader and the child is used to load the compiled expressions.
@@ -112,8 +111,7 @@ public final class SpelCompiler implements Opcodes {
      * components of the expression are not suitable for compilation or the data types involved are
      * not suitable for compilation. Used for testing.
      *
-     * @param expression the expression to compile
-     * @return {@code true} if the expression was successfully compiled, {@code false} otherwise
+     * @return true if the expression was successfully compiled
      */
     public static boolean compile(Expression expression) {
         return (expression instanceof SpelExpression
@@ -134,7 +132,7 @@ public final class SpelCompiler implements Opcodes {
 
     /**
      * Attempt compilation of the supplied expression. A check is made to see if it is compilable
-     * before compilation proceeds. The check involves visiting all the nodes in the expression AST
+     * before compilation proceeds. The check involves visiting all the nodes in the expression Ast
      * and ensuring enough state is known about them that bytecode can be generated for them.
      *
      * @param expression the expression to compile
@@ -276,18 +274,17 @@ public final class SpelCompiler implements Opcodes {
             super(NO_URLS, classLoader);
         }
 
+        int getClassesDefinedCount() {
+            return this.classesDefinedCount;
+        }
+
         public Class<?> defineClass(String name, byte[] bytes) {
             Class<?> clazz = super.defineClass(name, bytes, 0, bytes.length);
             this.classesDefinedCount++;
             return clazz;
         }
-
-        public int getClassesDefinedCount() {
-            return this.classesDefinedCount;
-        }
     }
 
-    /** An ASM ClassWriter extension bound to the SpelCompiler's ClassLoader. */
     private class ExpressionClassWriter extends ClassWriter {
 
         public ExpressionClassWriter() {

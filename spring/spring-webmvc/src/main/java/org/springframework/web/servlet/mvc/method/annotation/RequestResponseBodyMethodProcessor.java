@@ -46,7 +46,9 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
 /**
- * Resolves method arguments annotated with {@code @RequestBody} and handles return values from
+ * 处理当返回值或者处理请求的handler类注释了@ResponseBody情况下的返回值
+ *
+ * <p>Resolves method arguments annotated with {@code @RequestBody} and handles return values from
  * methods annotated with {@code @ResponseBody} by reading and writing to the body of the request or
  * response with an {@link HttpMessageConverter}.
  *
@@ -107,11 +109,13 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
+        // 该参数是否有 @RequestBody 注解
         return parameter.hasParameterAnnotation(RequestBody.class);
     }
 
     @Override
     public boolean supportsReturnType(MethodParameter returnType) {
+        // 该方法或者所在类是否有 @ResponseBody 注解
         return (AnnotatedElementUtils.hasAnnotation(
                         returnType.getContainingClass(), ResponseBody.class)
                 || returnType.hasMethodAnnotation(ResponseBody.class));
@@ -132,11 +136,13 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
             throws Exception {
 
         parameter = parameter.nestedIfOptional();
+        // 从请求体中解析出方法入参对象
         Object arg =
                 readWithMessageConverters(
                         webRequest, parameter, parameter.getNestedGenericParameterType());
         String name = Conventions.getVariableNameForParameter(parameter);
 
+        // 数据绑定相关
         if (binderFactory != null) {
             WebDataBinder binder = binderFactory.createBinder(webRequest, arg, name);
             if (arg != null) {
@@ -152,6 +158,7 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
             }
         }
 
+        // 返回方法入参对象，如果有必要，则通过 Optional 获取对应的方法入参
         return adaptArgumentIfNecessary(arg, parameter);
     }
 
@@ -161,11 +168,14 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
             throws IOException, HttpMediaTypeNotSupportedException,
                     HttpMessageNotReadableException {
 
+        // 创建 ServletServerHttpRequest 请求对象
         HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
         Assert.state(servletRequest != null, "No HttpServletRequest");
         ServletServerHttpRequest inputMessage = new ServletServerHttpRequest(servletRequest);
 
+        // 读取请求体中的消息并转换成入参对象
         Object arg = readWithMessageConverters(inputMessage, parameter, paramType);
+        // 校验方法入参对象
         if (arg == null && checkRequired(parameter)) {
             throw new HttpMessageNotReadableException(
                     "Required request body is missing: "
@@ -189,11 +199,14 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
             throws IOException, HttpMediaTypeNotAcceptableException,
                     HttpMessageNotWritableException {
 
+        // 设置已处理
         mavContainer.setRequestHandled(true);
+        // 创建请求和响应
         ServletServerHttpRequest inputMessage = createInputMessage(webRequest);
         ServletServerHttpResponse outputMessage = createOutputMessage(webRequest);
 
         // Try even with null return value. ResponseBodyAdvice could get involved.
+        // 使用 HttpMessageConverter 对对象进行转换，并写入到响应
         writeWithMessageConverters(returnValue, returnType, inputMessage, outputMessage);
     }
 }

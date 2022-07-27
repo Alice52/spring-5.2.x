@@ -31,22 +31,22 @@
             import org.springframework.scripting.Calculator
 
             class GroovyCalculator implements Calculator {
-            int add(int x, int y) {
-            return x + y;
-            }
+                int add(int x, int y) {
+                    return x + y;
+                }
             }
         </lang:inline-script>
     </lang:groovy>
 
     <lang:groovy id="groovyObjectCustomizer" customizer-ref="importCustomizer">
         <lang:inline-script><![CDATA[
-			public class TestCustomizer implements GroovyObjectCustomizer {
-				public void customize(GroovyObject go) {
-					println "customizing ${go}..."
-				}
-			}
-			]]>
-        </lang:inline-script>
+            public class TestCustomizer implements GroovyObjectCustomizer {
+                public void customize(GroovyObject go) {
+                    println "customizing ${go}..."
+                }
+            }
+            ]]>
+		</lang:inline-script>
     </lang:groovy>
 
     <bean id="importCustomizer" class="org.springframework.scripting.groovy.MyImportCustomizer"/>

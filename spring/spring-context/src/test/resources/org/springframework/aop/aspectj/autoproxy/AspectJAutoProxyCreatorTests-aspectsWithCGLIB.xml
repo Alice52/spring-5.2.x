@@ -7,9 +7,9 @@
 
 
     <!--
-    <bean
-        class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator" />
-    -->
+	<bean
+		class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator" />
+	-->
 
     <aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true"/>
 

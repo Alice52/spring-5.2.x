@@ -121,7 +121,7 @@ public class ResourceRegionEncoder extends AbstractEncoder<ResourceRegion> {
                                                 bufferFactory.wrap(
                                                         getContentRangeHeader(
                                                                 region))); // only wrapping, no
-                                // allocation
+                                                                           // allocation
 
                                 return prefix.concatWith(
                                         writeResourceRegion(region, bufferFactory, hints));

@@ -29,7 +29,10 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
- * Resolves {@link Errors} method arguments.
+ * 解析Errors类型的参数（一般是Errors或BindingResult）,当一个参数绑定出现异常时会自动将异常设置到其相邻的下一个Errors类型的参数，
+ * 设置方法就是使用了这个解析器，内部是从model中获取的
+ *
+ * <p>Resolves {@link Errors} method arguments.
  *
  * <p>An {@code Errors} method argument is expected to appear immediately after the model attribute
  * in the method signature. It is resolved by expecting the last two attributes added to the model

@@ -119,17 +119,20 @@ public abstract class DataSourceUtils {
         logger.debug("Fetching JDBC Connection from DataSource");
         Connection con = fetchConnection(dataSource);
 
+        // 当前线程支持同步
         if (TransactionSynchronizationManager.isSynchronizationActive()) {
             try {
                 // Use same Connection for further JDBC actions within the transaction.
                 // Thread-bound object will get removed by synchronization at transaction
                 // completion.
+                // 在事务中使用同一数据库连接
                 ConnectionHolder holderToUse = conHolder;
                 if (holderToUse == null) {
                     holderToUse = new ConnectionHolder(con);
                 } else {
                     holderToUse.setConnection(con);
                 }
+                // 记录数据库连接
                 holderToUse.requested();
                 TransactionSynchronizationManager.registerSynchronization(
                         new ConnectionSynchronization(holderToUse, dataSource));
@@ -187,6 +190,7 @@ public abstract class DataSourceUtils {
 
         boolean debugEnabled = logger.isDebugEnabled();
         // Set read-only flag.
+        // 设置数据连接的只读标识
         if (definition != null && definition.isReadOnly()) {
             try {
                 if (debugEnabled) {
@@ -209,6 +213,7 @@ public abstract class DataSourceUtils {
         }
 
         // Apply specific isolation level, if any.
+        // 设置数据库连接的隔离级别
         Integer previousIsolationLevel = null;
         if (definition != null
                 && definition.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT) {
@@ -230,7 +235,10 @@ public abstract class DataSourceUtils {
     }
 
     /**
-     * Reset the given Connection after a transaction, regarding read-only flag and isolation level.
+     * 重置连接，也就是重置事务隔离状态和是否只读
+     *
+     * <p>Reset the given Connection after a transaction, regarding read-only flag and isolation
+     * level.
      *
      * @param con the Connection to reset
      * @param previousIsolationLevel the isolation level to restore, if any
@@ -365,7 +373,9 @@ public abstract class DataSourceUtils {
     }
 
     /**
-     * Close the given Connection, obtained from the given DataSource, if it is not managed
+     * 释放连接
+     *
+     * <p>Close the given Connection, obtained from the given DataSource, if it is not managed
      * externally (that is, not bound to the thread).
      *
      * @param con the Connection to close if necessary (if this is {@code null}, the call will be
@@ -385,7 +395,9 @@ public abstract class DataSourceUtils {
     }
 
     /**
-     * Actually close the given Connection, obtained from the given DataSource. Same as {@link
+     * 获取连接持有器，释放连接，然后关闭连接
+     *
+     * <p>Actually close the given Connection, obtained from the given DataSource. Same as {@link
      * #releaseConnection}, but throwing the original SQLException.
      *
      * <p>Directly accessed by {@link TransactionAwareDataSourceProxy}.
@@ -402,19 +414,24 @@ public abstract class DataSourceUtils {
             return;
         }
         if (dataSource != null) {
+            // 当前线程存在事务的情况下说明存在共用数据库连接直接使用ConnectionHolder中的released方法进行连接数减一而不是真正的释放连接
             ConnectionHolder conHolder =
                     (ConnectionHolder) TransactionSynchronizationManager.getResource(dataSource);
+            // 如果连接持有器能拿到的话
             if (conHolder != null && connectionEquals(conHolder, con)) {
                 // It's the transactional Connection: Don't close it.
                 conHolder.released();
                 return;
             }
         }
+        // 关闭连接
         doCloseConnection(con, dataSource);
     }
 
     /**
-     * Close the Connection, unless a {@link SmartDataSource} doesn't want us to.
+     * 如果不是SmartDataSource类型就关闭连接
+     *
+     * <p>Close the Connection, unless a {@link SmartDataSource} doesn't want us to.
      *
      * @param con the Connection to close if necessary
      * @param dataSource the DataSource that the Connection was obtained from

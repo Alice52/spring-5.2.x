@@ -27,7 +27,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Simple MethodMatcher that looks for a specific Java 5 annotation being present on a method
+ * 带有注解的方法的匹配器
+ *
+ * <p>Simple MethodMatcher that looks for a specific Java 5 annotation being present on a method
  * (checking both the method on the invoked interface, if any, and the corresponding method on the
  * target class).
  *

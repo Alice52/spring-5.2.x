@@ -30,7 +30,9 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
- * Resolves servlet backed response-related method arguments. Supports values of the following
+ * 解析以下几种类型的参数
+ *
+ * <p>Resolves servlet backed response-related method arguments. Supports values of the following
  * types:
  *
  * <ul>

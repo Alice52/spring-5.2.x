@@ -25,7 +25,9 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.AfterAdvice;
 
 /**
- * Spring AOP advice wrapping an AspectJ after advice method.
+ * 使用AspectJ After注解的后置通知类型。 实现了MethodInterceptor、AfterAdvice接口。继承了AbstractAspectJAdvice
+ *
+ * <p>Spring AOP advice wrapping an AspectJ after advice method.
  *
  * @author Rod Johnson
  * @since 2.0
@@ -45,8 +47,10 @@ public class AspectJAfterAdvice extends AbstractAspectJAdvice
     @Override
     public Object invoke(MethodInvocation mi) throws Throwable {
         try {
+            // 执行下一个通知/拦截器
             return mi.proceed();
         } finally {
+            // 后置通知的方法总是会被执行,原因就在这finally
             invokeAdviceMethod(getJoinPointMatch(), null, null);
         }
     }

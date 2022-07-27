@@ -26,7 +26,10 @@ import org.springframework.web.servlet.SmartView;
 import org.springframework.web.servlet.View;
 
 /**
- * Handles return values that are of type {@link View}.
+ * 处理View类型返回值，如果返回值为空直接返回，否则将返回值设置到mavContainer的View中，并判断返回值是不是redirect类型，如果是则设置mavContainer的
+ * redirectModelScenario为true
+ *
+ * <p>Handles return values that are of type {@link View}.
  *
  * <p>A {@code null} return value is left as-is leaving it to the configured {@link
  * RequestToViewNameTranslator} to select a view name by convention.

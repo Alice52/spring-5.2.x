@@ -101,12 +101,6 @@ public abstract aspect AbstractInterfaceDrivenDependencyInjectionAspect extends 
     declare parents:ConfigurableObject+&&Serializable+implements ConfigurableDeserializationSupport;
 
     /**
-     * A marker interface to which the {@code readResolve()} is introduced.
-     */
-    static interface ConfigurableDeserializationSupport extends Serializable {
-    }
-
-    /**
      * Introduce the {@code readResolve()} method so that we can advise its
      * execution to configure the object.
      * <p>Note if a method with the same signature already exists in a
@@ -116,6 +110,12 @@ public abstract aspect AbstractInterfaceDrivenDependencyInjectionAspect extends 
      */
     public Object ConfigurableDeserializationSupport.readResolve() throws ObjectStreamException {
         return this;
+    }
+
+    /**
+     * A marker interface to which the {@code readResolve()} is introduced.
+     */
+    static interface ConfigurableDeserializationSupport extends Serializable {
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,13 +68,13 @@ public class JmsNamespaceHandlerTests {
     private ToolingTestApplicationContext context;
 
     @BeforeEach
-    public void setup() {
+    public void setUp() throws Exception {
         this.context =
                 new ToolingTestApplicationContext("jmsNamespaceHandlerTests.xml", getClass());
     }
 
     @AfterEach
-    public void shutdown() {
+    public void tearDown() throws Exception {
         this.context.close();
     }
 
@@ -90,13 +90,15 @@ public class JmsNamespaceHandlerTests {
                 .as("Context should contain 3 JCA endpoint containers")
                 .isEqualTo(3);
 
-        assertThat(context.getBeansOfType(JmsListenerContainerFactory.class))
+        Map<String, JmsListenerContainerFactory> containerFactories =
+                context.getBeansOfType(JmsListenerContainerFactory.class);
+        assertThat(containerFactories.size())
                 .as("Context should contain 3 JmsListenerContainerFactory instances")
-                .hasSize(3);
+                .isEqualTo(3);
     }
 
     @Test
-    public void testContainerConfiguration() {
+    public void testContainerConfiguration() throws Exception {
         Map<String, DefaultMessageListenerContainer> containers =
                 context.getBeansOfType(DefaultMessageListenerContainer.class);
         ConnectionFactory defaultConnectionFactory =
@@ -124,7 +126,7 @@ public class JmsNamespaceHandlerTests {
     }
 
     @Test
-    public void testJcaContainerConfiguration() {
+    public void testJcaContainerConfiguration() throws Exception {
         Map<String, JmsMessageEndpointManager> containers =
                 context.getBeansOfType(JmsMessageEndpointManager.class);
 

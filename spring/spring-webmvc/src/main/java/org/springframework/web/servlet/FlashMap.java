@@ -47,10 +47,13 @@ import org.springframework.util.StringUtils;
 @SuppressWarnings("serial")
 public final class FlashMap extends HashMap<String, Object> implements Comparable<FlashMap> {
 
+    // 参数
     private final MultiValueMap<String, String> targetRequestParams = new LinkedMultiValueMap<>(4);
 
+    // 目标url
     @Nullable private String targetRequestPath;
 
+    // 过期时间
     private long expirationTime = -1;
 
     /** Return the target URL path (or {@code null} if none specified). */

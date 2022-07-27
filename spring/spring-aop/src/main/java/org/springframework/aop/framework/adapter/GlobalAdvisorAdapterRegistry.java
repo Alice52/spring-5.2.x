@@ -26,12 +26,20 @@ package org.springframework.aop.framework.adapter;
  */
 public final class GlobalAdvisorAdapterRegistry {
 
-    /** Keep track of a single instance so we can return it to classes that request it. */
+    /**
+     * 单例模式的使用，使用静态类变量来保持一个唯一实例
+     *
+     * <p>Keep track of a single instance so we can return it to classes that request it.
+     */
     private static AdvisorAdapterRegistry instance = new DefaultAdvisorAdapterRegistry();
 
     private GlobalAdvisorAdapterRegistry() {}
 
-    /** Return the singleton {@link DefaultAdvisorAdapterRegistry} instance. */
+    /**
+     * 返回单例对象
+     *
+     * <p>Return the singleton {@link DefaultAdvisorAdapterRegistry} instance.
+     */
     public static AdvisorAdapterRegistry getInstance() {
         return instance;
     }

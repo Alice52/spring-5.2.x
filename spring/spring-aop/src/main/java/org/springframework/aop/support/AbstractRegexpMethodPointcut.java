@@ -52,10 +52,18 @@ import org.springframework.util.StringUtils;
 public abstract class AbstractRegexpMethodPointcut extends StaticMethodMatcherPointcut
         implements Serializable {
 
-    /** Regular expressions to match. */
+    /**
+     * 匹配的正则表达式
+     *
+     * <p>Regular expressions to match.
+     */
     private String[] patterns = new String[0];
 
-    /** Regular expressions <strong>not</strong> to match. */
+    /**
+     * 排除的正则表达式们
+     *
+     * <p>Regular expressions <strong>not</strong> to match.
+     */
     private String[] excludedPatterns = new String[0];
 
     /**

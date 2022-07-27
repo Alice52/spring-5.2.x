@@ -26,27 +26,35 @@ package org.springframework.transaction;
 public interface TransactionExecution {
 
     /**
-     * Return whether the present transaction is new; otherwise participating in an existing
+     * 是否为新事务
+     *
+     * <p>Return whether the present transaction is new; otherwise participating in an existing
      * transaction, or potentially not running in an actual transaction in the first place.
      */
     boolean isNewTransaction();
 
     /**
-     * Set the transaction rollback-only. This instructs the transaction manager that the only
+     * 设置为只回滚
+     *
+     * <p>Set the transaction rollback-only. This instructs the transaction manager that the only
      * possible outcome of the transaction may be a rollback, as alternative to throwing an
      * exception which would in turn trigger a rollback.
      */
     void setRollbackOnly();
 
     /**
-     * Return whether the transaction has been marked as rollback-only (either by the application or
-     * by the transaction infrastructure).
+     * 是否为只回滚
+     *
+     * <p>Return whether the transaction has been marked as rollback-only (either by the application
+     * or by the transaction infrastructure).
      */
     boolean isRollbackOnly();
 
     /**
-     * Return whether this transaction is completed, that is, whether it has already been committed
-     * or rolled back.
+     * 当前事务是否已经完成
+     *
+     * <p>Return whether this transaction is completed, that is, whether it has already been
+     * committed or rolled back.
      */
     boolean isCompleted();
 }

@@ -69,13 +69,13 @@ public class ResourceHandlerRegistryTests {
     }
 
     @Test
-    public void noResourceHandlers() {
+    public void noResourceHandlers() throws Exception {
         this.registry = new ResourceHandlerRegistry(new GenericApplicationContext());
         assertThat((Object) this.registry.getHandlerMapping()).isNull();
     }
 
     @Test
-    public void mapPathToLocation() {
+    public void mapPathToLocation() throws Exception {
         MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get(""));
         exchange.getAttributes()
                 .put(
@@ -116,7 +116,7 @@ public class ResourceHandlerRegistryTests {
     }
 
     @Test
-    public void resourceChain() {
+    public void resourceChain() throws Exception {
         ResourceUrlProvider resourceUrlProvider = Mockito.mock(ResourceUrlProvider.class);
         this.registry.setResourceUrlProvider(resourceUrlProvider);
         ResourceResolver mockResolver = Mockito.mock(ResourceResolver.class);
@@ -145,7 +145,7 @@ public class ResourceHandlerRegistryTests {
     }
 
     @Test
-    public void resourceChainWithoutCaching() {
+    public void resourceChainWithoutCaching() throws Exception {
         this.registration.resourceChain(false);
 
         ResourceWebHandler handler = getHandler("/resources/**");
@@ -159,7 +159,7 @@ public class ResourceHandlerRegistryTests {
     }
 
     @Test
-    public void resourceChainWithVersionResolver() {
+    public void resourceChainWithVersionResolver() throws Exception {
         VersionResourceResolver versionResolver =
                 new VersionResourceResolver()
                         .addFixedVersionStrategy("fixed", "/**/*.js")
@@ -186,7 +186,7 @@ public class ResourceHandlerRegistryTests {
     }
 
     @Test
-    public void resourceChainWithOverrides() {
+    public void resourceChainWithOverrides() throws Exception {
         CachingResourceResolver cachingResolver = Mockito.mock(CachingResourceResolver.class);
         VersionResourceResolver versionResolver = Mockito.mock(VersionResourceResolver.class);
         WebJarsResourceResolver webjarsResolver = Mockito.mock(WebJarsResourceResolver.class);

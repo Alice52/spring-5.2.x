@@ -17,7 +17,9 @@
 package org.springframework.aop;
 
 /**
- * Tag interface for throws advice.
+ * 后置异常通知类。 直接继承了AfterAdvice接口
+ *
+ * <p>Tag interface for throws advice.
  *
  * <p>There are not any methods on this interface, as methods are invoked by reflection.
  * Implementing classes must implement methods of the form:

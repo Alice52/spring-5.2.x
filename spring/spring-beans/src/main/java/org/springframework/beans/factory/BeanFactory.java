@@ -21,7 +21,7 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 
 /**
- * The root interface for accessing a Spring bean container.
+ * 定义获取bean及bean的各种属性 The root interface for accessing a Spring bean container.
  *
  * <p>This is the basic client view of a bean container; further interfaces such as {@link
  * ListableBeanFactory} and {@link org.springframework.beans.factory.config.ConfigurableBeanFactory}

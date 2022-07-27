@@ -107,6 +107,7 @@ public class RSocketFrameTypeMessageCondition
      * @param message the current message
      * @return the frame type or {@code null} if not found
      */
+    @SuppressWarnings("ConstantConditions")
     @Nullable
     public static FrameType getFrameType(Message<?> message) {
         return (FrameType)

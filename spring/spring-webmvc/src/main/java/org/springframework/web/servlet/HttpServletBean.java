@@ -84,6 +84,7 @@ public abstract class HttpServletBean extends HttpServlet
     /** Logger available to subclasses. */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    /** 必须配置的属性的集合，默认为空 */
     private final Set<String> requiredProperties = new HashSet<>(4);
 
     @Nullable private ConfigurableEnvironment environment;
@@ -103,7 +104,9 @@ public abstract class HttpServletBean extends HttpServlet
     }
 
     /**
-     * Return the {@link Environment} associated with this servlet.
+     * 实现了EnvironmentCapable接口，返回Environment对象
+     *
+     * <p>Return the {@link Environment} associated with this servlet.
      *
      * <p>If none specified, a default environment will be initialized via {@link
      * #createEnvironment()}.
@@ -117,7 +120,9 @@ public abstract class HttpServletBean extends HttpServlet
     }
 
     /**
-     * Set the {@code Environment} that this servlet runs in.
+     * 实现了EnvironmentAware接口，自动注入Environment对象
+     *
+     * <p>Set the {@code Environment} that this servlet runs in.
      *
      * <p>Any environment set here overrides the {@link StandardServletEnvironment} provided by
      * default.
@@ -133,7 +138,9 @@ public abstract class HttpServletBean extends HttpServlet
     }
 
     /**
-     * Create and return a new {@link StandardServletEnvironment}.
+     * 创建Environment对象
+     *
+     * <p>Create and return a new {@link StandardServletEnvironment}.
      *
      * <p>Subclasses may override this in order to configure the environment or specialize the
      * environment type returned.
@@ -153,16 +160,21 @@ public abstract class HttpServletBean extends HttpServlet
     public final void init() throws ServletException {
 
         // Set bean properties from init parameters.
+        // 将servlet中配置的init-param参数封装到pvs变量中
         PropertyValues pvs =
                 new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties);
         if (!pvs.isEmpty()) {
             try {
+                // 将当前的servlet对象转化成BeanWrapper对象，从而能够以spring的方法来将pvs注入到该beanWrapper中
                 BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);
                 ResourceLoader resourceLoader =
                         new ServletContextResourceLoader(getServletContext());
+                // 注册自定义属性编辑器，一旦有Resource类型的属性，将会使用ResourceEditor进行解析
                 bw.registerCustomEditor(
                         Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));
+                // 模板方法，可以在子类调用，做一些初始化工作，bw代表的是DispatcherServlet
                 initBeanWrapper(bw);
+                // 以spring的方式来将pvs注入到该beanWrapper对象中,将配置的初始化值（contextConfigLocation）设置到DispatcherServlet
                 bw.setPropertyValues(pvs, true);
             } catch (BeansException ex) {
                 if (logger.isErrorEnabled()) {
@@ -175,6 +187,7 @@ public abstract class HttpServletBean extends HttpServlet
         }
 
         // Let subclasses do whatever initialization they like.
+        // 模板方法，子类初始化的入口方法，查看FrameworkServlet#initServletBean方法
         initServletBean();
     }
 
@@ -224,16 +237,20 @@ public abstract class HttpServletBean extends HttpServlet
         public ServletConfigPropertyValues(ServletConfig config, Set<String> requiredProperties)
                 throws ServletException {
 
+            // 获取缺失的属性的集合
             Set<String> missingProps =
                     (!CollectionUtils.isEmpty(requiredProperties)
                             ? new HashSet<>(requiredProperties)
                             : null);
 
+            // 遍历servletConfig的初始化参数集合，添加到servletConfigPropertyValues中，并从missingProps移除
             Enumeration<String> paramNames = config.getInitParameterNames();
             while (paramNames.hasMoreElements()) {
                 String property = paramNames.nextElement();
                 Object value = config.getInitParameter(property);
+                // 添加到ServletConfigPropertyValues中
                 addPropertyValue(new PropertyValue(property, value));
+                // 从missingProps中移除
                 if (missingProps != null) {
                     missingProps.remove(property);
                 }

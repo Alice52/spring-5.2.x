@@ -19,10 +19,12 @@ package org.springframework.beans;
 import java.beans.PropertyDescriptor;
 
 /**
- * The central interface of Spring's low-level JavaBeans infrastructure.
+ * spring中的核心接口，是spring中的一个包装类，具有单独或者批量获取和设置属性值，获取属性描述符以及查询属性可读可写的能力，还可以完成类型的转换
+ *
+ * <p>The central interface of Spring's low-level JavaBeans infrastructure.
  *
  * <p>Typically not used directly but rather implicitly via a {@link
- * org.springframework.beans.factory.BeanFactory} or a {@link
+ * org.springframework.beans.factory.BeanFactory} or a {link
  * org.springframework.validation.DataBinder}.
  *
  * <p>Provides operations to analyze and manipulate standard JavaBeans: the ability to get and set
@@ -42,21 +44,25 @@ import java.beans.PropertyDescriptor;
  * @see PropertyAccessor
  * @see PropertyEditorRegistry
  * @see PropertyAccessorFactory#forBeanPropertyAccess
- * @see org.springframework.beans.factory.BeanFactory
- * @see org.springframework.validation.BeanPropertyBindingResult
- * @see org.springframework.validation.DataBinder#initBeanPropertyAccess()
+ * @see org.springframework.beans.factory.BeanFactory see
+ *     org.springframework.validation.BeanPropertyBindingResult see
+ *     org.springframework.validation.DataBinder#initBeanPropertyAccess()
  */
 public interface BeanWrapper extends ConfigurablePropertyAccessor {
 
     /**
-     * Return the limit for array and collection auto-growing.
+     * 返回数组和集合自动增长的限制
+     *
+     * <p>Return the limit for array and collection auto-growing.
      *
      * @since 4.1
      */
     int getAutoGrowCollectionLimit();
 
     /**
-     * Specify a limit for array and collection auto-growing.
+     * 指定数组和集合自动增长的限制，在普通的beanWrapper上，默认值是无限的
+     *
+     * <p>Specify a limit for array and collection auto-growing.
      *
      * <p>Default is unlimited on a plain BeanWrapper.
      *
@@ -64,14 +70,24 @@ public interface BeanWrapper extends ConfigurablePropertyAccessor {
      */
     void setAutoGrowCollectionLimit(int autoGrowCollectionLimit);
 
-    /** Return the bean instance wrapped by this object. */
+    /**
+     * 返回此对象包装的bean实例
+     *
+     * <p>Return the bean instance wrapped by this object.
+     */
     Object getWrappedInstance();
 
-    /** Return the type of the wrapped bean instance. */
+    /**
+     * 返回包装的bean实例的类型
+     *
+     * <p>Return the type of the wrapped bean instance.
+     */
     Class<?> getWrappedClass();
 
     /**
-     * Obtain the PropertyDescriptors for the wrapped object (as determined by standard JavaBeans
+     * 返回包装类的属性描述
+     *
+     * <p>Obtain the PropertyDescriptors for the wrapped object (as determined by standard JavaBeans
      * introspection).
      *
      * @return the PropertyDescriptors for the wrapped object
@@ -79,7 +95,9 @@ public interface BeanWrapper extends ConfigurablePropertyAccessor {
     PropertyDescriptor[] getPropertyDescriptors();
 
     /**
-     * Obtain the property descriptor for a specific property of the wrapped object.
+     * 根据属性名称获取对应的property descriptor
+     *
+     * <p>Obtain the property descriptor for a specific property of the wrapped object.
      *
      * @param propertyName the property to obtain the descriptor for (may be a nested path, but no
      *     indexed/mapped property)

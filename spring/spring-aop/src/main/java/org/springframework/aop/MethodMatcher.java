@@ -19,7 +19,9 @@ package org.springframework.aop;
 import java.lang.reflect.Method;
 
 /**
- * Part of a {@link Pointcut}: Checks whether the target method is eligible for advice.
+ * 切点匹配连接点的地方。即类中的某个方法和我们定义的切点表达式是否匹配、能不能被AOP拦截
+ *
+ * <p>Part of a {@link Pointcut}: Checks whether the target method is eligible for advice.
  *
  * <p>A MethodMatcher may be evaluated <b>statically</b> or at <b>runtime</b> (dynamically). Static
  * matching involves method and (possibly) method attributes. Dynamic matching also makes arguments
@@ -55,7 +57,9 @@ public interface MethodMatcher {
     MethodMatcher TRUE = TrueMethodMatcher.INSTANCE;
 
     /**
-     * Perform static checking whether the given method matches.
+     * 静态匹配，在匹配条件不是太严格时使用，可以满足大部分场景的使用
+     *
+     * <p>Perform static checking whether the given method matches.
      *
      * <p>If this returns {@code false} or if the {@link #isRuntime()} method returns {@code false},
      * no runtime check (i.e. no {@link #matches(java.lang.reflect.Method, Class, Object[])} call)
@@ -68,7 +72,9 @@ public interface MethodMatcher {
     boolean matches(Method method, Class<?> targetClass);
 
     /**
-     * Is this MethodMatcher dynamic, that is, must a final call be made on the {@link
+     * 是否需要执行动态匹配
+     *
+     * <p>Is this MethodMatcher dynamic, that is, must a final call be made on the {@link
      * #matches(java.lang.reflect.Method, Class, Object[])} method at runtime even if the 2-arg
      * matches method returns {@code true}?
      *
@@ -82,7 +88,9 @@ public interface MethodMatcher {
     boolean isRuntime();
 
     /**
-     * Check whether there a runtime (dynamic) match for this method, which must have matched
+     * 动态匹配，它是严格的匹配。在运行时动态的对参数的类型进行匹配
+     *
+     * <p>Check whether there a runtime (dynamic) match for this method, which must have matched
      * statically.
      *
      * <p>This method is invoked only if the 2-arg matches method returns {@code true} for the given

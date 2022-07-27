@@ -20,7 +20,9 @@ import org.springframework.beans.factory.parsing.ParseState;
 import org.springframework.util.StringUtils;
 
 /**
- * {@link ParseState} entry representing an aspect.
+ * 将id和ref封装成一个具体的切面对象
+ *
+ * <p>{@link ParseState} entry representing an aspect.
  *
  * @author Mark Fisher
  * @author Juergen Hoeller

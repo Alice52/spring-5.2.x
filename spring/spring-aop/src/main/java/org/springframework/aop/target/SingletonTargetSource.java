@@ -23,9 +23,12 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 /**
- * Implementation of the {@link org.springframework.aop.TargetSource} interface that holds a given
- * object. This is the default implementation of the TargetSource interface, as used by the Spring
- * AOP framework. There is usually no need to create objects of this class in application code.
+ * TargetSource的子类。适用于单例目标对象
+ *
+ * <p>Implementation of the {@link org.springframework.aop.TargetSource} interface that holds a
+ * given object. This is the default implementation of the TargetSource interface, as used by the
+ * Spring AOP framework. There is usually no need to create objects of this class in application
+ * code.
  *
  * <p>This class is serializable. However, the actual serializability of a SingletonTargetSource
  * will depend on whether the target is serializable.

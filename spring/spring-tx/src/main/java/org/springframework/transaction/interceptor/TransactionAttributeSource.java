@@ -21,7 +21,9 @@ import java.lang.reflect.Method;
 import org.springframework.lang.Nullable;
 
 /**
- * Strategy interface used by {@link TransactionInterceptor} for metadata retrieval.
+ * 事务属性源，就是事务注解的一些属性，也用来解析事务注解属性
+ *
+ * <p>Strategy interface used by {@link TransactionInterceptor} for metadata retrieval.
  *
  * <p>Implementations know how to source transaction attributes, whether from configuration,
  * metadata attributes at source level (such as Java 5 annotations), or anywhere else.

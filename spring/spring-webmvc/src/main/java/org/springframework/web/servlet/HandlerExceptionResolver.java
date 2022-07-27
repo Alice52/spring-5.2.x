@@ -22,9 +22,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.lang.Nullable;
 
 /**
- * Interface to be implemented by objects that can resolve exceptions thrown during handler mapping
- * or execution, in the typical case to error views. Implementors are typically registered as beans
- * in the application context.
+ * springmvc中通过HandlerExceptionResolver来统一处理异常，但是只用于解析对请求做处理的过程中产生的异常
+ *
+ * <p>Interface to be implemented by objects that can resolve exceptions thrown during handler
+ * mapping or execution, in the typical case to error views. Implementors are typically registered
+ * as beans in the application context.
  *
  * <p>Error views are analogous to JSP error pages but can be used with any kind of exception
  * including any checked exception, with potentially fine-grained mappings for specific handlers.
@@ -35,7 +37,9 @@ import org.springframework.lang.Nullable;
 public interface HandlerExceptionResolver {
 
     /**
-     * Try to resolve the given exception that got thrown during handler execution, returning a
+     * 解析异常，转换成对应的ModelAndView结果
+     *
+     * <p>Try to resolve the given exception that got thrown during handler execution, returning a
      * {@link ModelAndView} that represents a specific error page if appropriate.
      *
      * <p>The returned {@code ModelAndView} may be {@linkplain ModelAndView#isEmpty() empty} to

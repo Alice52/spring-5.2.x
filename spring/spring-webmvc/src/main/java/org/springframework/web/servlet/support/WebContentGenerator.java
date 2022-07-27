@@ -80,28 +80,60 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 
     private static final String HEADER_EXPIRES = "Expires";
 
-    /** Set of supported HTTP methods. */
+    /**
+     * 设置支持的请求方法，默认支持get,post,head
+     *
+     * <p>Set of supported HTTP methods.
+     */
     @Nullable private Set<String> supportedMethods;
 
     @Nullable private String allowHeader;
 
+    // 判断当前请求必须有session，如果此属性为true，但当前请求没有打开session将抛出HTtpSessionRequiredException异常
     private boolean requireSession = false;
 
     @Nullable private CacheControl cacheControl;
 
+    /**
+     * 缓存过期时间，正数表示需要缓存，负数表示不做任何事情（也就是说保留上次的缓存设置），
+     *
+     * <p>1、cacheSeconds =0时，则将设置如下响应头数据：
+     *
+     * <p>Pragma：no-cache // HTTP 1.0的不缓存响应头
+     *
+     * <p>Expires：1L // useExpiresHeader=true时，HTTP 1.0
+     *
+     * <p>Cache-Control ：no-cache // useCacheControlHeader=true时，HTTP 1.1
+     *
+     * <p>Cache-Control ：no-store // useCacheControlNoStore=true时，该设置是防止Firefox缓存
+     *
+     * <p>2、cacheSeconds>0时，则将设置如下响应头数据：
+     *
+     * <p>Expires：System.currentTimeMillis() + cacheSeconds * 1000L // useExpiresHeader=true时，HTTP
+     * 1.0
+     *
+     * <p>Cache-Control ：max-age=cacheSeconds // useCacheControlHeader=true时，HTTP 1.1
+     *
+     * <p>3、cacheSeconds<0时，则什么都不设置，即保留上次的缓存设置。
+     */
     private int cacheSeconds = -1;
 
     @Nullable private String[] varyByRequestHeaders;
 
     // deprecated fields
 
-    /** Use HTTP 1.0 expires header? */
+    /** 是否使用Http1.0协议过期响应，如果true则会在响应头添加Expires，需要配合cacheSeconds使用 Use HTTP 1.0 expires header? */
     private boolean useExpiresHeader = false;
 
-    /** Use HTTP 1.1 cache-control header? */
+    /**
+     * 是否使用HTTP1.1协议的缓存控制响应头，如果true则会在响应头添加；需要配合cacheSeconds使用 Use HTTP 1.1 cache-control header?
+     */
     private boolean useCacheControlHeader = true;
 
-    /** Use HTTP 1.1 cache-control header value "no-store"? */
+    /**
+     * 是否使用HTTP 1.1协议的缓存控制响应头，如果true则会在响应头添加；需要配合cacheSeconds使用 Use HTTP 1.1 cache-control header
+     * value "no-store"?
+     */
     private boolean useCacheControlNoStore = true;
 
     private boolean alwaysMustRevalidate = false;
@@ -374,12 +406,14 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
      */
     protected final void checkRequest(HttpServletRequest request) throws ServletException {
         // Check whether we should support the request method.
+        // 检查请求的类型是否支持
         String method = request.getMethod();
         if (this.supportedMethods != null && !this.supportedMethods.contains(method)) {
             throw new HttpRequestMethodNotSupportedException(method, this.supportedMethods);
         }
 
         // Check whether a session is required.
+        // 如果session是必须存在的，判断session实际是否存在
         if (this.requireSession && request.getSession(false) == null) {
             throw new HttpSessionRequiredException("Pre-existing session required but none found");
         }

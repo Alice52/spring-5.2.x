@@ -133,16 +133,7 @@ public abstract class AbstractJackson2Encoder extends Jackson2CodecSupport
                                                     hints,
                                                     sequenceWriter,
                                                     byteBuilder,
-                                                    separator))
-                            .doAfterTerminate(
-                                    () -> {
-                                        try {
-                                            byteBuilder.release();
-                                            generator.close();
-                                        } catch (IOException ex) {
-                                            logger.error("Could not close Encoder resources", ex);
-                                        }
-                                    });
+                                                    separator));
                 } catch (IOException ex) {
                     return Flux.error(ex);
                 }
@@ -168,32 +159,29 @@ public abstract class AbstractJackson2Encoder extends Jackson2CodecSupport
         ObjectWriter writer = createObjectWriter(valueType, mimeType, hints);
         ByteArrayBuilder byteBuilder =
                 new ByteArrayBuilder(writer.getFactory()._getBufferRecycler());
+        JsonEncoding encoding = getJsonEncoding(mimeType);
+
+        logValue(hints, value);
+
         try {
-            JsonEncoding encoding = getJsonEncoding(mimeType);
-
-            logValue(hints, value);
-
-            try (JsonGenerator generator =
-                    getObjectMapper().getFactory().createGenerator(byteBuilder, encoding)) {
-                writer.writeValue(generator, value);
-                generator.flush();
-            } catch (InvalidDefinitionException ex) {
-                throw new CodecException("Type definition error: " + ex.getType(), ex);
-            } catch (JsonProcessingException ex) {
-                throw new EncodingException("JSON encoding error: " + ex.getOriginalMessage(), ex);
-            } catch (IOException ex) {
-                throw new IllegalStateException(
-                        "Unexpected I/O error while writing to byte array builder", ex);
-            }
-
-            byte[] bytes = byteBuilder.toByteArray();
-            DataBuffer buffer = bufferFactory.allocateBuffer(bytes.length);
-            buffer.write(bytes);
-
-            return buffer;
-        } finally {
-            byteBuilder.release();
+            JsonGenerator generator =
+                    getObjectMapper().getFactory().createGenerator(byteBuilder, encoding);
+            writer.writeValue(generator, value);
+            generator.flush();
+        } catch (InvalidDefinitionException ex) {
+            throw new CodecException("Type definition error: " + ex.getType(), ex);
+        } catch (JsonProcessingException ex) {
+            throw new EncodingException("JSON encoding error: " + ex.getOriginalMessage(), ex);
+        } catch (IOException ex) {
+            throw new IllegalStateException(
+                    "Unexpected I/O error while writing to byte array builder", ex);
         }
+
+        byte[] bytes = byteBuilder.toByteArray();
+        DataBuffer buffer = bufferFactory.allocateBuffer(bytes.length);
+        buffer.write(bytes);
+
+        return buffer;
     }
 
     private DataBuffer encodeStreamingValue(

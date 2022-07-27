@@ -32,7 +32,9 @@ import org.springframework.instrument.classloading.LoadTimeWeaver;
 import org.springframework.lang.Nullable;
 
 /**
- * Post-processor that registers AspectJ's {@link
+ * 一个后置处理器 注册ClassPreProcessorAgentAdapter到spring applicationContext中，默认是LoadTimeWeaver
+ *
+ * <p>Post-processor that registers AspectJ's {@link
  * org.aspectj.weaver.loadtime.ClassPreProcessorAgentAdapter} with the Spring application context's
  * default {@link org.springframework.instrument.classloading.LoadTimeWeaver}.
  *
@@ -51,21 +53,27 @@ public class AspectJWeavingEnabler
     @Nullable private LoadTimeWeaver loadTimeWeaver;
 
     /**
-     * Enable AspectJ weaving with the given {@link LoadTimeWeaver}.
+     * 允许通过给定的LoadTimeWeaver进行aspectj织入
+     *
+     * <p>Enable AspectJ weaving with the given {@link LoadTimeWeaver}.
      *
      * @param weaverToUse the LoadTimeWeaver to apply to (or {@code null} for a default weaver)
      * @param beanClassLoader the class loader to create a default weaver for (if necessary)
      */
     public static void enableAspectJWeaving(
             @Nullable LoadTimeWeaver weaverToUse, @Nullable ClassLoader beanClassLoader) {
-
+        // 如果LoadTimeWeaver对象为空，那么需要准备LoadTimeWeaver对象
         if (weaverToUse == null) {
+            // 检测当前Instrumentation实例是否能从当前jvm中获取到
             if (InstrumentationLoadTimeWeaver.isInstrumentationAvailable()) {
+                // 创建InstrumentationLoadTimeWeaver对象
                 weaverToUse = new InstrumentationLoadTimeWeaver(beanClassLoader);
             } else {
+                // 否则，抛出异常
                 throw new IllegalStateException("No LoadTimeWeaver available");
             }
         }
+        // 给LoadTimeWeaver添加转换操作
         weaverToUse.addTransformer(
                 new AspectJClassBypassingClassFileTransformer(new ClassPreProcessorAgentAdapter()));
     }
@@ -92,7 +100,9 @@ public class AspectJWeavingEnabler
     }
 
     /**
-     * ClassFileTransformer decorator that suppresses processing of AspectJ classes in order to
+     * class文件转换器用来装饰aspectj的抑制处理进程，为了防止潜在的连接错误
+     *
+     * <p>ClassFileTransformer decorator that suppresses processing of AspectJ classes in order to
      * avoid potential LinkageErrors.
      *
      * @see org.springframework.context.annotation.LoadTimeWeavingConfiguration
@@ -114,9 +124,11 @@ public class AspectJWeavingEnabler
                 byte[] classfileBuffer)
                 throws IllegalClassFormatException {
 
+            // 如果class的名字以org.aspectj或者org/aspectj开启，那么直接返回
             if (className.startsWith("org.aspectj") || className.startsWith("org/aspectj")) {
                 return classfileBuffer;
             }
+            // 否则就对class文件进行转换
             return this.delegate.transform(
                     loader, className, classBeingRedefined, protectionDomain, classfileBuffer);
         }

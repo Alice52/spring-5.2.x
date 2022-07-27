@@ -23,7 +23,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * {@link ComponentDefinition} implementation that holds one or more nested {@link
+ * 复合的组件定义类
+ *
+ * <p>{@link ComponentDefinition} implementation that holds one or more nested {@link
  * ComponentDefinition} instances, aggregating them into a named group of components.
  *
  * @author Juergen Hoeller

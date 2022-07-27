@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,11 +97,6 @@ public class RouterFunctionMapping extends AbstractHandlerMapping implements Ini
         this.routerFunction = routerFunction;
     }
 
-    /**
-     * Set the message body converters to use.
-     *
-     * <p>These converters are used to convert from and to HTTP requests and responses.
-     */
     public void setMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
         this.messageConverters = messageConverters;
     }

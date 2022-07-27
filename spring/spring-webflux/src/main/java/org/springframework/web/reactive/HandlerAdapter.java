@@ -23,8 +23,13 @@ import reactor.core.publisher.Mono;
 import org.springframework.web.server.ServerWebExchange;
 
 /**
- * Contract that decouples the {@link DispatcherHandler} from the details of invoking a handler and
- * makes it possible to support any handler type.
+ * handler的适配器，将dispatcherHandler与调用处理程序联合在一起，以便支持各种类型的处理器
+ *
+ * <p>存在适配器的原因在于springmvc并没有对处理器做任何限制，处理器可以以任意合理的方式来表现，可以是一个类，也可以是一个方法
+ * 还可以是别的合理的方式，使用适配器可以将各种类型的处理器都用来执行处理
+ *
+ * <p>Contract that decouples the {@link DispatcherHandler} from the details of invoking a handler
+ * and makes it possible to support any handler type.
  *
  * @author Rossen Stoyanchev
  * @author Sebastien Deleuze
@@ -33,7 +38,9 @@ import org.springframework.web.server.ServerWebExchange;
 public interface HandlerAdapter {
 
     /**
-     * Whether this {@code HandlerAdapter} supports the given {@code handler}.
+     * 判断是否可以使用某个handler
+     *
+     * <p>Whether this {@code HandlerAdapter} supports the given {@code handler}.
      *
      * @param handler the handler object to check
      * @return whether or not the handler is supported
@@ -41,7 +48,9 @@ public interface HandlerAdapter {
     boolean supports(Object handler);
 
     /**
-     * Handle the request with the given handler.
+     * 使用具体的handler来仅从处理工作
+     *
+     * <p>Handle the request with the given handler.
      *
      * <p>Implementations are encouraged to handle exceptions resulting from the invocation of a
      * handler in order and if necessary to return an alternate result that represents an error

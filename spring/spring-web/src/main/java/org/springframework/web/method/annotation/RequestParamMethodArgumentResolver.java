@@ -50,7 +50,9 @@ import org.springframework.web.multipart.support.MultipartResolutionDelegate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Resolves method arguments annotated with @{@link RequestParam}, arguments of type {@link
+ * 解析注解@RequestParam的参数、MultipartFile类型的参数和没有注释的通用类型的参数
+ *
+ * <p>Resolves method arguments annotated with @{@link RequestParam}, arguments of type {@link
  * MultipartFile} in conjunction with Spring's {@link MultipartResolver} abstraction, and arguments
  * of type {@code javax.servlet.http.Part} in conjunction with Servlet 3.0 multipart requests. This
  * resolver can also be created in default resolution mode in which simple types (int, long, etc.)

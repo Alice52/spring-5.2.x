@@ -22,7 +22,9 @@ import org.springframework.aop.TargetSource;
 import org.springframework.util.Assert;
 
 /**
- * {@link org.springframework.aop.TargetSource} implementation that caches a local target object,
+ * TargetSource的子类。支持热交换的目标对象
+ *
+ * <p>{@link org.springframework.aop.TargetSource} implementation that caches a local target object,
  * but allows the target to be swapped while the application is running.
  *
  * <p>If configuring an object of this class in a Spring IoC container, use constructor injection.

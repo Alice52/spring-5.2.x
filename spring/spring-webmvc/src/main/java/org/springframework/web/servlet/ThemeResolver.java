@@ -22,8 +22,24 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.lang.Nullable;
 
 /**
- * Interface for web-based theme resolution strategies that allows for both theme resolution via the
- * request and theme modification via request and response.
+ * themeResolver是用来做主题解析使用的，不同的主题其实就是换一套图片、显示效果以及样式等，在springmvc中一套主题对应着一个properties文件，
+ * 存储着跟主题相关的所有资源，例如：theme.properties companyName=mashibing 在使用的时候可以用<spring:theme
+ * code="companyName"></>那么在显示的时候就会出现mashibing的字符串了
+ * 默认实现的子类是FixedThemeResolver,获取资源的名称是ThemeResolver的工作，而根据资源名称找到主题就是ThemeSource的作用了
+ *
+ * <p>我们可以自己配置ThemeResolver和ThemeSource对象 <bean id="themeSource"
+ * class="org.springframework.ui.context.support.ResourceBundleThemeSource"
+ * p:basenamePrefix="com.mashibing.theme."></bean> <bean id="themeResolver"
+ * class="org.springframework.web.servlet.theme.CookieThemeResolver"
+ * p:defaultThemeName="default"></bean>
+ *
+ * <p>在进行主题切换的时候，同样也是通过拦截器来实现的 <mvc:interceptors> <mvc:interceptor> <mvc:mapping
+ * path="/*“></mvc:mapping> <bean
+ * class="org.springframework.web.servlet.theme.ThemeChangeInterceptor" p:paramName="theme"></bean>
+ * </mvc:interceptor> </mvc:interceptors> http://localhost:8080?theme=default
+ *
+ * <p>Interface for web-based theme resolution strategies that allows for both theme resolution via
+ * the request and theme modification via request and response.
  *
  * <p>This interface allows for implementations based on session, cookies, etc. The default
  * implementation is {@link org.springframework.web.servlet.theme.FixedThemeResolver}, simply using
@@ -45,7 +61,9 @@ import org.springframework.lang.Nullable;
 public interface ThemeResolver {
 
     /**
-     * Resolve the current theme name via the given request. Should return a default theme as
+     * 从请求中，解析出使用的主题
+     *
+     * <p>Resolve the current theme name via the given request. Should return a default theme as
      * fallback in any case.
      *
      * @param request the request to be used for resolution
@@ -54,7 +72,9 @@ public interface ThemeResolver {
     String resolveThemeName(HttpServletRequest request);
 
     /**
-     * Set the current theme name to the given one.
+     * 设置请求，所使用的主题
+     *
+     * <p>Set the current theme name to the given one.
      *
      * @param request the request to be used for theme name modification
      * @param response the response to be used for theme name modification

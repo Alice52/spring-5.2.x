@@ -77,17 +77,16 @@ public abstract class AbstractDataBufferAllocatingTests {
                 arguments(
                         "NettyDataBufferFactory - UnpooledByteBufAllocator - preferDirect = false",
                         new NettyDataBufferFactory(new UnpooledByteBufAllocator(false))),
-                // 1) Disable caching for reliable leak detection, see
+                // disable caching for reliable leak detection, see
                 // https://github.com/netty/netty/issues/5275
-                // 2) maxOrder is 4 (vs default 11) but can be increased if necessary
                 arguments(
                         "NettyDataBufferFactory - PooledByteBufAllocator - preferDirect = true",
                         new NettyDataBufferFactory(
-                                new PooledByteBufAllocator(true, 1, 1, 4096, 4, 0, 0, 0, true))),
+                                new PooledByteBufAllocator(true, 1, 1, 4096, 2, 0, 0, 0, true))),
                 arguments(
                         "NettyDataBufferFactory - PooledByteBufAllocator - preferDirect = false",
                         new NettyDataBufferFactory(
-                                new PooledByteBufAllocator(false, 1, 1, 4096, 4, 0, 0, 0, true))),
+                                new PooledByteBufAllocator(false, 1, 1, 4096, 2, 0, 0, 0, true))),
                 arguments(
                         "DefaultDataBufferFactory - preferDirect = true",
                         new DefaultDataBufferFactory(true)),

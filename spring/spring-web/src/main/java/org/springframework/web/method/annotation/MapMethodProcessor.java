@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,9 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
- * Resolves {@link Map} method arguments and handles {@link Map} return values.
+ * 解析Map类型参数，包括ModelMap类型，直接返回mavContainer中的model
+ *
+ * <p>Resolves {@link Map} method arguments and handles {@link Map} return values.
  *
  * <p>A Map return value can be interpreted in more than one ways depending on the presence of
  * annotations like {@code @ModelAttribute} or {@code @ResponseBody}. As of 5.2 this resolver
@@ -42,8 +44,8 @@ public class MapMethodProcessor
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return (Map.class.isAssignableFrom(parameter.getParameterType())
-                && parameter.getParameterAnnotations().length == 0);
+        return Map.class.isAssignableFrom(parameter.getParameterType())
+                && parameter.getParameterAnnotations().length == 0;
     }
 
     @Override
@@ -78,9 +80,9 @@ public class MapMethodProcessor
         } else if (returnValue != null) {
             // should not happen
             throw new UnsupportedOperationException(
-                    "Unexpected return type ["
+                    "Unexpected return type: "
                             + returnType.getParameterType().getName()
-                            + "] in method: "
+                            + " in method: "
                             + returnType.getMethod());
         }
     }

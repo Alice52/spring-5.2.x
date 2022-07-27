@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,9 +80,9 @@ public abstract class AbstractNamedValueMethodArgumentResolver
 
         //noinspection ConstantConditions
         this.conversionService =
-                (conversionService != null
+                conversionService != null
                         ? conversionService
-                        : DefaultConversionService.getSharedInstance());
+                        : DefaultConversionService.getSharedInstance();
 
         this.configurableBeanFactory = beanFactory;
         this.expressionContext =
@@ -91,6 +91,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver
 
     @Override
     public Object resolveArgument(MethodParameter parameter, Message<?> message) throws Exception {
+
         NamedValueInfo namedValueInfo = getNamedValueInfo(parameter);
         MethodParameter nestedParameter = parameter.nestedIfOptional();
 
@@ -156,10 +157,12 @@ public abstract class AbstractNamedValueMethodArgumentResolver
         if (info.name.isEmpty()) {
             name = parameter.getParameterName();
             if (name == null) {
+                Class<?> type = parameter.getParameterType();
                 throw new IllegalArgumentException(
                         "Name for argument of type ["
-                                + parameter.getNestedParameterType().getName()
-                                + "] not specified, and parameter name information not found in class file either.");
+                                + type.getName()
+                                + "] not specified, "
+                                + "and parameter name information not found in class file either.");
             }
         }
         return new NamedValueInfo(

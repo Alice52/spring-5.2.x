@@ -101,12 +101,16 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
     /** Map of static attributes, keyed by attribute name (String). */
     private final Map<String, Object> staticAttributes = new HashMap<>();
 
+    /** View 的类型，不同的实现类，会对应一个 View 的类型 */
     @Nullable private Class<?> viewClass;
 
+    /** 前缀 */
     private String prefix = "";
 
+    /** 后缀 */
     private String suffix = "";
 
+    /** ContentType 类型 */
     @Nullable private String contentType;
 
     private boolean redirectContextRelative = true;
@@ -115,16 +119,20 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 
     @Nullable private String[] redirectHosts;
 
+    /** RequestAttributes 暴露给 View 使用时的属性 */
     @Nullable private String requestContextAttribute;
 
+    /** 是否暴露路径变量给 View 使用 */
     @Nullable private Boolean exposePathVariables;
 
     @Nullable private Boolean exposeContextBeansAsAttributes;
 
     @Nullable private String[] exposedContextBeanNames;
 
+    /** 是否只处理指定的视图名们 */
     @Nullable private String[] viewNames;
 
+    /** 顺序，优先级最低 */
     private int order = Ordered.LOWEST_PRECEDENCE;
 
     /** Return the view class to be used to create views. */
@@ -450,6 +458,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
      */
     @Override
     protected Object getCacheKey(String viewName, Locale locale) {
+        // 重写了父类的方法，去除locale直接返回viewName
         return viewName;
     }
 
@@ -466,11 +475,13 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
     protected View createView(String viewName, Locale locale) throws Exception {
         // If this resolver is not supposed to handle the given view,
         // return null to pass on to the next resolver in the chain.
+        // 是否能处理该视图名称
         if (!canHandle(viewName, locale)) {
             return null;
         }
 
         // Check for special "redirect:" prefix.
+        // 如果是 REDIRECT 开头，创建 RedirectView 视图
         if (viewName.startsWith(REDIRECT_URL_PREFIX)) {
             String redirectUrl = viewName.substring(REDIRECT_URL_PREFIX.length());
             RedirectView view =
@@ -478,19 +489,24 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
                             redirectUrl, isRedirectContextRelative(), isRedirectHttp10Compatible());
             String[] hosts = getRedirectHosts();
             if (hosts != null) {
+                // 设置 RedirectView 对象的 hosts 属性
                 view.setHosts(hosts);
             }
+            // 应用
             return applyLifecycleMethods(REDIRECT_URL_PREFIX, view);
         }
 
         // Check for special "forward:" prefix.
         if (viewName.startsWith(FORWARD_URL_PREFIX)) {
+            // 如果是 FORWARD 开头，创建 InternalResourceView 视图
             String forwardUrl = viewName.substring(FORWARD_URL_PREFIX.length());
             InternalResourceView view = new InternalResourceView(forwardUrl);
+            // 应用
             return applyLifecycleMethods(FORWARD_URL_PREFIX, view);
         }
 
         // Else fall back to superclass implementation: calling loadView.
+        // 创建视图名对应的 View 对象
         return super.createView(viewName, locale);
     }
 
@@ -506,6 +522,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
      * @see org.springframework.util.PatternMatchUtils#simpleMatch(String, String)
      */
     protected boolean canHandle(String viewName, Locale locale) {
+        // 一般情况下，`viewNames` 指定的视图名们为空，所以会满足 viewNames == null 代码块。也就说，所有视图名都可以被处理。
         String[] viewNames = getViewNames();
         return (viewNames == null || PatternMatchUtils.simpleMatch(viewNames, viewName));
     }
@@ -529,7 +546,9 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
      */
     @Override
     protected View loadView(String viewName, Locale locale) throws Exception {
+        // 创建 viewName 对应的 View 对象
         AbstractUrlBasedView view = buildView(viewName);
+        // 应用
         View result = applyLifecycleMethods(viewName, view);
         return (view.checkResource(locale) ? result : null);
     }
@@ -554,7 +573,9 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
         Class<?> viewClass = getViewClass();
         Assert.state(viewClass != null, "No view class");
 
+        // 创建 AbstractUrlBasedView 对象
         AbstractUrlBasedView view = (AbstractUrlBasedView) BeanUtils.instantiateClass(viewClass);
+        // 设置各种属性
         view.setUrl(getPrefix() + viewName + getSuffix());
         view.setAttributesMap(getAttributesMap());
 
@@ -598,6 +619,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
      * @see org.springframework.beans.factory.config.AutowireCapableBeanFactory#initializeBean
      */
     protected View applyLifecycleMethods(String viewName, AbstractUrlBasedView view) {
+        // 情况一，如果 viewName 有对应的 View Bean 对象，则使用它
         ApplicationContext context = getApplicationContext();
         if (context != null) {
             Object initialized =
@@ -606,6 +628,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
                 return (View) initialized;
             }
         }
+        // 情况二，直接返回 view
         return view;
     }
 }

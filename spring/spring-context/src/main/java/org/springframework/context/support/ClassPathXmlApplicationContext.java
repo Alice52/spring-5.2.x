@@ -75,8 +75,10 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
     }
 
     /**
-     * Create a new ClassPathXmlApplicationContext, loading the definitions from the given XML file
-     * and automatically refreshing the context.
+     * 创建一个新的ClassPathXmlApplicationContext，从xml文件中加载给定的bean定义信息，并且刷新上下文
+     *
+     * <p>Create a new ClassPathXmlApplicationContext, loading the definitions from the given XML
+     * file and automatically refreshing the context.
      *
      * @param configLocation resource location
      * @throws BeansException if context creation failed
@@ -141,19 +143,8 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
     public ClassPathXmlApplicationContext(
             String[] configLocations, boolean refresh, @Nullable ApplicationContext parent)
             throws BeansException {
-
-        /**
-         * 调用父类构造函数, 初始化相关属性
-         *
-         * <pre>
-         *   1. 创建并初始化资源模式处理器 PathMatchingResourcePatternResolver <br>
-         *   2. 为容器分配一个全局的ID, 可以参与后面的 BeanFactory 属性初始化[DLBF序列化]
-         *   3. 初始化 active, closed, 锁 等相关属性
-         *   4. 设置父容器对象[如果有的话], 并合并 Environment[如果可以的话]
-         * </pre>
-         */
+        // 调用父类构造方法，进行相关的对象创建等操作,包含属性的赋值操作
         super(parent);
-        // 创建 Environment 并初始化相关属性, 及解析 location 中的 placeholder
         setConfigLocations(configLocations);
         if (refresh) {
             refresh();

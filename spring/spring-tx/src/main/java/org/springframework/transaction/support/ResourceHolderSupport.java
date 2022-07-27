@@ -28,9 +28,8 @@ import org.springframework.transaction.TransactionTimedOutException;
  * number of seconds or milliseconds in order to determine a transactional timeout.
  *
  * @author Juergen Hoeller
- * @since 02.02.2004
- * @see org.springframework.jdbc.datasource.DataSourceTransactionManager#doBegin
- * @see org.springframework.jdbc.datasource.DataSourceUtils#applyTransactionTimeout
+ * @since 02.02.2004 see org.springframework.jdbc.datasource.DataSourceTransactionManager#doBegin
+ *     see org.springframework.jdbc.datasource.DataSourceUtils#applyTransactionTimeout
  */
 public abstract class ResourceHolderSupport implements ResourceHolder {
 
@@ -60,7 +59,9 @@ public abstract class ResourceHolderSupport implements ResourceHolder {
     }
 
     /**
-     * Reset the rollback-only status for this resource transaction.
+     * 设置连接不回滚
+     *
+     * <p>Reset the rollback-only status for this resource transaction.
      *
      * <p>Only really intended to be called after custom rollback steps which keep the original
      * resource in action, e.g. in case of a savepoint.
@@ -173,7 +174,11 @@ public abstract class ResourceHolderSupport implements ResourceHolder {
         return (this.referenceCount > 0);
     }
 
-    /** Clear the transactional state of this resource holder. */
+    /**
+     * 清除事务同步状态，回滚状态
+     *
+     * <p>Clear the transactional state of this resource holder.
+     */
     public void clear() {
         this.synchronizedWithTransaction = false;
         this.rollbackOnly = false;

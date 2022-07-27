@@ -87,7 +87,7 @@ class StompBrokerRelayMessageHandlerTests {
                     @Override
                     protected void startInternal() {
                         publishBrokerAvailableEvent(); // Force this, since we'll never actually
-                        // connect
+                                                       // connect
                         super.startInternal();
                     }
                 };

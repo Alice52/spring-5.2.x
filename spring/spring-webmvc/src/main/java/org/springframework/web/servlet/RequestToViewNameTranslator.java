@@ -21,8 +21,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.lang.Nullable;
 
 /**
- * Strategy interface for translating an incoming {@link javax.servlet.http.HttpServletRequest} into
- * a logical view name when no view name is explicitly supplied.
+ * 在很多情况下是通过viewName来获取View对象，如果handler处理完之后没有设置View也没有ViewName，那么此时就需要从request中获取viewName了
+ * 就是此接口的作用和价值
+ *
+ * <p>Strategy interface for translating an incoming {@link javax.servlet.http.HttpServletRequest}
+ * into a logical view name when no view name is explicitly supplied.
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
@@ -31,7 +34,9 @@ import org.springframework.lang.Nullable;
 public interface RequestToViewNameTranslator {
 
     /**
-     * Translate the given {@link HttpServletRequest} into a view name.
+     * 根据请求，获得其视图名
+     *
+     * <p>Translate the given {@link HttpServletRequest} into a view name.
      *
      * @param request the incoming {@link HttpServletRequest} providing the context from which a
      *     view name is to be resolved

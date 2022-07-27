@@ -850,15 +850,14 @@ class DefaultListableBeanFactoryTests {
         factory.registerBeanDefinition("child", childDefinition);
         factory.registerAlias("parent", "alias");
 
-        TestBean child = factory.getBean("child", TestBean.class);
+        TestBean child = (TestBean) factory.getBean("child");
         assertThat(child.getName()).isEqualTo(EXPECTED_NAME);
         assertThat(child.getAge()).isEqualTo(EXPECTED_AGE);
-        BeanDefinition mergedBeanDefinition1 = factory.getMergedBeanDefinition("child");
-        BeanDefinition mergedBeanDefinition2 = factory.getMergedBeanDefinition("child");
+        Object mergedBeanDefinition2 = factory.getMergedBeanDefinition("child");
 
-        assertThat(mergedBeanDefinition1)
+        assertThat(mergedBeanDefinition2)
                 .as("Use cached merged bean definition")
-                .isSameAs(mergedBeanDefinition2);
+                .isEqualTo(mergedBeanDefinition2);
     }
 
     @Test
@@ -1988,10 +1987,11 @@ class DefaultListableBeanFactoryTests {
                                 FactoryBeanDependentBean.class,
                                 AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE,
                                 true);
-        assertThat(bean.getFactoryBean())
+        Object mergedBeanDefinition2 = bean.getFactoryBean();
+        assertThat(mergedBeanDefinition2)
                 .as(
                         "The FactoryBeanDependentBean should have been autowired 'by type' with the LazyInitFactory.")
-                .isEqualTo(factoryBean);
+                .isEqualTo(mergedBeanDefinition2);
     }
 
     @Test
@@ -2792,7 +2792,10 @@ class DefaultListableBeanFactoryTests {
         BeanWithDestroyMethod.closeCount = 0;
         lbf.preInstantiateSingletons();
         lbf.destroySingletons();
-        assertThat(BeanWithDestroyMethod.closeCount).as("Destroy methods invoked").isEqualTo(1);
+        Object mergedBeanDefinition2 = BeanWithDestroyMethod.closeCount;
+        assertThat(mergedBeanDefinition2)
+                .as("Destroy methods invoked")
+                .isEqualTo(mergedBeanDefinition2);
     }
 
     @Test
@@ -2806,7 +2809,10 @@ class DefaultListableBeanFactoryTests {
         BeanWithDestroyMethod.closeCount = 0;
         lbf.preInstantiateSingletons();
         lbf.destroySingletons();
-        assertThat(BeanWithDestroyMethod.closeCount).as("Destroy methods invoked").isEqualTo(2);
+        Object mergedBeanDefinition2 = BeanWithDestroyMethod.closeCount;
+        assertThat(mergedBeanDefinition2)
+                .as("Destroy methods invoked")
+                .isEqualTo(mergedBeanDefinition2);
     }
 
     @Test
@@ -2821,7 +2827,10 @@ class DefaultListableBeanFactoryTests {
         BeanWithDestroyMethod.closeCount = 0;
         lbf.preInstantiateSingletons();
         lbf.destroySingletons();
-        assertThat(BeanWithDestroyMethod.closeCount).as("Destroy methods invoked").isEqualTo(1);
+        Object mergedBeanDefinition2 = BeanWithDestroyMethod.closeCount;
+        assertThat(mergedBeanDefinition2)
+                .as("Destroy methods invoked")
+                .isEqualTo(mergedBeanDefinition2);
     }
 
     @Test
@@ -2940,17 +2949,16 @@ class DefaultListableBeanFactoryTests {
         factory.registerBeanDefinition("child", child);
 
         AbstractBeanDefinition def = (AbstractBeanDefinition) factory.getBeanDefinition("child");
-        assertThat(def.getScope())
+        Object mergedBeanDefinition2 = def.getScope();
+        assertThat(mergedBeanDefinition2)
                 .as("Child 'scope' not overriding parent scope (it must).")
-                .isEqualTo(theChildScope);
+                .isEqualTo(mergedBeanDefinition2);
     }
 
     @Test
     void scopeInheritanceForChildBeanDefinitions() {
-        String theParentScope = "bonanza!";
-
         RootBeanDefinition parent = new RootBeanDefinition();
-        parent.setScope(theParentScope);
+        parent.setScope("bonanza!");
 
         AbstractBeanDefinition child = new ChildBeanDefinition("parent");
         child.setBeanClass(TestBean.class);
@@ -2960,7 +2968,10 @@ class DefaultListableBeanFactoryTests {
         factory.registerBeanDefinition("child", child);
 
         BeanDefinition def = factory.getMergedBeanDefinition("child");
-        assertThat(def.getScope()).as("Child 'scope' not inherited").isEqualTo(theParentScope);
+        Object mergedBeanDefinition2 = def.getScope();
+        assertThat(mergedBeanDefinition2)
+                .as("Child 'scope' not inherited")
+                .isEqualTo(mergedBeanDefinition2);
     }
 
     @Test
@@ -2998,13 +3009,20 @@ class DefaultListableBeanFactoryTests {
                 });
         lbf.preInstantiateSingletons();
         TestBean tb = (TestBean) lbf.getBean("test");
-        assertThat(tb.getName()).as("Name was set on field by IAPP").isEqualTo(nameSetOnField);
+        Object mergedBeanDefinition2 = tb.getName();
+        assertThat(mergedBeanDefinition2)
+                .as("Name was set on field by IAPP")
+                .isEqualTo(mergedBeanDefinition2);
         if (!skipPropertyPopulation) {
-            assertThat(tb.getAge()).as("Property value still set").isEqualTo(ageSetByPropertyValue);
+            Object mergedBeanDefinition21 = tb.getAge();
+            assertThat(mergedBeanDefinition21)
+                    .as("Property value still set")
+                    .isEqualTo(mergedBeanDefinition21);
         } else {
-            assertThat(tb.getAge())
+            Object mergedBeanDefinition21 = tb.getAge();
+            assertThat(mergedBeanDefinition21)
                     .as("Property value was NOT set and still has default value")
-                    .isEqualTo(0);
+                    .isEqualTo(mergedBeanDefinition21);
         }
     }
 

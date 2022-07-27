@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,9 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
- * Resolves {@link Model} arguments and handles {@link Model} return values.
+ * 解析Model类型参数，直接返回mavContainer中的model
+ *
+ * <p>Resolves {@link Model} arguments and handles {@link Model} return values.
  *
  * <p>A {@link Model} return type has a set purpose. Therefore this handler should be configured
  * ahead of handlers that support any return value type annotated with {@code @ModelAttribute} or
@@ -39,11 +41,13 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class ModelMethodProcessor
         implements HandlerMethodArgumentResolver, HandlerMethodReturnValueHandler {
 
+    // 支持解析Model类型的参数
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return Model.class.isAssignableFrom(parameter.getParameterType());
     }
 
+    // 直接返回mavContainer中的model
     @Override
     @Nullable
     public Object resolveArgument(
@@ -57,11 +61,13 @@ public class ModelMethodProcessor
         return mavContainer.getModel();
     }
 
+    // 支持解析Model类型的返回值
     @Override
     public boolean supportsReturnType(MethodParameter returnType) {
         return Model.class.isAssignableFrom(returnType.getParameterType());
     }
 
+    // 返回值不为null，且是model类型，将返回值加入到model，否则抛出异常
     @Override
     public void handleReturnValue(
             @Nullable Object returnValue,
@@ -77,9 +83,9 @@ public class ModelMethodProcessor
         } else {
             // should not happen
             throw new UnsupportedOperationException(
-                    "Unexpected return type ["
+                    "Unexpected return type: "
                             + returnType.getParameterType().getName()
-                            + "] in method: "
+                            + " in method: "
                             + returnType.getMethod());
         }
     }

@@ -147,6 +147,12 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
         return false;
     }
 
+    /**
+     * 查找Transactional注解的属性，而且会对父类和接口也寻找，
+     *
+     * @param clazz the class to retrieve the attribute for
+     * @return
+     */
     @Override
     @Nullable
     protected TransactionAttribute findTransactionAttribute(Class<?> clazz) {
@@ -173,7 +179,9 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
      */
     @Nullable
     protected TransactionAttribute determineTransactionAttribute(AnnotatedElement element) {
+        // 获取我们的注解解析器
         for (TransactionAnnotationParser parser : this.annotationParsers) {
+            // 通过注解解析器去解析我们的元素(方法或者类)上的注解
             TransactionAttribute attr = parser.parseTransactionAnnotation(element);
             if (attr != null) {
                 return attr;

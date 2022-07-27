@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,9 @@ public class UriTemplateTests {
                 .isEqualTo(new URI("/hotels/1/bookings/42"));
     }
 
-    @Test // SPR-9712
+    // SPR-9712
+
+    @Test
     public void expandVarArgsWithArrayValue() throws Exception {
         UriTemplate template = new UriTemplate("/sum?numbers={numbers}");
         URI result = template.expand(new int[] {1, 2, 3});
@@ -195,7 +197,7 @@ public class UriTemplateTests {
     }
 
     @Test // SPR-16169
-    public void matchWithMultipleSegmentsAtTheEnd() throws Exception {
+    public void matchWithMultipleSegmentsAtTheEnd() {
         UriTemplate template = new UriTemplate("/account/{accountId}");
         assertThat(template.matches("/account/15/alias/5")).isFalse();
     }
@@ -216,19 +218,20 @@ public class UriTemplateTests {
     }
 
     @Test // SPR-13705
-    public void matchesWithSlashAtTheEnd() throws Exception {
-        assertThat(new UriTemplate("/test/").matches("/test/")).isTrue();
+    public void matchesWithSlashAtTheEnd() {
+        UriTemplate uriTemplate = new UriTemplate("/test/");
+        assertThat(uriTemplate.matches("/test/")).isTrue();
     }
 
     @Test
-    public void expandWithDollar() throws Exception {
+    public void expandWithDollar() {
         UriTemplate template = new UriTemplate("/{a}");
         URI uri = template.expand("$replacement");
         assertThat(uri.toString()).isEqualTo("/$replacement");
     }
 
     @Test
-    public void expandWithAtSign() throws Exception {
+    public void expandWithAtSign() {
         UriTemplate template = new UriTemplate("http://localhost/query={query}");
         URI uri = template.expand("foo@bar");
         assertThat(uri.toString()).isEqualTo("http://localhost/query=foo@bar");

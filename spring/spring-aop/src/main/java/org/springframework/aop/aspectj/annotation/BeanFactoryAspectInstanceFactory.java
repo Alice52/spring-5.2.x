@@ -27,8 +27,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
- * {@link org.springframework.aop.aspectj.AspectInstanceFactory} implementation backed by a Spring
- * {@link org.springframework.beans.factory.BeanFactory}.
+ * MetadataAwareAspectInstanceFactory的子类。持有BeanFactory实例。从BeanFactory中获取Aspect实例
+ *
+ * <p>{@link org.springframework.aop.aspectj.AspectInstanceFactory} implementation backed by a
+ * Spring {@link org.springframework.beans.factory.BeanFactory}.
  *
  * <p>Note that this may instantiate multiple times if using a prototype, which probably won't give
  * the semantics you expect. Use a {@link LazySingletonAspectInstanceFactoryDecorator} to wrap this

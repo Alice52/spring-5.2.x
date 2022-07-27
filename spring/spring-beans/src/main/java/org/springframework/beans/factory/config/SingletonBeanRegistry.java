@@ -21,7 +21,7 @@ import org.springframework.lang.Nullable;
 /**
  * Interface that defines a registry for shared bean instances. Can be implemented by {@link
  * org.springframework.beans.factory.BeanFactory} implementations in order to expose their singleton
- * management facility in a uniform manner.
+ * management facility in a uniform manner. 定义对单例的注册和获取
  *
  * <p>The {@link ConfigurableBeanFactory} interface extends this interface.
  *

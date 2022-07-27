@@ -40,6 +40,7 @@ import org.springframework.util.ObjectUtils;
 @SuppressWarnings("serial")
 public class GenericBeanDefinition extends AbstractBeanDefinition {
 
+    // 定义一个父类名字
     @Nullable private String parentName;
 
     /**
@@ -75,6 +76,7 @@ public class GenericBeanDefinition extends AbstractBeanDefinition {
         this.parentName = parentName;
     }
 
+    // 实现了抽象克隆方法
     @Override
     public AbstractBeanDefinition cloneBeanDefinition() {
         return new GenericBeanDefinition(this);

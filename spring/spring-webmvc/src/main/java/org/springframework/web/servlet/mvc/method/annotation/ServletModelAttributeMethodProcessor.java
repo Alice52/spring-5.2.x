@@ -38,7 +38,9 @@ import org.springframework.web.method.annotation.ModelAttributeMethodProcessor;
 import org.springframework.web.servlet.HandlerMapping;
 
 /**
- * A Servlet-specific {@link ModelAttributeMethodProcessor} that applies data binding through a
+ * 为父类添加了Servlet特性，使用ServletRequestDataBinder代替父类的WebDataBinder进行参数的绑定
+ *
+ * <p>A Servlet-specific {@link ModelAttributeMethodProcessor} that applies data binding through a
  * WebDataBinder of type {@link ServletRequestDataBinder}.
  *
  * <p>Also adds a fall-back strategy to instantiate the model attribute from a URI template variable

@@ -16,9 +16,6 @@
 
 package org.springframework.context.support
 
-import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.getBean
-
 /**
  * Tests for [GenericApplicationContext] Kotlin extensions
  *
@@ -26,60 +23,5 @@ import org.springframework.beans.factory.getBean
  */
 class GenericApplicationContextExtensionsTests {
 
-    @Test
-    fun registerBeanWithClass() {
-        val context = GenericApplicationContext()
-        context.registerBean<BeanA>()
-        context.refresh()
-        context.getBean<BeanA>()
-    }
-
-    @Test
-    fun registerBeanWithNameAndClass() {
-        val context = GenericApplicationContext()
-        context.registerBean<BeanA>("a")
-        context.refresh()
-        context.getBean("a")
-    }
-
-    @Test
-    fun registerBeanWithSupplier() {
-        val context = GenericApplicationContext()
-        context.registerBean { BeanA() }
-        context.refresh()
-        context.getBean<BeanA>()
-    }
-
-    @Test
-    fun registerBeanWithNameAndSupplier() {
-        val context = GenericApplicationContext()
-        context.registerBean("a") { BeanA() }
-        context.refresh()
-        context.getBean("a")
-    }
-
-    @Test
-    fun registerBeanWithFunction() {
-        val context = GenericApplicationContext()
-        context.registerBean<BeanA>()
-        context.registerBean { BeanB(it.getBean<BeanA>()) }
-        context.refresh()
-        context.getBean<BeanA>()
-        context.getBean<BeanB>()
-    }
-
-    @Test
-    fun registerBeanWithNameAndFunction() {
-        val context = GenericApplicationContext()
-        context.registerBean<BeanA>("a")
-        context.registerBean("b") { BeanB(it.getBean<BeanA>()) }
-        context.refresh()
-        context.getBean("a")
-        context.getBean("b")
-    }
-
-    class BeanA
-
-    class BeanB(val a: BeanA)
-
+//
 }

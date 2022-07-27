@@ -21,8 +21,10 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
- * Regular expression pointcut based on the {@code java.util.regex} package. Supports the following
- * JavaBean properties:
+ * 基于正则表达式来匹配方法名的pointcut
+ *
+ * <p>Regular expression pointcut based on the {@code java.util.regex} package. Supports the
+ * following JavaBean properties:
  *
  * <ul>
  *   <li>pattern: regular expression for the fully-qualified method names to match
@@ -40,10 +42,18 @@ import java.util.regex.PatternSyntaxException;
 @SuppressWarnings("serial")
 public class JdkRegexpMethodPointcut extends AbstractRegexpMethodPointcut {
 
-    /** Compiled form of the patterns. */
+    /**
+     * 匹配的正则表达式对象
+     *
+     * <p>Compiled form of the patterns.
+     */
     private Pattern[] compiledPatterns = new Pattern[0];
 
-    /** Compiled form of the exclusion patterns. */
+    /**
+     * 排除的正则表达式对象
+     *
+     * <p>Compiled form of the exclusion patterns.
+     */
     private Pattern[] compiledExclusionPatterns = new Pattern[0];
 
     /** Initialize {@link Pattern Patterns} from the supplied {@code String[]}. */

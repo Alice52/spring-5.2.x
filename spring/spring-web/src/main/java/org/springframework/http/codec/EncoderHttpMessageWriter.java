@@ -142,8 +142,7 @@ public class EncoderHttpMessageWriter<T> implements HttpMessageWriter<T> {
                                                 .doOnDiscard(
                                                         PooledDataBuffer.class,
                                                         DataBufferUtils::release));
-                            })
-                    .doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release);
+                            });
         }
 
         if (isStreamingMediaType(contentType)) {

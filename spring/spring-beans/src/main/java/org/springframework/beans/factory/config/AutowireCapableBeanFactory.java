@@ -26,7 +26,9 @@ import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.lang.Nullable;
 
 /**
- * Extension of the {@link org.springframework.beans.factory.BeanFactory} interface to be
+ * 提高创建bean、自动注入、初始化以及应用bean的处理器
+ *
+ * <p>Extension of the {@link org.springframework.beans.factory.BeanFactory} interface to be
  * implemented by bean factories that are capable of autowiring, provided that they want to expose
  * this functionality for existing bean instances.
  *
@@ -38,10 +40,10 @@ import org.springframework.lang.Nullable;
  * existing bean instances that Spring does not control the lifecycle of. This is particularly
  * useful for WebWork Actions and Tapestry Page objects, for example.
  *
- * <p>Note that this interface is not implemented by {@link
+ * <p>Note that this interface is not implemented by {link
  * org.springframework.context.ApplicationContext} facades, as it is hardly ever used by application
  * code. That said, it is available from an application context too, accessible through
- * ApplicationContext's {@link
+ * ApplicationContext's {link
  * org.springframework.context.ApplicationContext#getAutowireCapableBeanFactory()} method.
  *
  * <p>You may also implement the {@link org.springframework.beans.factory.BeanFactoryAware}
@@ -52,14 +54,16 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 04.12.2003
  * @see org.springframework.beans.factory.BeanFactoryAware
- * @see org.springframework.beans.factory.config.ConfigurableListableBeanFactory
- * @see org.springframework.context.ApplicationContext#getAutowireCapableBeanFactory()
+ * @see org.springframework.beans.factory.config.ConfigurableListableBeanFactory see
+ *     org.springframework.context.ApplicationContext#getAutowireCapableBeanFactory()
  */
 public interface AutowireCapableBeanFactory extends BeanFactory {
 
     /**
-     * Constant that indicates no externally defined autowiring. Note that BeanFactoryAware etc and
-     * annotation-driven injection will still be applied.
+     * 没有自动装配
+     *
+     * <p>Constant that indicates no externally defined autowiring. Note that BeanFactoryAware etc
+     * and annotation-driven injection will still be applied.
      *
      * @see #createBean
      * @see #autowire
@@ -68,7 +72,9 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
     int AUTOWIRE_NO = 0;
 
     /**
-     * Constant that indicates autowiring bean properties by name (applying to all bean property
+     * 按照名字自动装配
+     *
+     * <p>Constant that indicates autowiring bean properties by name (applying to all bean property
      * setters).
      *
      * @see #createBean
@@ -78,7 +84,9 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
     int AUTOWIRE_BY_NAME = 1;
 
     /**
-     * Constant that indicates autowiring bean properties by type (applying to all bean property
+     * 按照类型自动装配
+     *
+     * <p>Constant that indicates autowiring bean properties by type (applying to all bean property
      * setters).
      *
      * @see #createBean
@@ -88,8 +96,10 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
     int AUTOWIRE_BY_TYPE = 2;
 
     /**
-     * Constant that indicates autowiring the greediest constructor that can be satisfied (involves
-     * resolving the appropriate constructor).
+     * 按照构造器自动装配
+     *
+     * <p>Constant that indicates autowiring the greediest constructor that can be satisfied
+     * (involves resolving the appropriate constructor).
      *
      * @see #createBean
      * @see #autowire
@@ -97,8 +107,10 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
     int AUTOWIRE_CONSTRUCTOR = 3;
 
     /**
-     * Constant that indicates determining an appropriate autowire strategy through introspection of
-     * the bean class.
+     * 自动装配
+     *
+     * <p>Constant that indicates determining an appropriate autowire strategy through introspection
+     * of the bean class.
      *
      * @see #createBean
      * @see #autowire
@@ -382,7 +394,9 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
     Object resolveBeanByName(String name, DependencyDescriptor descriptor) throws BeansException;
 
     /**
-     * Resolve the specified dependency against the beans defined in this factory.
+     * 根据descriptor的依赖类型解析出与descriptor所包装的对象匹配的候选Bean对象
+     *
+     * <p>Resolve the specified dependency against the beans defined in this factory.
      *
      * @param descriptor the descriptor for the dependency (field/method/constructor)
      * @param requestingBeanName the name of the bean which declares the given dependency
@@ -398,7 +412,9 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
             throws BeansException;
 
     /**
-     * Resolve the specified dependency against the beans defined in this factory.
+     * 根据descriptor的依赖类型解析出与descriptor所包装的对象匹配的候选Bean对象
+     *
+     * <p>Resolve the specified dependency against the beans defined in this factory.
      *
      * @param descriptor the descriptor for the dependency (field/method/constructor)
      * @param requestingBeanName the name of the bean which declares the given dependency

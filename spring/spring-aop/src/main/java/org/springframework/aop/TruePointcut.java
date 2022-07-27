@@ -19,7 +19,9 @@ package org.springframework.aop;
 import java.io.Serializable;
 
 /**
- * Canonical Pointcut instance that always matches.
+ * Pointcut的一个重要实现类。在DefaultPointcutAdvisor中使用的是TruePointcut。在进行切点匹配的时候永远返回true
+ *
+ * <p>Canonical Pointcut instance that always matches.
  *
  * @author Rod Johnson
  */

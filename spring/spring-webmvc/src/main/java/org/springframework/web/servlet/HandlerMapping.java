@@ -21,7 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.lang.Nullable;
 
 /**
- * Interface to be implemented by objects that define a mapping between requests and handler
+ * 根据request找到响应的处理器handler和interceptors
+ *
+ * <p>Interface to be implemented by objects that define a mapping between requests and handler
  * objects.
  *
  * <p>This class can be implemented by application developers, although this is not necessary, as
@@ -138,7 +140,9 @@ public interface HandlerMapping {
             HandlerMapping.class.getName() + ".producibleMediaTypes";
 
     /**
-     * Return a handler and any interceptors for this request. The choice may be made on request
+     * 获得请求对应的处理器和拦截器
+     *
+     * <p>Return a handler and any interceptors for this request. The choice may be made on request
      * URL, session state, or any factor the implementing class chooses.
      *
      * <p>The returned HandlerExecutionChain contains a handler Object, rather than even a tag

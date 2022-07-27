@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * A root bean definition represents the merged bean definition that backs a specific bean in a
+ * 合并bean定义，将其他类型的BeanDefinition在运行时合并起来
+ *
+ * <p>A root bean definition represents the merged bean definition that backs a specific bean in a
  * Spring BeanFactory at runtime. It might have been created from multiple original bean definitions
  * that inherit from each other, typically registered as {@link GenericBeanDefinition
  * GenericBeanDefinitions}. A root bean definition is essentially the 'unified' bean definition view
@@ -60,12 +62,16 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
     /** Common lock for the two post-processing fields below. */
     final Object postProcessingLock = new Object();
 
-    /** Determines if the definition needs to be re-merged. */
+    /**
+     * 判断beandefinition是否需要重新合并
+     *
+     * <p>Determines if the definition needs to be re-merged.
+     */
     volatile boolean stale;
 
     boolean allowCaching = true;
 
-    boolean isFactoryMethodUnique;
+    boolean isFactoryMethodUnique = false;
 
     @Nullable volatile ResolvableType targetType;
 
@@ -81,9 +87,6 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
     /** Package-visible field for caching a unique factory method candidate for introspection. */
     @Nullable volatile Method factoryMethodToIntrospect;
 
-    /** Package-visible field for caching a resolved destroy method name (also for inferred). */
-    @Nullable volatile String resolvedDestroyMethodName;
-
     /** Package-visible field for caching the resolved constructor or factory method. */
     @Nullable Executable resolvedConstructorOrFactoryMethod;
 
@@ -97,7 +100,10 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
     @Nullable Object[] preparedConstructorArguments;
 
     /**
-     * Package-visible field that indicates MergedBeanDefinitionPostProcessor having been applied.
+     * 判断当前bean对象是否实现了MergedBeanDefinitionPostProcessor接口
+     *
+     * <p>Package-visible field that indicates MergedBeanDefinitionPostProcessor having been
+     * applied.
      */
     boolean postProcessed = false;
 
@@ -371,7 +377,9 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
     }
 
     /**
-     * Determine preferred constructors to use for default construction, if any. Constructor
+     * 确定首选构造函数用作默认的构造器
+     *
+     * <p>Determine preferred constructors to use for default construction, if any. Constructor
      * arguments will be autowired if necessary.
      *
      * @return one or more preferred constructors, or {@code null} if none (in which case the

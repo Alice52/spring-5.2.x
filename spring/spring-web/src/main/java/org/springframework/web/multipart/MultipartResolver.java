@@ -19,9 +19,10 @@ package org.springframework.web.multipart;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * A strategy interface for multipart file upload resolution in accordance with <a
- * href="https://www.ietf.org/rfc/rfc1867.txt">RFC 1867</a>. Implementations are typically usable
- * both within an application context and standalone.
+ * MultipartResolver用于处理上传请求，处理方式是将普通的request包装成MultipartHttpServletRequest,可以直接调用getFile方法来获取File，
+ * 如果上传多个文件，可以调用getFileMap来处理。 A strategy interface for multipart file upload resolution in
+ * accordance with <a href="https://www.ietf.org/rfc/rfc1867.txt">RFC 1867</a>. Implementations are
+ * typically usable both within an application context and standalone.
  *
  * <p>There are two concrete implementations included in Spring, as of Spring 3.1:
  *
@@ -32,14 +33,14 @@ import javax.servlet.http.HttpServletRequest;
  *       Servlet 3.0+ Part API
  * </ul>
  *
- * <p>There is no default resolver implementation used for Spring {@link
+ * <p>There is no default resolver implementation used for Spring {link
  * org.springframework.web.servlet.DispatcherServlet DispatcherServlets}, as an application might
  * choose to parse its multipart requests itself. To define an implementation, create a bean with
- * the id "multipartResolver" in a {@link org.springframework.web.servlet.DispatcherServlet
+ * the id "multipartResolver" in a {link org.springframework.web.servlet.DispatcherServlet
  * DispatcherServlet's} application context. Such a resolver gets applied to all requests handled by
- * that {@link org.springframework.web.servlet.DispatcherServlet}.
+ * that {link org.springframework.web.servlet.DispatcherServlet}.
  *
- * <p>If a {@link org.springframework.web.servlet.DispatcherServlet} detects a multipart request, it
+ * <p>If a {link org.springframework.web.servlet.DispatcherServlet} detects a multipart request, it
  * will resolve it via the configured {@link MultipartResolver} and pass on a wrapped {@link
  * javax.servlet.http.HttpServletRequest}. Controllers can then cast their given request to the
  * {@link MultipartHttpServletRequest} interface, which allows for access to any {@link
@@ -58,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * org.springframework.web.multipart.support.StringMultipartFileEditor} with their data binder, to
  * automatically apply multipart content to form bean properties.
  *
- * <p>As an alternative to using a {@link MultipartResolver} with a {@link
+ * <p>As an alternative to using a {@link MultipartResolver} with a {link
  * org.springframework.web.servlet.DispatcherServlet}, a {@link
  * org.springframework.web.multipart.support.MultipartFilter} can be registered in {@code web.xml}.
  * It will delegate to a corresponding {@link MultipartResolver} bean in the root application
@@ -75,13 +76,15 @@ import javax.servlet.http.HttpServletRequest;
  * @see MultipartFile
  * @see org.springframework.web.multipart.commons.CommonsMultipartResolver
  * @see org.springframework.web.multipart.support.ByteArrayMultipartFileEditor
- * @see org.springframework.web.multipart.support.StringMultipartFileEditor
- * @see org.springframework.web.servlet.DispatcherServlet
+ * @see org.springframework.web.multipart.support.StringMultipartFileEditor see
+ *     org.springframework.web.servlet.DispatcherServlet
  */
 public interface MultipartResolver {
 
     /**
-     * Determine if the given request contains multipart content.
+     * 判断是否是上传请求
+     *
+     * <p>Determine if the given request contains multipart content.
      *
      * <p>Will typically check for content type "multipart/form-data", but the actually accepted
      * requests might depend on the capabilities of the resolver implementation.
@@ -92,10 +95,12 @@ public interface MultipartResolver {
     boolean isMultipart(HttpServletRequest request);
 
     /**
-     * Parse the given HTTP request into multipart files and parameters, and wrap the request inside
-     * a {@link org.springframework.web.multipart.MultipartHttpServletRequest} object that provides
-     * access to file descriptors and makes contained parameters accessible via the standard
-     * ServletRequest methods.
+     * 将request请求包装成MultipartHttpServletRequest
+     *
+     * <p>Parse the given HTTP request into multipart files and parameters, and wrap the request
+     * inside a {@link org.springframework.web.multipart.MultipartHttpServletRequest} object that
+     * provides access to file descriptors and makes contained parameters accessible via the
+     * standard ServletRequest methods.
      *
      * @param request the servlet request to wrap (must be of a multipart content type)
      * @return the wrapped servlet request
@@ -112,7 +117,10 @@ public interface MultipartResolver {
             throws MultipartException;
 
     /**
-     * Cleanup any resources used for the multipart handling, like a storage for the uploaded files.
+     * 处理完成之后清理上传过程中产生的临时资源
+     *
+     * <p>Cleanup any resources used for the multipart handling, like a storage for the uploaded
+     * files.
      *
      * @param request the request to cleanup resources for
      */

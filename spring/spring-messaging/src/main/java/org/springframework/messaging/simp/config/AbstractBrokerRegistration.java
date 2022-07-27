@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,19 +41,12 @@ public abstract class AbstractBrokerRegistration {
 
     private final List<String> destinationPrefixes;
 
-    /**
-     * Create a new broker registration.
-     *
-     * @param clientInboundChannel the inbound channel
-     * @param clientOutboundChannel the outbound channel
-     * @param destinationPrefixes the destination prefixes
-     */
     public AbstractBrokerRegistration(
             SubscribableChannel clientInboundChannel,
             MessageChannel clientOutboundChannel,
             @Nullable String[] destinationPrefixes) {
 
-        Assert.notNull(clientInboundChannel, "'clientInboundChannel' must not be null");
+        Assert.notNull(clientOutboundChannel, "'clientInboundChannel' must not be null");
         Assert.notNull(clientOutboundChannel, "'clientOutboundChannel' must not be null");
 
         this.clientInboundChannel = clientInboundChannel;

@@ -50,14 +50,18 @@ public abstract class AbstractHandlerExceptionResolver
     /** Logger available to subclasses. */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    // 优先级，默认最低
     private int order = Ordered.LOWEST_PRECEDENCE;
 
+    // 匹配的处理器对象的集合
     @Nullable private Set<?> mappedHandlers;
 
+    // 匹配的处理器类型的数组
     @Nullable private Class<?>[] mappedHandlerClasses;
 
     @Nullable private Log warnLogger;
 
+    // 防止响应缓存
     private boolean preventResponseCaching = false;
 
     @Override
@@ -143,9 +147,13 @@ public abstract class AbstractHandlerExceptionResolver
             @Nullable Object handler,
             Exception ex) {
 
+        // 判断是否可以应用
         if (shouldApplyTo(request, handler)) {
+            // 阻止缓存
             prepareResponse(ex, response);
+            // 执行解析异常，返回modelAndView对象
             ModelAndView result = doResolveException(request, response, handler, ex);
+            // 如果ModelAndView对象非空，则进行返回
             if (result != null) {
                 // Print debug message when warn logger is not enabled.
                 if (logger.isDebugEnabled()
@@ -157,7 +165,9 @@ public abstract class AbstractHandlerExceptionResolver
                 logException(ex, request);
             }
             return result;
-        } else {
+        }
+        // 不可应用，直接返回null
+        else {
             return null;
         }
     }
@@ -178,9 +188,11 @@ public abstract class AbstractHandlerExceptionResolver
      */
     protected boolean shouldApplyTo(HttpServletRequest request, @Nullable Object handler) {
         if (handler != null) {
+            // 如果mappedHandler包含handler对象，则返回true
             if (this.mappedHandlers != null && this.mappedHandlers.contains(handler)) {
                 return true;
             }
+            // 如果mappedHandlerClasses包含handler类型，则返回true
             if (this.mappedHandlerClasses != null) {
                 for (Class<?> handlerClass : this.mappedHandlerClasses) {
                     if (handlerClass.isInstance(handler)) {
@@ -190,6 +202,7 @@ public abstract class AbstractHandlerExceptionResolver
             }
         }
         // Else only apply if there are no explicit handler mappings.
+        // 如果mappedHandlers和mappedHandlerClasses都为空，说明直接匹配
         return (this.mappedHandlers == null && this.mappedHandlerClasses == null);
     }
 

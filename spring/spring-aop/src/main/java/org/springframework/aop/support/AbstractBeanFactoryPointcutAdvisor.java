@@ -28,7 +28,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Abstract BeanFactory-based PointcutAdvisor that allows for any Advice to be configured as
+ * 实现了BeanFactoryAware接口，若在Bean容器里注册可议注入BeanFactory，从而访问里面的实例
+ *
+ * <p>Abstract BeanFactory-based PointcutAdvisor that allows for any Advice to be configured as
  * reference to an Advice bean in a BeanFactory.
  *
  * <p>Specifying the name of an advice bean instead of the advice object itself (if running within a
@@ -74,6 +76,7 @@ public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcu
     @Override
     public void setBeanFactory(BeanFactory beanFactory) {
         this.beanFactory = beanFactory;
+        // 若在Spring环境下，会给AdviceMonitor重新赋值为：getSingletonMutex()
         resetAdviceMonitor();
     }
 
@@ -88,6 +91,7 @@ public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcu
     @Override
     public Advice getAdvice() {
         Advice advice = this.advice;
+        // 非Spring环境一般手动set进来，所以就直接返回吧
         if (advice != null) {
             return advice;
         }
@@ -96,12 +100,15 @@ public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcu
         Assert.state(
                 this.beanFactory != null, "BeanFactory must be set to resolve 'adviceBeanName'");
 
+        // 若bean是单例的，那就没什么好说的，直接去工厂里拿出来就完事了（Advice.class），有可能返回null
         if (this.beanFactory.isSingleton(this.adviceBeanName)) {
             // Rely on singleton semantics provided by the factory.
             advice = this.beanFactory.getBean(this.adviceBeanName, Advice.class);
             this.advice = advice;
             return advice;
-        } else {
+        }
+        // 若是多例的，就加锁，然后调用getBean()给他生成一个新的实例即可
+        else {
             // No singleton guarantees from the factory -> let's lock locally but
             // reuse the factory's singleton lock, just in case a lazy dependency
             // of our advice bean happens to trigger the singleton lock implicitly...

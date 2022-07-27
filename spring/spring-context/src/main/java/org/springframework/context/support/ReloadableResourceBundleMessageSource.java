@@ -39,7 +39,9 @@ import org.springframework.util.PropertiesPersister;
 import org.springframework.util.StringUtils;
 
 /**
- * Spring-specific {@link org.springframework.context.MessageSource} implementation that accesses
+ * 该实现类允许用户通过beanName指定一个资源名（包括类路径的全限定资源名）或通过beanName指定一组资源名
+ *
+ * <p>Spring-specific {@link org.springframework.context.MessageSource} implementation that accesses
  * resource bundles using specified basenames, participating in the Spring {@link
  * org.springframework.context.ApplicationContext}'s resource loading.
  *
@@ -91,14 +93,17 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
     private static final String XML_SUFFIX = ".xml";
 
     // Cache to hold filename lists per Locale
+    // 文件名-区域  所对应的配置文件名
     private final ConcurrentMap<String, Map<Locale, List<String>>> cachedFilenames =
             new ConcurrentHashMap<>();
 
     // Cache to hold already loaded properties per filename
+    // 缓存来保存每个文件名已经记载的属性
     private final ConcurrentMap<String, PropertiesHolder> cachedProperties =
             new ConcurrentHashMap<>();
 
     // Cache to hold already loaded properties per filename
+    // 缓存以保存每个区域的合并加载属性
     private final ConcurrentMap<Locale, PropertiesHolder> cachedMergedProperties =
             new ConcurrentHashMap<>();
 
@@ -111,7 +116,9 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
     private ResourceLoader resourceLoader = new DefaultResourceLoader();
 
     /**
-     * Set per-file charsets to use for parsing properties files.
+     * 设置文件编码
+     *
+     * <p>Set per-file charsets to use for parsing properties files.
      *
      * <p>Only applies to classic properties files, not to XML files.
      *
@@ -142,7 +149,9 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
     }
 
     /**
-     * Set the PropertiesPersister to use for parsing properties files.
+     * 设置propertiesPersister用于解析属性文件
+     *
+     * <p>Set the PropertiesPersister to use for parsing properties files.
      *
      * <p>The default is a DefaultPropertiesPersister.
      *
@@ -172,7 +181,9 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
     }
 
     /**
-     * Resolves the given message code as key in the retrieved bundle files, returning the value
+     * 将给定的消息代码解析为检索到的包文件中的key，按原样返回包中找到的值（不使用MessageFormat解析）
+     *
+     * <p>Resolves the given message code as key in the retrieved bundle files, returning the value
      * found in the bundle as-is (without MessageFormat parsing).
      */
     @Override
@@ -199,7 +210,9 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
     }
 
     /**
-     * Resolves the given message code as key in the retrieved bundle files, using a cached
+     * 将给定的消息代码解析为检索到的包文件中的key，每个消息代码使用缓存的MessageFormat实例
+     *
+     * <p>Resolves the given message code as key in the retrieved bundle files, using a cached
      * MessageFormat instance per message code.
      */
     @Override
@@ -212,6 +225,7 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
                 return result;
             }
         } else {
+            // 遍历资源包，生成key所对应的messageFormat
             for (String basename : getBasenameSet()) {
                 List<String> filenames = calculateAllFilenames(basename, locale);
                 for (String filename : filenames) {
@@ -227,7 +241,9 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
     }
 
     /**
-     * Get a PropertiesHolder that contains the actually visible properties for a Locale, after
+     * 获取locale所对应的持有properties对象
+     *
+     * <p>Get a PropertiesHolder that contains the actually visible properties for a Locale, after
      * merging all specified resource bundles. Either fetches the holder from the cache or freshly
      * loads it.
      *
@@ -235,11 +251,13 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
      * Therefore, merged properties are always cached forever.
      */
     protected PropertiesHolder getMergedProperties(Locale locale) {
+        // 先走缓存
         PropertiesHolder mergedHolder = this.cachedMergedProperties.get(locale);
         if (mergedHolder != null) {
             return mergedHolder;
         }
 
+        // 创建一个新的properties对象
         Properties mergedProps = newProperties();
         long latestTimestamp = -1;
         String[] basenames = StringUtils.toStringArray(getBasenameSet());
@@ -266,7 +284,9 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
     }
 
     /**
-     * Calculate all filenames for the given bundle basename and Locale. Will calculate filenames
+     * 计算给定的捆绑包基础名称和区域设置的所有文件名。将计算给定区域设置的文件名，系统区域设置和默认文件
+     *
+     * <p>Calculate all filenames for the given bundle basename and Locale. Will calculate filenames
      * for the given Locale, the system Locale (if applicable), and the default file.
      *
      * @param basename the basename of the bundle
@@ -354,7 +374,9 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
     }
 
     /**
-     * Get a PropertiesHolder for the given filename, either from the cache or freshly loaded.
+     * 从缓存或新加载中获取给定文件名的propertiesHolder
+     *
+     * <p>Get a PropertiesHolder for the given filename, either from the cache or freshly loaded.
      *
      * @param filename the bundle filename (basename + Locale)
      * @return the current PropertiesHolder for the bundle
@@ -363,6 +385,7 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
         PropertiesHolder propHolder = this.cachedProperties.get(filename);
         long originalTimestamp = -2;
 
+        // 判断是否需要刷新
         if (propHolder != null) {
             originalTimestamp = propHolder.getRefreshTimestamp();
             if (originalTimestamp == -1
@@ -403,18 +426,23 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
     }
 
     /**
-     * Refresh the PropertiesHolder for the given bundle filename. The holder can be {@code null} if
-     * not cached before, or a timed-out cache entry (potentially getting re-validated against the
-     * current last-modified timestamp).
+     * 刷新给定包文件名的PropertiesHolder。
+     *
+     * <p>Refresh the PropertiesHolder for the given bundle filename. The holder can be {@code null}
+     * if not cached before, or a timed-out cache entry (potentially getting re-validated against
+     * the current last-modified timestamp).
      *
      * @param filename the bundle filename (basename + Locale)
      * @param propHolder the current PropertiesHolder for the bundle
      */
     protected PropertiesHolder refreshProperties(
             String filename, @Nullable PropertiesHolder propHolder) {
+        // 记录刷新时间
         long refreshTimestamp = (getCacheMillis() < 0 ? -1 : System.currentTimeMillis());
 
+        // 加载资源文件所对应的resource对象
         Resource resource = this.resourceLoader.getResource(filename + PROPERTIES_SUFFIX);
+        // 如果resource不存在，则加载对应的xml文件
         if (!resource.exists()) {
             resource = this.resourceLoader.getResource(filename + XML_SUFFIX);
         }
@@ -423,7 +451,9 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
             long fileTimestamp = -1;
             if (getCacheMillis() >= 0) {
                 // Last-modified timestamp of file will just be read if caching with timeout.
+                // 如果设置了缓存时间，文件的最后修改时间戳将被读取
                 try {
+                    // 最后一次的操作时间
                     fileTimestamp = resource.lastModified();
                     if (propHolder != null && propHolder.getFileTimestamp() == fileTimestamp) {
                         if (logger.isDebugEnabled()) {
@@ -432,6 +462,7 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
                                             + filename
                                             + "] - file hasn't been modified");
                         }
+                        // 设置刷新时间
                         propHolder.setRefreshTimestamp(refreshTimestamp);
                         return propHolder;
                     }
@@ -447,6 +478,7 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
                 }
             }
             try {
+                // 从给定的resource中加载properties
                 Properties props = loadProperties(resource, filename);
                 propHolder = new PropertiesHolder(props, fileTimestamp);
             } catch (IOException ex) {
@@ -455,10 +487,12 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
                             "Could not parse properties file [" + resource.getFilename() + "]", ex);
                 }
                 // Empty holder representing "not valid".
+                // 如果报错，创建一个空的propertiesHold对象
                 propHolder = new PropertiesHolder();
             }
         } else {
             // Resource does not exist.
+            // resource不存在
             if (logger.isDebugEnabled()) {
                 logger.debug(
                         "No properties file found for ["
@@ -466,16 +500,20 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
                                 + "] - neither plain properties nor XML");
             }
             // Empty holder representing "not found".
+            // 创建一个空的propertiesHolder对象
             propHolder = new PropertiesHolder();
         }
-
+        // 设置刷新时间
         propHolder.setRefreshTimestamp(refreshTimestamp);
+        // 放入缓存
         this.cachedProperties.put(filename, propHolder);
         return propHolder;
     }
 
     /**
-     * Load the properties from the given resource.
+     * 解析给定的resource资源中返回对应的properties对象
+     *
+     * <p>Load the properties from the given resource.
      *
      * @param resource the resource to load from
      * @param filename the original bundle filename (basename + Locale)
@@ -486,12 +524,15 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
         Properties props = newProperties();
         try (InputStream is = resource.getInputStream()) {
             String resourceFilename = resource.getFilename();
+            // xml资源文件
             if (resourceFilename != null && resourceFilename.endsWith(XML_SUFFIX)) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Loading properties [" + resource.getFilename() + "]");
                 }
+                // 解析xml文件
                 this.propertiesPersister.loadFromXml(props, is);
             } else {
+                // 优先取filename多对应编码设置，没有则取默认设置
                 String encoding = null;
                 if (this.fileEncodings != null) {
                     encoding = this.fileEncodings.getProperty(filename);
@@ -536,7 +577,9 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
     }
 
     /**
-     * Clear the resource bundle cache. Subsequent resolve calls will lead to reloading of the
+     * 清除所有资源包对应的properties缓存
+     *
+     * <p>Clear the resource bundle cache. Subsequent resolve calls will lead to reloading of the
      * properties files.
      */
     public void clearCache() {
@@ -546,7 +589,9 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
     }
 
     /**
-     * Clear the resource bundle caches of this MessageSource and all its ancestors.
+     * 清除此MessageSource及其所有父资源的缓存
+     *
+     * <p>Clear the resource bundle caches of this MessageSource and all its ancestors.
      *
      * @see #clearCache
      */
@@ -564,22 +609,30 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
     }
 
     /**
-     * PropertiesHolder for caching. Stores the last-modified timestamp of the source file for
+     * 存储源文件的最后修改的时间戳以进行有效的更改检测，以及上次刷新尝试的时间戳（每次缓存条目重新验证时更新）
+     *
+     * <p>PropertiesHolder for caching. Stores the last-modified timestamp of the source file for
      * efficient change detection, and the timestamp of the last refresh attempt (updated every time
      * the cache entry gets re-validated).
      */
     protected class PropertiesHolder {
 
+        // 所持有properties对象
         @Nullable private final Properties properties;
 
+        // 源文件的最后修改的时间戳
         private final long fileTimestamp;
 
         private final ReentrantLock refreshLock = new ReentrantLock();
 
-        /** Cache to hold already generated MessageFormats per message code. */
+        /**
+         * 缓存：每个code已经生成的各区域所对应的messageFormats Cache to hold already generated MessageFormats per
+         * message code.
+         */
         private final ConcurrentMap<String, Map<Locale, MessageFormat>> cachedMessageFormats =
                 new ConcurrentHashMap<>();
 
+        // 刷新时间
         private volatile long refreshTimestamp = -2;
 
         public PropertiesHolder() {
@@ -622,6 +675,7 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
             if (this.properties == null) {
                 return null;
             }
+            // 尝试走缓存
             Map<Locale, MessageFormat> localeMap = this.cachedMessageFormats.get(code);
             if (localeMap != null) {
                 MessageFormat result = localeMap.get(locale);
@@ -629,6 +683,7 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
                     return result;
                 }
             }
+            // 缓存没有，则properties中code所对应的值
             String msg = this.properties.getProperty(code);
             if (msg != null) {
                 if (localeMap == null) {
@@ -639,6 +694,7 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
                         localeMap = existing;
                     }
                 }
+                // 构建messageFormat 放入缓存
                 MessageFormat result = createMessageFormat(msg, locale);
                 localeMap.put(locale, result);
                 return result;

@@ -657,21 +657,37 @@ public class CallMetaDataContext {
             schemaNameToUse = this.metaDataProvider.schemaNameToUse(getSchemaName());
         }
 
+        String procedureNameToUse = this.metaDataProvider.procedureNameToUse(getProcedureName());
         if (isFunction() || isReturnValueRequired()) {
-            callString = new StringBuilder("{? = call ");
+            callString =
+                    new StringBuilder()
+                            .append("{? = call ")
+                            .append(
+                                    StringUtils.hasLength(catalogNameToUse)
+                                            ? catalogNameToUse + "."
+                                            : "")
+                            .append(
+                                    StringUtils.hasLength(schemaNameToUse)
+                                            ? schemaNameToUse + "."
+                                            : "")
+                            .append(procedureNameToUse)
+                            .append("(");
             parameterCount = -1;
         } else {
-            callString = new StringBuilder("{call ");
+            callString =
+                    new StringBuilder()
+                            .append("{call ")
+                            .append(
+                                    StringUtils.hasLength(catalogNameToUse)
+                                            ? catalogNameToUse + "."
+                                            : "")
+                            .append(
+                                    StringUtils.hasLength(schemaNameToUse)
+                                            ? schemaNameToUse + "."
+                                            : "")
+                            .append(procedureNameToUse)
+                            .append("(");
         }
-
-        if (StringUtils.hasLength(catalogNameToUse)) {
-            callString.append(catalogNameToUse).append(".");
-        }
-        if (StringUtils.hasLength(schemaNameToUse)) {
-            callString.append(schemaNameToUse).append(".");
-        }
-        callString.append(this.metaDataProvider.procedureNameToUse(getProcedureName()));
-        callString.append("(");
 
         for (SqlParameter parameter : this.callParameters) {
             if (!parameter.isResultsParameter()) {

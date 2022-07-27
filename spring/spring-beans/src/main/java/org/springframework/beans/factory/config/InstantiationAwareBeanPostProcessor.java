@@ -23,7 +23,9 @@ import org.springframework.beans.PropertyValues;
 import org.springframework.lang.Nullable;
 
 /**
- * Subinterface of {@link BeanPostProcessor} that adds a before-instantiation callback, and a
+ * 继承自BeanPostProcessor，添加了实例化前，实例化后，属性注入后的处理方法
+ *
+ * <p>Subinterface of {@link BeanPostProcessor} that adds a before-instantiation callback, and a
  * callback after instantiation but before explicit properties are set or autowiring occurs.
  *
  * <p>Typically used to suppress default instantiation for specific target beans, for example to
@@ -37,15 +39,16 @@ import org.springframework.lang.Nullable;
  *
  * @author Juergen Hoeller
  * @author Rod Johnson
- * @since 1.2
- * @see
+ * @since 1.2 see
  *     org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator#setCustomTargetSourceCreators
- * @see org.springframework.aop.framework.autoproxy.target.LazyInitTargetSourceCreator
+ *     see org.springframework.aop.framework.autoproxy.target.LazyInitTargetSourceCreator
  */
 public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 
     /**
-     * Apply this BeanPostProcessor <i>before the target bean gets instantiated</i>. The returned
+     * 在bean实例化之前调用
+     *
+     * <p>Apply this BeanPostProcessor <i>before the target bean gets instantiated</i>. The returned
      * bean object may be a proxy to use instead of the target bean, effectively suppressing default
      * instantiation of the target bean.
      *
@@ -79,8 +82,11 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
     }
 
     /**
-     * Perform operations after the bean has been instantiated, via a constructor or factory method,
-     * but before Spring property population (from explicit properties or autowiring) occurs.
+     * 在bean实例化之后调用
+     *
+     * <p>Perform operations after the bean has been instantiated, via a constructor or factory
+     * method, but before Spring property population (from explicit properties or autowiring)
+     * occurs.
      *
      * <p>This is the ideal callback for performing custom field injection on the given bean
      * instance, right before Spring's autowiring kicks in.
@@ -102,7 +108,9 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
     }
 
     /**
-     * Post-process the given property values before the factory applies them to the given bean,
+     * 当使用注解的时候，通过这个方法来完成属性的注入
+     *
+     * <p>Post-process the given property values before the factory applies them to the given bean,
      * without any need for property descriptors.
      *
      * <p>Implementations should return {@code null} (the default) if they provide a custom {@link
@@ -129,7 +137,9 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
     }
 
     /**
-     * Post-process the given property values before the factory applies them to the given bean.
+     * 属性注入后执行的方法，在5.1版本被废弃
+     *
+     * <p>Post-process the given property values before the factory applies them to the given bean.
      * Allows for checking whether all dependencies have been satisfied, for example based on a
      * "Required" annotation on bean property setters.
      *

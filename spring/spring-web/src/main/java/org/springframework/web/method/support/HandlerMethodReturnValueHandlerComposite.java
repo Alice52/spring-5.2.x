@@ -28,7 +28,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.context.request.NativeWebRequest;
 
 /**
- * Handles method return values by delegating to a list of registered {@link
+ * 用于封装其他处理器，方便调用
+ *
+ * <p>Handles method return values by delegating to a list of registered {@link
  * HandlerMethodReturnValueHandler HandlerMethodReturnValueHandlers}. Previously resolved return
  * types are cached for faster lookups.
  *

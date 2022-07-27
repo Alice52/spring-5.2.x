@@ -36,10 +36,13 @@ import org.springframework.web.servlet.support.WebContentGenerator;
 public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator
         implements HandlerAdapter, Ordered {
 
+    /** 最低优先级 */
     private int order = Ordered.LOWEST_PRECEDENCE;
 
     public AbstractHandlerMethodAdapter() {
         // no restriction of HTTP methods by default
+        // 调用 WebContentGenerator 类的构造方法
+        // 参数 restrictDefaultSupportedMethods 参数为 false ，表示不需要严格校验 HttpMethod
         super(false);
     }
 
@@ -112,7 +115,7 @@ public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator
     }
 
     /**
-     * Same contract as for {@link
+     * Same contract as for {link
      * javax.servlet.http.HttpServlet#getLastModified(HttpServletRequest)}.
      *
      * @param request current HTTP request

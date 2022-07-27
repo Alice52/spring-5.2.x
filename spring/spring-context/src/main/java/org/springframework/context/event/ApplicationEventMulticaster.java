@@ -22,7 +22,9 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 
 /**
- * Interface to be implemented by objects that can manage a number of {@link ApplicationListener}
+ * ApplicationEventMulticaster接口的实现类可以管理多个ApplicationListener监听器对象，并且发布事件到监听器
+ *
+ * <p>Interface to be implemented by objects that can manage a number of {@link ApplicationListener}
  * objects and publish events to them.
  *
  * <p>An {@link org.springframework.context.ApplicationEventPublisher}, typically a Spring {@link
@@ -37,35 +39,45 @@ import org.springframework.lang.Nullable;
 public interface ApplicationEventMulticaster {
 
     /**
-     * Add a listener to be notified of all events.
+     * 添加监听器以接受所有的事件通知
+     *
+     * <p>Add a listener to be notified of all events.
      *
      * @param listener the listener to add
      */
     void addApplicationListener(ApplicationListener<?> listener);
 
     /**
-     * Add a listener bean to be notified of all events.
+     * 添加监听器以接收所有的事件通知，参数是监听器bean名称
+     *
+     * <p>Add a listener bean to be notified of all events.
      *
      * @param listenerBeanName the name of the listener bean to add
      */
     void addApplicationListenerBean(String listenerBeanName);
 
     /**
-     * Remove a listener from the notification list.
+     * 从通知列表中删除监听器
+     *
+     * <p>Remove a listener from the notification list.
      *
      * @param listener the listener to remove
      */
     void removeApplicationListener(ApplicationListener<?> listener);
 
     /**
-     * Remove a listener bean from the notification list.
+     * 删除注册到代理上的所有监听器，在remove调用之后，代理不会对事件通知执行任何操作直到有新的监听器注册
+     *
+     * <p>Remove a listener bean from the notification list.
      *
      * @param listenerBeanName the name of the listener bean to remove
      */
     void removeApplicationListenerBean(String listenerBeanName);
 
     /**
-     * Remove all listeners registered with this multicaster.
+     * 删除注册到代理上的所有监听器，在remove调用之后，代理不会对事件通知执行任何操作直到有新的监听器注册
+     *
+     * <p>Remove all listeners registered with this multicaster.
      *
      * <p>After a remove call, the multicaster will perform no action on event notification until
      * new listeners are registered.
@@ -73,7 +85,9 @@ public interface ApplicationEventMulticaster {
     void removeAllListeners();
 
     /**
-     * Multicast the given application event to appropriate listeners.
+     * 将给定的事件广播到对应的监听器上
+     *
+     * <p>Multicast the given application event to appropriate listeners.
      *
      * <p>Consider using {@link #multicastEvent(ApplicationEvent, ResolvableType)} if possible as it
      * provides better support for generics-based events.
@@ -83,7 +97,9 @@ public interface ApplicationEventMulticaster {
     void multicastEvent(ApplicationEvent event);
 
     /**
-     * Multicast the given application event to appropriate listeners.
+     * 将应用程序事件广播到对应的监听器上
+     *
+     * <p>Multicast the given application event to appropriate listeners.
      *
      * <p>If the {@code eventType} is {@code null}, a default type is built based on the {@code
      * event} instance.

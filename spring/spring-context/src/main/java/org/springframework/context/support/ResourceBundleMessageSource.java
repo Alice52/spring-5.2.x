@@ -40,8 +40,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
- * {@link org.springframework.context.MessageSource} implementation that accesses resource bundles
- * using specified basenames. This class relies on the underlying JDK's {@link
+ * 该实现类允许用户通过beanName指定一个资源名（包括类路径的完全限定资源名）或者通过beanNames指定一组资源名
+ *
+ * <p>{@link org.springframework.context.MessageSource} implementation that accesses resource
+ * bundles using specified basenames. This class relies on the underlying JDK's {@link
  * java.util.ResourceBundle} implementation, in combination with the JDK's standard message parsing
  * provided by {@link java.text.MessageFormat}.
  *
@@ -79,16 +81,20 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
         implements BeanClassLoaderAware {
 
     /**
-     * Cache to hold loaded ResourceBundles. This Map is keyed with the bundle basename, which holds
-     * a Map that is keyed with the Locale and in turn holds the ResourceBundle instances. This
-     * allows for very efficient hash lookups, significantly faster than the ResourceBundle class's
-     * own cache.
+     * 缓存code和区域所对应资源包ResourceBundles
+     *
+     * <p>Cache to hold loaded ResourceBundles. This Map is keyed with the bundle basename, which
+     * holds a Map that is keyed with the Locale and in turn holds the ResourceBundle instances.
+     * This allows for very efficient hash lookups, significantly faster than the ResourceBundle
+     * class's own cache.
      */
     private final Map<String, Map<Locale, ResourceBundle>> cachedResourceBundles =
             new ConcurrentHashMap<>();
 
     /**
-     * Cache to hold already generated MessageFormats. This Map is keyed with the ResourceBundle,
+     * 缓存ResourceBundle和code及locale所对应的messageFormat
+     *
+     * <p>Cache to hold already generated MessageFormats. This Map is keyed with the ResourceBundle,
      * which holds a Map that is keyed with the message code, which in turn holds a Map that is
      * keyed with the Locale and holds the MessageFormat values. This allows for very efficient hash
      * lookups without concatenated keys.
@@ -98,6 +104,7 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
     private final Map<ResourceBundle, Map<String, Map<Locale, MessageFormat>>>
             cachedBundleMessageFormats = new ConcurrentHashMap<>();
 
+    // 加载绑定资源文件的类加载器
     @Nullable private ClassLoader bundleClassLoader;
 
     @Nullable private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
@@ -138,7 +145,9 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
     }
 
     /**
-     * Resolves the given message code as key in the registered resource bundles, returning the
+     * 将给定的消息代码解析为已注册资源包中的key，按原样返回捆绑包中的值（不适用messageFormat解析）
+     *
+     * <p>Resolves the given message code as key in the registered resource bundles, returning the
      * value found in the bundle as-is (without MessageFormat parsing).
      */
     @Override
@@ -157,7 +166,9 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
     }
 
     /**
-     * Resolves the given message code as key in the registered resource bundles, using a cached
+     * 将给定的消息代码解析为注册资源包中的key，每个消息代码使用缓存的messageFormat实例
+     *
+     * <p>Resolves the given message code as key in the registered resource bundles, using a cached
      * MessageFormat instance per message code.
      */
     @Override
@@ -177,7 +188,9 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
     }
 
     /**
-     * Return a ResourceBundle for the given basename and code, fetching already generated
+     * 将给定的beanname和代码返回一个ResourceBundle，从缓存中提取已生成的MessageFormats
+     *
+     * <p>Return a ResourceBundle for the given basename and code, fetching already generated
      * MessageFormats from the cache.
      *
      * @param basename the basename of the ResourceBundle
@@ -190,9 +203,12 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
         if (getCacheMillis() >= 0) {
             // Fresh ResourceBundle.getBundle call in order to let ResourceBundle
             // do its native caching, at the expense of more extensive lookup steps.
+            // 新建ResourceBundle.getBundle调用，以使ResourceBundle执行其本地缓存，而不必花费更广泛的查找步骤。
             return doGetBundle(basename, locale);
         } else {
             // Cache forever: prefer locale cache over repeated getBundle calls.
+            // 永久缓存：在重复的getBundle调用中优先使用语言环境缓存。
+            // 先获取缓存
             Map<Locale, ResourceBundle> localeMap = this.cachedResourceBundles.get(basename);
             if (localeMap != null) {
                 ResourceBundle bundle = localeMap.get(locale);
@@ -200,6 +216,7 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
                     return bundle;
                 }
             }
+            // 没有找到缓存
             try {
                 ResourceBundle bundle = doGetBundle(basename, locale);
                 if (localeMap == null) {
@@ -210,6 +227,7 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
                         localeMap = existing;
                     }
                 }
+                // 放入缓存
                 localeMap.put(locale, bundle);
                 return bundle;
             } catch (MissingResourceException ex) {
@@ -228,7 +246,9 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
     }
 
     /**
-     * Obtain the resource bundle for the given basename and Locale.
+     * 获取给定的basename和locale设置的资源包
+     *
+     * <p>Obtain the resource bundle for the given basename and Locale.
      *
      * @param basename the basename to look for
      * @param locale the Locale to look for
@@ -314,7 +334,9 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
     }
 
     /**
-     * Return a MessageFormat for the given bundle and code, fetching already generated
+     * 为给定的包和代码返回一个MessageFormat,从缓存中提取已生成的MessageFormats
+     *
+     * <p>Return a MessageFormat for the given bundle and code, fetching already generated
      * MessageFormats from the cache.
      *
      * @param bundle the ResourceBundle to work on
@@ -326,7 +348,7 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
     @Nullable
     protected MessageFormat getMessageFormat(ResourceBundle bundle, String code, Locale locale)
             throws MissingResourceException {
-
+        // 先获取缓存
         Map<String, Map<Locale, MessageFormat>> codeMap =
                 this.cachedBundleMessageFormats.get(bundle);
         Map<Locale, MessageFormat> localeMap = null;
@@ -340,8 +362,10 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
             }
         }
 
+        // 缓存为空的话，执行如下步骤，获取资源包中指定key所对应的值
         String msg = getStringOrNull(bundle, code);
         if (msg != null) {
+            // 放入缓存
             if (codeMap == null) {
                 codeMap = new ConcurrentHashMap<>();
                 Map<String, Map<Locale, MessageFormat>> existing =
@@ -366,7 +390,9 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
     }
 
     /**
-     * Efficiently retrieve the String value for the specified key, or return {@code null} if not
+     * 获取资源包中指定key所对应的值
+     *
+     * <p>Efficiently retrieve the String value for the specified key, or return {@code null} if not
      * found.
      *
      * <p>As of 4.2, the default implementation checks {@code containsKey} before it attempts to
@@ -416,6 +442,7 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
 
             // Special handling of default encoding
             if (format.equals("java.properties")) {
+                // 按不同区域获取所对应的不同资源文件名称
                 String bundleName = toBundleName(baseName, locale);
                 final String resourceName = toResourceName(bundleName, "properties");
                 final ClassLoader classLoader = loader;

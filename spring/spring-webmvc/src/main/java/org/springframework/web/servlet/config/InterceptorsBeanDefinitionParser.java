@@ -56,6 +56,7 @@ class InterceptorsBeanDefinitionParser implements BeanDefinitionParser {
         List<Element> interceptors =
                 DomUtils.getChildElementsByTagName(element, "bean", "ref", "interceptor");
         for (Element interceptor : interceptors) {
+            // 将<mvc:interceptor>标签解析MappedInterceptor
             RootBeanDefinition mappedInterceptorDef =
                     new RootBeanDefinition(MappedInterceptor.class);
             mappedInterceptorDef.setSource(context.extractSource(interceptor));

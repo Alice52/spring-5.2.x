@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,6 @@ import org.springframework.lang.Nullable;
  */
 public abstract class AbstractPropertyAccessor extends TypeConverterSupport
         implements ConfigurablePropertyAccessor {
-
-    boolean suppressNotWritablePropertyException = false;
 
     private boolean extractOldValueForEditor = false;
 
@@ -91,37 +89,27 @@ public abstract class AbstractPropertyAccessor extends TypeConverterSupport
                 (pvs instanceof MutablePropertyValues
                         ? ((MutablePropertyValues) pvs).getPropertyValueList()
                         : Arrays.asList(pvs.getPropertyValues()));
-
-        if (ignoreUnknown) {
-            this.suppressNotWritablePropertyException = true;
-        }
-        try {
-            for (PropertyValue pv : propertyValues) {
-                // setPropertyValue may throw any BeansException, which won't be caught
+        for (PropertyValue pv : propertyValues) {
+            try {
+                // This method may throw any BeansException, which won't be caught
                 // here, if there is a critical failure such as no matching field.
                 // We can attempt to deal only with less serious exceptions.
-                try {
-                    setPropertyValue(pv);
-                } catch (NotWritablePropertyException ex) {
-                    if (!ignoreUnknown) {
-                        throw ex;
-                    }
-                    // Otherwise, just ignore it and continue...
-                } catch (NullValueInNestedPathException ex) {
-                    if (!ignoreInvalid) {
-                        throw ex;
-                    }
-                    // Otherwise, just ignore it and continue...
-                } catch (PropertyAccessException ex) {
-                    if (propertyAccessExceptions == null) {
-                        propertyAccessExceptions = new ArrayList<>();
-                    }
-                    propertyAccessExceptions.add(ex);
+                setPropertyValue(pv);
+            } catch (NotWritablePropertyException ex) {
+                if (!ignoreUnknown) {
+                    throw ex;
                 }
-            }
-        } finally {
-            if (ignoreUnknown) {
-                this.suppressNotWritablePropertyException = false;
+                // Otherwise, just ignore it and continue...
+            } catch (NullValueInNestedPathException ex) {
+                if (!ignoreInvalid) {
+                    throw ex;
+                }
+                // Otherwise, just ignore it and continue...
+            } catch (PropertyAccessException ex) {
+                if (propertyAccessExceptions == null) {
+                    propertyAccessExceptions = new ArrayList<>();
+                }
+                propertyAccessExceptions.add(ex);
             }
         }
 

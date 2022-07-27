@@ -1,5 +1,5 @@
 /**
- * Spring's repackaging of <a href="http://objenesis.org">Objenesis 3.1</a> (with SpringObjenesis
+ * Spring's repackaging of <a href="http://objenesis.org">Objenesis 3.0</a> (with SpringObjenesis
  * entry point; for internal use only).
  *
  * <p>This repackaging technique avoids any potential conflicts with dependencies on different

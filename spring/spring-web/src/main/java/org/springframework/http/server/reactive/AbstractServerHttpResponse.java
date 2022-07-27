@@ -195,37 +195,16 @@ public abstract class AbstractServerHttpResponse implements ServerHttpResponse {
         if (body instanceof Mono) {
             return ((Mono<? extends DataBuffer>) body)
                     .flatMap(
-                            buffer -> {
-                                AtomicReference<Boolean> subscribed = new AtomicReference<>(false);
-                                return doCommit(
-                                                () -> {
-                                                    try {
-                                                        return writeWithInternal(
-                                                                Mono.fromCallable(() -> buffer)
-                                                                        .doOnSubscribe(
-                                                                                s ->
-                                                                                        subscribed
-                                                                                                .set(
-                                                                                                        true))
-                                                                        .doOnDiscard(
-                                                                                PooledDataBuffer
-                                                                                        .class,
-                                                                                DataBufferUtils
-                                                                                        ::release));
-                                                    } catch (Throwable ex) {
-                                                        return Mono.error(ex);
-                                                    }
-                                                })
-                                        .doOnError(ex -> DataBufferUtils.release(buffer))
-                                        .doOnCancel(
-                                                () -> {
-                                                    if (!subscribed.get()) {
-                                                        DataBufferUtils.release(buffer);
-                                                    }
-                                                });
-                            })
-                    .doOnError(t -> getHeaders().clearContentHeaders())
-                    .doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release);
+                            buffer ->
+                                    doCommit(
+                                            () ->
+                                                    writeWithInternal(
+                                                            Mono.fromCallable(() -> buffer)
+                                                                    .doOnDiscard(
+                                                                            PooledDataBuffer.class,
+                                                                            DataBufferUtils
+                                                                                    ::release))))
+                    .doOnError(t -> getHeaders().clearContentHeaders());
         } else {
             return new ChannelSendOperator<>(
                             body, inner -> doCommit(() -> writeWithInternal(inner)))

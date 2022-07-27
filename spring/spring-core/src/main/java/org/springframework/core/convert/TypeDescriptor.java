@@ -36,7 +36,9 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
- * Contextual descriptor about a type to convert from or to. Capable of representing arrays and
+ * 把基础类型，方法参数，属性，class等都进行封装描述
+ *
+ * <p>Contextual descriptor about a type to convert from or to. Capable of representing arrays and
  * generic collection types.
  *
  * @author Keith Donald
@@ -136,7 +138,9 @@ public class TypeDescriptor implements Serializable {
     }
 
     /**
-     * Create a new type descriptor for an object.
+     * 把基础类型，任意一个class类型转为这个描述类型依赖于valueOf方法
+     *
+     * <p>Create a new type descriptor for an object.
      *
      * <p>Use this factory method to introspect a source object before asking the conversion system
      * to convert it to some another type.
@@ -176,7 +180,9 @@ public class TypeDescriptor implements Serializable {
     }
 
     /**
-     * Create a new type descriptor from a {@link java.util.Collection} type.
+     * 把集合转换为描述类型
+     *
+     * <p>Create a new type descriptor from a {@link java.util.Collection} type.
      *
      * <p>Useful for converting to typed Collections.
      *

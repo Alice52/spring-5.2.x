@@ -45,7 +45,7 @@ import org.springframework.lang.Nullable;
 public abstract class AbstractXmlApplicationContext
         extends AbstractRefreshableConfigApplicationContext {
 
-    // 设置 XML 文件的验证标志
+    // 设置xml文件的验证标志，默认是true
     private boolean validating = true;
 
     /** Create a new AbstractXmlApplicationContext with no parent. */
@@ -76,19 +76,21 @@ public abstract class AbstractXmlApplicationContext
     protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory)
             throws BeansException, IOException {
         // Create a new XmlBeanDefinitionReader for the given BeanFactory.
-        // 设计模式: 适配器模式
+        // 创建一个xml的beanDefinitionReader，并通过回调设置到beanFactory中
         XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
 
-        // Configure the bean definition reader with this context's resource loading environment.
-        // 读取 XML 文件之前设置 Environment & ResourceLoader & EntityResolver
+        // Configure the bean definition reader with this context's
+        // resource loading environment.
+        // 给reader对象设置环境对象
         beanDefinitionReader.setEnvironment(this.getEnvironment());
         beanDefinitionReader.setResourceLoader(this);
-        // EntityResolver 解析的处理器: 可以读取本地的 dtd, schema 文件完成 xml 文件的解析
         beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
 
         // Allow a subclass to provide custom initialization of the reader,
         // then proceed with actually loading the bean definitions.
+        //  初始化beanDefinitionReader对象，此处设置配置文件是否要进行验证
         initBeanDefinitionReader(beanDefinitionReader);
+        // 开始完成beanDefinition的加载
         loadBeanDefinitions(beanDefinitionReader);
     }
 
@@ -122,14 +124,12 @@ public abstract class AbstractXmlApplicationContext
      */
     protected void loadBeanDefinitions(XmlBeanDefinitionReader reader)
             throws BeansException, IOException {
-        // 以 Resource 的方式获取配置文件的资源位置: 一般是不会走进来的
-        // public ClassPathXmlApplicationContext(paths, clazz, ApplicationContext parent)
+        // 以Resource的方式获得配置文件的资源位置
         Resource[] configResources = getConfigResources();
         if (configResources != null) {
             reader.loadBeanDefinitions(configResources);
         }
-
-        // 以 String 的方式获取配置文件的位置: refresh 之前有设置过[ClassPathXmlApplicationContext]
+        // 以String的形式获得配置文件的位置
         String[] configLocations = getConfigLocations();
         if (configLocations != null) {
             reader.loadBeanDefinitions(configLocations);

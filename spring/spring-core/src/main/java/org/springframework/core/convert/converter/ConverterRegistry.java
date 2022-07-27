@@ -17,7 +17,9 @@
 package org.springframework.core.convert.converter;
 
 /**
- * For registering converters with a type conversion system.
+ * 完成类型转换器的增删操作
+ *
+ * <p>For registering converters with a type conversion system.
  *
  * @author Keith Donald
  * @author Juergen Hoeller
@@ -26,7 +28,9 @@ package org.springframework.core.convert.converter;
 public interface ConverterRegistry {
 
     /**
-     * Add a plain converter to this registry. The convertible source/target type pair is derived
+     * 添加转换器
+     *
+     * <p>Add a plain converter to this registry. The convertible source/target type pair is derived
      * from the Converter's parameterized types.
      *
      * @throws IllegalArgumentException if the parameterized types could not be resolved
@@ -49,15 +53,19 @@ public interface ConverterRegistry {
     void addConverter(GenericConverter converter);
 
     /**
-     * Add a ranged converter factory to this registry. The convertible source/target type pair is
-     * derived from the ConverterFactory's parameterized types.
+     * 增加转换器的工厂类
+     *
+     * <p>Add a ranged converter factory to this registry. The convertible source/target type pair
+     * is derived from the ConverterFactory's parameterized types.
      *
      * @throws IllegalArgumentException if the parameterized types could not be resolved
      */
     void addConverterFactory(ConverterFactory<?, ?> factory);
 
     /**
-     * Remove any converters from {@code sourceType} to {@code targetType}.
+     * 移除转换器
+     *
+     * <p>Remove any converters from {@code sourceType} to {@code targetType}.
      *
      * @param sourceType the source type
      * @param targetType the target type

@@ -207,33 +207,32 @@ public abstract class AbstractJackson2View extends AbstractView {
      * @throws IOException if writing failed
      */
     protected void writeContent(OutputStream stream, Object object) throws IOException {
-        try (JsonGenerator generator =
-                this.objectMapper.getFactory().createGenerator(stream, this.encoding)) {
-            writePrefix(generator, object);
+        JsonGenerator generator =
+                this.objectMapper.getFactory().createGenerator(stream, this.encoding);
+        writePrefix(generator, object);
 
-            Object value = object;
-            Class<?> serializationView = null;
-            FilterProvider filters = null;
+        Object value = object;
+        Class<?> serializationView = null;
+        FilterProvider filters = null;
 
-            if (value instanceof MappingJacksonValue) {
-                MappingJacksonValue container = (MappingJacksonValue) value;
-                value = container.getValue();
-                serializationView = container.getSerializationView();
-                filters = container.getFilters();
-            }
-
-            ObjectWriter objectWriter =
-                    (serializationView != null
-                            ? this.objectMapper.writerWithView(serializationView)
-                            : this.objectMapper.writer());
-            if (filters != null) {
-                objectWriter = objectWriter.with(filters);
-            }
-            objectWriter.writeValue(generator, value);
-
-            writeSuffix(generator, object);
-            generator.flush();
+        if (value instanceof MappingJacksonValue) {
+            MappingJacksonValue container = (MappingJacksonValue) value;
+            value = container.getValue();
+            serializationView = container.getSerializationView();
+            filters = container.getFilters();
         }
+
+        ObjectWriter objectWriter =
+                (serializationView != null
+                        ? this.objectMapper.writerWithView(serializationView)
+                        : this.objectMapper.writer());
+        if (filters != null) {
+            objectWriter = objectWriter.with(filters);
+        }
+        objectWriter.writeValue(generator, value);
+
+        writeSuffix(generator, object);
+        generator.flush();
     }
 
     /**

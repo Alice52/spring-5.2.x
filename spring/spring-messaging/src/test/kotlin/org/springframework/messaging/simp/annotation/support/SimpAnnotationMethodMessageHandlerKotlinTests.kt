@@ -18,27 +18,23 @@ package org.springframework.messaging.simp.annotation.support
 
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
-import java.util.Collections
-import java.util.HashMap
-
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-
 import org.springframework.context.support.StaticApplicationContext
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
+import org.springframework.messaging.MessageHandlingException
 import org.springframework.messaging.SubscribableChannel
 import org.springframework.messaging.converter.MessageConverter
 import org.springframework.messaging.handler.annotation.Header
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor
 import org.springframework.messaging.simp.SimpMessageSendingOperations
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Controller
-
-import org.springframework.messaging.MessageHandlingException
-import org.springframework.messaging.handler.annotation.MessageExceptionHandler
+import java.util.*
 
 /**
  * Kotlin test fixture for [SimpAnnotationMethodMessageHandler].

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ public class DefaultStompSession implements ConnectionHandlingStompSession {
     @Nullable private volatile String version;
 
     /* Whether the client is willfully closing the connection */
-    private volatile boolean closing;
+    private volatile boolean closing = false;
 
     /**
      * Create a new session.
@@ -234,8 +234,7 @@ public class DefaultStompSession implements ConnectionHandlingStompSession {
     private Message<byte[]> createMessage(StompHeaderAccessor accessor, @Nullable Object payload) {
         accessor.updateSimpMessageHeadersFromStompHeaders();
         Message<byte[]> message;
-        if (StringUtils.isEmpty(payload)
-                || (payload instanceof byte[] && ((byte[]) payload).length == 0)) {
+        if (isEmpty(payload)) {
             message = MessageBuilder.createMessage(EMPTY_PAYLOAD, accessor.getMessageHeaders());
         } else {
             message =
@@ -254,6 +253,12 @@ public class DefaultStompSession implements ConnectionHandlingStompSession {
             }
         }
         return message;
+    }
+
+    private boolean isEmpty(@Nullable Object payload) {
+        return payload == null
+                || StringUtils.isEmpty(payload)
+                || (payload instanceof byte[] && ((byte[]) payload).length == 0);
     }
 
     private void execute(Message<byte[]> message) {

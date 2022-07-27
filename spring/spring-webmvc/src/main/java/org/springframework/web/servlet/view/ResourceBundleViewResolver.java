@@ -37,8 +37,11 @@ import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.servlet.View;
 
 /**
- * A {@link org.springframework.web.servlet.ViewResolver} implementation that uses bean definitions
- * in a {@link ResourceBundle}, specified by the bundle basename.
+ * 此类需要同时使用视图名和Locale来解析视图，需要将每一个视图名和对应的视图类型配置到响应的properties文件中，默认使用classpath下的views
+ * 为baseName的配置文件，如views.properties,views_zh_CN.properties等，baseName和文件位置都可以设置
+ *
+ * <p>A {@link org.springframework.web.servlet.ViewResolver} implementation that uses bean
+ * definitions in a {@link ResourceBundle}, specified by the bundle basename.
  *
  * <p>The bundle is typically defined in a properties file, located in the classpath. The default
  * bundle basename is "views".

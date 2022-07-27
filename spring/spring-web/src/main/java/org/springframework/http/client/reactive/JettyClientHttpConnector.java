@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.reactive.client.ContentChunk;
-import org.eclipse.jetty.reactive.client.ReactiveRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -116,22 +114,25 @@ public class JettyClientHttpConnector implements ClientHttpConnector {
             }
         }
 
-        Request request = this.httpClient.newRequest(uri).method(method.toString());
+        JettyClientHttpRequest clientHttpRequest =
+                new JettyClientHttpRequest(
+                        this.httpClient.newRequest(uri).method(method.toString()),
+                        this.bufferFactory);
 
         return requestCallback
-                .apply(new JettyClientHttpRequest(request, this.bufferFactory))
+                .apply(clientHttpRequest)
                 .then(
-                        Mono.fromDirect(
-                                ReactiveRequest.newBuilder(request)
-                                        .build()
+                        Mono.from(
+                                clientHttpRequest
+                                        .getReactiveRequest()
                                         .response(
-                                                (reactiveResponse, chunkPublisher) -> {
+                                                (response, chunks) -> {
                                                     Flux<DataBuffer> content =
-                                                            Flux.from(chunkPublisher)
+                                                            Flux.from(chunks)
                                                                     .map(this::toDataBuffer);
                                                     return Mono.just(
                                                             new JettyClientHttpResponse(
-                                                                    reactiveResponse, content));
+                                                                    response, content));
                                                 })));
     }
 

@@ -515,15 +515,21 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
 
         // Check the media type for the resource
         MediaType mediaType = getMediaType(request, resource);
-        setHeaders(response, resource, mediaType);
 
         // Content phase
+        if (METHOD_HEAD.equals(request.getMethod())) {
+            setHeaders(response, resource, mediaType);
+            return;
+        }
+
         ServletServerHttpResponse outputMessage = new ServletServerHttpResponse(response);
         if (request.getHeader(HttpHeaders.RANGE) == null) {
             Assert.state(this.resourceHttpMessageConverter != null, "Not initialized");
+            setHeaders(response, resource, mediaType);
             this.resourceHttpMessageConverter.write(resource, mediaType, outputMessage);
         } else {
             Assert.state(this.resourceRegionHttpMessageConverter != null, "Not initialized");
+            response.setHeader(HttpHeaders.ACCEPT_RANGES, "bytes");
             ServletServerHttpRequest inputMessage = new ServletServerHttpRequest(request);
             try {
                 List<HttpRange> httpRanges = inputMessage.getHeaders().getRange();
@@ -533,8 +539,7 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
                         mediaType,
                         outputMessage);
             } catch (IllegalArgumentException ex) {
-                response.setHeader(
-                        HttpHeaders.CONTENT_RANGE, "bytes */" + resource.contentLength());
+                response.setHeader("Content-Range", "bytes */" + resource.contentLength());
                 response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
             }
         }
@@ -761,7 +766,6 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
         if (mediaType != null) {
             response.setContentType(mediaType.toString());
         }
-
         if (resource instanceof HttpResource) {
             HttpHeaders resourceHeaders = ((HttpResource) resource).getResponseHeaders();
             resourceHeaders.forEach(
@@ -777,7 +781,6 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
                         }
                     });
         }
-
         response.setHeader(HttpHeaders.ACCEPT_RANGES, "bytes");
     }
 

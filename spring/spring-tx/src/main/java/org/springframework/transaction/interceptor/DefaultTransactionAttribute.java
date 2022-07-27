@@ -121,7 +121,9 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition
     }
 
     /**
-     * The default behavior is as with EJB: rollback on unchecked exception ({@link
+     * 此处是异常的判断，要么是RuntimeException的实例，要么是Error的实例
+     *
+     * <p>The default behavior is as with EJB: rollback on unchecked exception ({@link
      * RuntimeException}), assuming an unexpected outcome outside of any business rules.
      * Additionally, we also attempt to rollback on {@link Error} which is clearly an unexpected
      * outcome as well. By contrast, a checked exception is considered a business exception and

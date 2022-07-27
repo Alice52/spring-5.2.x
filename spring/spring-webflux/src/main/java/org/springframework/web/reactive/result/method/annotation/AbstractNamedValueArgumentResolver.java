@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,7 +93,7 @@ public abstract class AbstractNamedValueArgumentResolver
         NamedValueInfo namedValueInfo = getNamedValueInfo(parameter);
         MethodParameter nestedParameter = parameter.nestedIfOptional();
 
-        Object resolvedName = resolveEmbeddedValuesAndExpressions(namedValueInfo.name);
+        Object resolvedName = resolveStringValue(namedValueInfo.name);
         if (resolvedName == null) {
             return Mono.error(
                     new IllegalArgumentException(
@@ -108,9 +108,7 @@ public abstract class AbstractNamedValueArgumentResolver
                 .flatMap(
                         arg -> {
                             if ("".equals(arg) && namedValueInfo.defaultValue != null) {
-                                arg =
-                                        resolveEmbeddedValuesAndExpressions(
-                                                namedValueInfo.defaultValue);
+                                arg = resolveStringValue(namedValueInfo.defaultValue);
                             }
                             arg =
                                     applyConversion(
@@ -155,10 +153,12 @@ public abstract class AbstractNamedValueArgumentResolver
         if (info.name.isEmpty()) {
             name = parameter.getParameterName();
             if (name == null) {
+                String type = parameter.getNestedParameterType().getName();
                 throw new IllegalArgumentException(
-                        "Name for argument of type ["
-                                + parameter.getNestedParameterType().getName()
-                                + "] not specified, and parameter name information not found in class file either.");
+                        "Name for argument type ["
+                                + type
+                                + "] not "
+                                + "available, and parameter name information not found in class file either.");
             }
         }
         String defaultValue =
@@ -171,7 +171,7 @@ public abstract class AbstractNamedValueArgumentResolver
      * expressions.
      */
     @Nullable
-    private Object resolveEmbeddedValuesAndExpressions(String value) {
+    private Object resolveStringValue(String value) {
         if (this.configurableBeanFactory == null || this.expressionContext == null) {
             return value;
         }
@@ -228,7 +228,7 @@ public abstract class AbstractNamedValueArgumentResolver
                 () -> {
                     Object value = null;
                     if (namedValueInfo.defaultValue != null) {
-                        value = resolveEmbeddedValuesAndExpressions(namedValueInfo.defaultValue);
+                        value = resolveStringValue(namedValueInfo.defaultValue);
                     } else if (namedValueInfo.required && !parameter.isOptional()) {
                         handleMissingValue(namedValueInfo.name, parameter, exchange);
                     }

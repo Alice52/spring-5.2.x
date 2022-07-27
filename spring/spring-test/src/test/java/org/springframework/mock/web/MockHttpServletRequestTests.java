@@ -307,8 +307,9 @@ class MockHttpServletRequestTests {
 
         assertThat(cookieHeaders)
                 .describedAs("Cookies -> Header conversion works as expected per RFC6265")
-                .singleElement()
-                .isEqualTo("foo=bar; baz=qux");
+                .hasSize(1)
+                .hasOnlyOneElementSatisfying(
+                        header -> assertThat(header).isEqualTo("foo=bar; baz=qux"));
     }
 
     @Test

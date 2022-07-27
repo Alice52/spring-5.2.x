@@ -20,8 +20,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import org.springframework.core.io.ClassPathResource
-import org.springframework.http.HttpHeaders.*
-import org.springframework.http.HttpMethod.*
+import org.springframework.http.HttpHeaders.ACCEPT
+import org.springframework.http.HttpHeaders.CONTENT_TYPE
+import org.springframework.http.HttpMethod.PATCH
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.*
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest
@@ -126,13 +127,6 @@ class RouterFunctionDslTests {
         }
     }
 
-    @Test
-    fun filtering() {
-        val servletRequest = MockHttpServletRequest("GET", "/filter")
-        val request = DefaultServerRequest(servletRequest, emptyList())
-        assertThat(sampleRouter().route(request).get().handle(request).headers().getFirst("foo")).isEqualTo("bar")
-    }
-
     private fun sampleRouter() = router {
         (GET("/foo/") or GET("/foos/")) { req -> handle(req) }
         "/api".nest {
@@ -165,18 +159,6 @@ class RouterFunctionDslTests {
         path("/baz", ::handle)
         GET("/rendering") { RenderingResponse.create("index").build() }
         add(otherRouter)
-        add(filterRouter)
-    }
-
-    private val filterRouter = router {
-        "/filter" { request ->
-            ok().header("foo", request.headers().firstHeader("foo")).build()
-        }
-
-        filter { request, next ->
-            val newRequest = ServerRequest.from(request).apply { header("foo", "bar") }.build()
-            next(newRequest)
-        }
     }
 
     private val otherRouter = router {

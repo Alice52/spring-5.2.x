@@ -29,9 +29,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.context.request.NativeWebRequest;
 
 /**
- * Resolves method arguments annotated with {@code @RequestHeader} except for {@link Map} arguments.
- * See {@link RequestHeaderMapMethodArgumentResolver} for details on {@link Map} arguments annotated
- * with {@code @RequestHeader}.
+ * 解析注解@RequestHeader而且不是Map类型的参数
+ *
+ * <p>Resolves method arguments annotated with {@code @RequestHeader} except for {@link Map}
+ * arguments. See {@link RequestHeaderMapMethodArgumentResolver} for details on {@link Map}
+ * arguments annotated with {@code @RequestHeader}.
  *
  * <p>An {@code @RequestHeader} is a named value resolved from a request header. It has a required
  * flag and a default value to fall back on when the request header does not exist.

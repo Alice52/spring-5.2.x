@@ -23,7 +23,9 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.Nullable;
 
 /**
- * Interface that defines type conversion methods. Typically (but not necessarily) implemented in
+ * 定义类型转换方法的接口，通常与PropertyEditorRegistrty接口一起实现
+ *
+ * <p>Interface that defines type conversion methods. Typically (but not necessarily) implemented in
  * conjunction with the {@link PropertyEditorRegistry} interface.
  *
  * <p><b>Note:</b> Since TypeConverter implementations are typically based on {@link
@@ -38,7 +40,10 @@ import org.springframework.lang.Nullable;
 public interface TypeConverter {
 
     /**
-     * Convert the value to the required type (if necessary from a String).
+     * 将参数中的value转换成RequiredType类型
+     * 从String到任何类型的转换通常使用PropertyEditor类的setAsText方法或ConversionService中的Spring Converter
+     *
+     * <p>Convert the value to the required type (if necessary from a String).
      *
      * <p>Conversions from String to any type will typically use the {@code setAsText} method of the
      * PropertyEditor class, or a Spring Converter in a ConversionService.
@@ -58,7 +63,9 @@ public interface TypeConverter {
             throws TypeMismatchException;
 
     /**
-     * Convert the value to the required type (if necessary from a String).
+     * 此方法跟上面方法是重载的实现，增加了作为转换目标的方法参数，主要用于分析泛型类型
+     *
+     * <p>Convert the value to the required type (if necessary from a String).
      *
      * <p>Conversions from String to any type will typically use the {@code setAsText} method of the
      * PropertyEditor class, or a Spring Converter in a ConversionService.
@@ -83,7 +90,9 @@ public interface TypeConverter {
             throws TypeMismatchException;
 
     /**
-     * Convert the value to the required type (if necessary from a String).
+     * 此方法跟上面方法是重载的实现，增加了转换目标的反射field
+     *
+     * <p>Convert the value to the required type (if necessary from a String).
      *
      * <p>Conversions from String to any type will typically use the {@code setAsText} method of the
      * PropertyEditor class, or a Spring Converter in a ConversionService.

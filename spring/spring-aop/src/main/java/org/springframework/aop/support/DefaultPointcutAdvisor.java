@@ -24,7 +24,9 @@ import org.springframework.aop.Pointcut;
 import org.springframework.lang.Nullable;
 
 /**
- * Convenient Pointcut-driven Advisor implementation.
+ * spring中默认提供的通用的advisor，可以将任意的两个advice和pointcut放在一起
+ *
+ * <p>Convenient Pointcut-driven Advisor implementation.
  *
  * <p>This is the most commonly used Advisor implementation. It can be used with any pointcut and
  * advice type, except for introductions. There is normally no need to subclass this class, or to
@@ -49,7 +51,9 @@ public class DefaultPointcutAdvisor extends AbstractGenericPointcutAdvisor imple
     public DefaultPointcutAdvisor() {}
 
     /**
-     * Create a DefaultPointcutAdvisor that matches all methods.
+     * 若没有指定advice,默认Pointcut.TRUE，也就是说会匹配所有的方法的执行
+     *
+     * <p>Create a DefaultPointcutAdvisor that matches all methods.
      *
      * <p>{@code Pointcut.TRUE} will be used as Pointcut.
      *

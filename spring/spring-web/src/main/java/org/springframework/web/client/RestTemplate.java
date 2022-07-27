@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1001,7 +1002,7 @@ public class RestTemplate extends InterceptingHttpAccessor implements RestOperat
                 HttpHeaders requestHeaders = this.requestEntity.getHeaders();
                 if (!requestHeaders.isEmpty()) {
                     requestHeaders.forEach(
-                            (key, values) -> httpHeaders.put(key, new ArrayList<>(values)));
+                            (key, values) -> httpHeaders.put(key, new LinkedList<>(values)));
                 }
                 if (httpHeaders.getContentLength() < 0) {
                     httpHeaders.setContentLength(0L);
@@ -1024,7 +1025,7 @@ public class RestTemplate extends InterceptingHttpAccessor implements RestOperat
                             if (!requestHeaders.isEmpty()) {
                                 requestHeaders.forEach(
                                         (key, values) ->
-                                                httpHeaders.put(key, new ArrayList<>(values)));
+                                                httpHeaders.put(key, new LinkedList<>(values)));
                             }
                             logBody(requestBody, requestContentType, genericConverter);
                             genericConverter.write(
@@ -1034,7 +1035,8 @@ public class RestTemplate extends InterceptingHttpAccessor implements RestOperat
                     } else if (messageConverter.canWrite(requestBodyClass, requestContentType)) {
                         if (!requestHeaders.isEmpty()) {
                             requestHeaders.forEach(
-                                    (key, values) -> httpHeaders.put(key, new ArrayList<>(values)));
+                                    (key, values) ->
+                                            httpHeaders.put(key, new LinkedList<>(values)));
                         }
                         logBody(requestBody, requestContentType, messageConverter);
                         ((HttpMessageConverter<Object>) messageConverter)

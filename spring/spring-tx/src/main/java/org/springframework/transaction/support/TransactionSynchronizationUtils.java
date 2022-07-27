@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,11 +46,11 @@ public abstract class TransactionSynchronizationUtils {
                     TransactionSynchronizationUtils.class.getClassLoader());
 
     /**
-     * Check whether the given resource transaction manager refers to the given (underlying)
+     * Check whether the given resource transaction managers refers to the given (underlying)
      * resource factory.
      *
      * @see ResourceTransactionManager#getResourceFactory()
-     * @see InfrastructureProxy#getWrappedObject()
+     * @see org.springframework.core.InfrastructureProxy#getWrappedObject()
      */
     public static boolean sameResourceFactory(
             ResourceTransactionManager tm, Object resourceFactory) {
@@ -61,7 +61,7 @@ public abstract class TransactionSynchronizationUtils {
     /**
      * Unwrap the given resource handle if necessary; otherwise return the given handle as-is.
      *
-     * @see InfrastructureProxy#getWrappedObject()
+     * @see org.springframework.core.InfrastructureProxy#getWrappedObject()
      */
     static Object unwrapResourceIfNecessary(Object resource) {
         Assert.notNull(resource, "Resource must not be null");
@@ -114,8 +114,8 @@ public abstract class TransactionSynchronizationUtils {
                 TransactionSynchronizationManager.getSynchronizations()) {
             try {
                 synchronization.beforeCompletion();
-            } catch (Throwable ex) {
-                logger.error("TransactionSynchronization.beforeCompletion threw exception", ex);
+            } catch (Throwable tsex) {
+                logger.error("TransactionSynchronization.beforeCompletion threw exception", tsex);
             }
         }
     }
@@ -183,8 +183,9 @@ public abstract class TransactionSynchronizationUtils {
             for (TransactionSynchronization synchronization : synchronizations) {
                 try {
                     synchronization.afterCompletion(completionStatus);
-                } catch (Throwable ex) {
-                    logger.error("TransactionSynchronization.afterCompletion threw exception", ex);
+                } catch (Throwable tsex) {
+                    logger.error(
+                            "TransactionSynchronization.afterCompletion threw exception", tsex);
                 }
             }
         }

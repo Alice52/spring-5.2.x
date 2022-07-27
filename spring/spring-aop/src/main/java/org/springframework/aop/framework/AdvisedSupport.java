@@ -43,7 +43,9 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
 /**
- * Base class for AOP proxy configuration managers. These are not themselves AOP proxies, but
+ * Advised的一个实现类 SpringAOP中的一个核心类。继承了ProxyConfig实现了Advised。
+ *
+ * <p>Base class for AOP proxy configuration managers. These are not themselves AOP proxies, but
  * subclasses of this class are normally factories from which AOP proxy instances are obtained
  * directly.
  *
@@ -114,6 +116,9 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
      * @see org.springframework.aop.target.SingletonTargetSource
      */
     public void setTarget(Object target) {
+        // 注意这里是将目标对象封装为了SingletonTargetSource是一个单例的
+        // 这里一定要记着 SingletonTargetSource中存放的是我们的目标对象 不是代理对象
+        // 这里调用的是AdvisedSupport中的方法setTargetSource这个方法是Advised中定义的方法
         setTargetSource(new SingletonTargetSource(target));
     }
 
@@ -177,9 +182,14 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
         this.advisorChainFactory = advisorChainFactory;
     }
 
-    /** Set the interfaces to be proxied. */
+    /**
+     * 添加接口信息
+     *
+     * <p>Set the interfaces to be proxied.
+     */
     public void setInterfaces(Class<?>... interfaces) {
         Assert.notNull(interfaces, "Interfaces must not be null");
+        // 清空原来的接口信息
         this.interfaces.clear();
         for (Class<?> ifc : interfaces) {
             addInterface(ifc);
@@ -187,7 +197,9 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
     }
 
     /**
-     * Add a new proxied interface.
+     * 添加一个代理接口
+     *
+     * <p>Add a new proxied interface.
      *
      * @param intf the additional interface to proxy
      */
@@ -470,9 +482,12 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
      */
     public List<Object> getInterceptorsAndDynamicInterceptionAdvice(
             Method method, @Nullable Class<?> targetClass) {
+        // 创建一个method的缓存对象,在MethodCacheKey中实现了equals和hashcode方法同时还实现了compareTo方法
         MethodCacheKey cacheKey = new MethodCacheKey(method);
         List<Object> cached = this.methodCache.get(cacheKey);
+        // 先从缓存中获取,如果缓存中获取不到,则再调用方法获取,获取之后放入到缓存中
         if (cached == null) {
+            // 调用的是advisorChainFactory的getInterceptorsAndDynamicInterceptionAdvice方法
             cached =
                     this.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(
                             this, method, targetClass);

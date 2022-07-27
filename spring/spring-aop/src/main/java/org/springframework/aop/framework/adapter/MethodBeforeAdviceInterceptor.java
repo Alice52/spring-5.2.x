@@ -26,7 +26,9 @@ import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.util.Assert;
 
 /**
- * Interceptor to wrap a {@link MethodBeforeAdvice}.
+ * MethodBefore前置通知Interceptor。 实现了MethodInterceptor接口。持有MethodBefore对象
+ *
+ * <p>Interceptor to wrap a {@link MethodBeforeAdvice}.
  *
  * <p>Used internally by the AOP framework; application developers should not need to use this class
  * directly.
@@ -42,7 +44,9 @@ public class MethodBeforeAdviceInterceptor
     private final MethodBeforeAdvice advice;
 
     /**
-     * Create a new MethodBeforeAdviceInterceptor for the given advice.
+     * 为指定的advice创建对应的MethodBeforeAdviceInterceptor对象
+     *
+     * <p>Create a new MethodBeforeAdviceInterceptor for the given advice.
      *
      * @param advice the MethodBeforeAdvice to wrap
      */
@@ -51,9 +55,12 @@ public class MethodBeforeAdviceInterceptor
         this.advice = advice;
     }
 
+    // 这个invoke方法是拦截器的回调方法，会在代理对应的方法被调用时触发回调
     @Override
     public Object invoke(MethodInvocation mi) throws Throwable {
+        // 执行前置通知的方法
         this.advice.before(mi.getMethod(), mi.getArguments(), mi.getThis());
+        // 执行下一个通知/拦截器，但是该拦截器是最后一个了，所以会调用目标方法
         return mi.proceed();
     }
 }

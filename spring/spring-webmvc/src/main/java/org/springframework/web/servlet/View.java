@@ -90,7 +90,9 @@ public interface View {
     }
 
     /**
-     * Render the view given the specified model.
+     * 渲染视图
+     *
+     * <p>Render the view given the specified model.
      *
      * <p>The first step will be preparing the request: In the JSP case, this would mean setting
      * model objects as request attributes. The second step will be the actual rendering of the

@@ -25,8 +25,10 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.lang.Nullable;
 
 /**
- * Empty {@link MessageSource} that delegates all calls to the parent MessageSource. If no parent is
- * available, it simply won't resolve any message.
+ * 消息源解析委派类，当用户未指定时，springContext默认使用当前类
+ *
+ * <p>Empty {@link MessageSource} that delegates all calls to the parent MessageSource. If no parent
+ * is available, it simply won't resolve any message.
  *
  * <p>Used as placeholder by AbstractApplicationContext, if the context doesn't define its own
  * MessageSource. Not intended for direct use in applications.
@@ -38,6 +40,7 @@ import org.springframework.lang.Nullable;
 public class DelegatingMessageSource extends MessageSourceSupport
         implements HierarchicalMessageSource {
 
+    // 父消息解析源
     @Nullable private MessageSource parentMessageSource;
 
     @Override
@@ -51,6 +54,19 @@ public class DelegatingMessageSource extends MessageSourceSupport
         this.parentMessageSource = parent;
     }
 
+    /**
+     * 解析消息，父消息解析源不为null时，则采用父消息源解析消息，否则有自身解析
+     *
+     * @param code the message code to look up, e.g. 'calculator.noRateSet'. MessageSource users are
+     *     encouraged to base message names on qualified class or package names, avoiding potential
+     *     conflicts and ensuring maximum clarity.
+     * @param args an array of arguments that will be filled in for params within the message
+     *     (params look like "{0}", "{1,date}", "{2,time}" within a message), or {@code null} if
+     *     none
+     * @param defaultMessage a default message to return if the lookup fails
+     * @param locale the locale in which to do the lookup
+     * @return
+     */
     @Override
     @Nullable
     public String getMessage(
@@ -64,6 +80,19 @@ public class DelegatingMessageSource extends MessageSourceSupport
         }
     }
 
+    /**
+     * 解析消息，父消息解析源不为空时，则采用父消息源解析消息，否则抛出异常
+     *
+     * @param code the message code to look up, e.g. 'calculator.noRateSet'. MessageSource users are
+     *     encouraged to base message names on qualified class or package names, avoiding potential
+     *     conflicts and ensuring maximum clarity.
+     * @param args an array of arguments that will be filled in for params within the message
+     *     (params look like "{0}", "{1,date}", "{2,time}" within a message), or {@code null} if
+     *     none
+     * @param locale the locale in which to do the lookup
+     * @return
+     * @throws NoSuchMessageException
+     */
     @Override
     public String getMessage(String code, @Nullable Object[] args, Locale locale)
             throws NoSuchMessageException {
@@ -74,6 +103,15 @@ public class DelegatingMessageSource extends MessageSourceSupport
         }
     }
 
+    /**
+     * 解析消息，父消息解析源不为空时，则采用父消息源解析消息，否则有自身解析
+     *
+     * @param resolvable the value object storing attributes required to resolve a message (may
+     *     include a default message)
+     * @param locale the locale in which to do the lookup
+     * @return
+     * @throws NoSuchMessageException
+     */
     @Override
     public String getMessage(MessageSourceResolvable resolvable, Locale locale)
             throws NoSuchMessageException {

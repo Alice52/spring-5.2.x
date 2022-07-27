@@ -34,7 +34,9 @@ public class PropertySourcesPropertyResolver extends AbstractPropertyResolver {
     @Nullable private final PropertySources propertySources;
 
     /**
-     * Create a new resolver against the given property sources.
+     * 创建一个新的解析器来处理给定的属性资源
+     *
+     * <p>Create a new resolver against the given property sources.
      *
      * @param propertySources the set of {@link PropertySource} objects to use
      */

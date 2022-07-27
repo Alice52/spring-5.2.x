@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 
 /**
  * Helper class that efficiently creates multiple {@link PreparedStatementCreator} objects with
@@ -203,8 +204,9 @@ public class PreparedStatementCreatorFactory {
 
         public PreparedStatementCreatorImpl(String actualSql, List<?> parameters) {
             this.actualSql = actualSql;
+            Assert.notNull(parameters, "Parameters List must not be null");
             this.parameters = parameters;
-            if (parameters.size() != declaredParameters.size()) {
+            if (this.parameters.size() != declaredParameters.size()) {
                 // Account for named parameters being used multiple times
                 Set<String> names = new HashSet<>();
                 for (int i = 0; i < parameters.size(); i++) {

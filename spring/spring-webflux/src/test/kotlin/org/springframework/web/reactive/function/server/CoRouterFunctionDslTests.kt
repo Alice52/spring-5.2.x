@@ -19,8 +19,9 @@ package org.springframework.web.reactive.function.server
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import org.springframework.core.io.ClassPathResource
-import org.springframework.http.HttpHeaders.*
-import org.springframework.http.HttpMethod.*
+import org.springframework.http.HttpHeaders.ACCEPT
+import org.springframework.http.HttpHeaders.CONTENT_TYPE
+import org.springframework.http.HttpMethod.PATCH
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.*
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest.*
@@ -152,16 +153,6 @@ class CoRouterFunctionDslTests {
         }
     }
 
-    @Test
-    fun filtering() {
-        val mockRequest = get("https://example.com/filter").build()
-        val request = DefaultServerRequest(MockServerWebExchange.from(mockRequest), emptyList())
-        StepVerifier.create(sampleRouter().route(request).flatMap { it.handle(request) })
-                .expectNextMatches { response ->
-                    response.headers().getFirst("foo") == "bar"
-                }
-                .verifyComplete()
-    }
 
     private fun sampleRouter() = coRouter {
         (GET("/foo/") or GET("/foos/")) { req -> handle(req) }
@@ -195,18 +186,6 @@ class CoRouterFunctionDslTests {
         path("/baz", ::handle)
         GET("/rendering") { RenderingResponse.create("index").buildAndAwait() }
         add(otherRouter)
-        add(filterRouter)
-    }
-
-    private val filterRouter = coRouter {
-        "/filter" { request ->
-            ok().header("foo", request.headers().firstHeader("foo")).buildAndAwait()
-        }
-
-        filter { request, next ->
-            val newRequest = ServerRequest.from(request).apply { header("foo", "bar") }.build()
-            next(newRequest)
-        }
     }
 
     private val otherRouter = router {

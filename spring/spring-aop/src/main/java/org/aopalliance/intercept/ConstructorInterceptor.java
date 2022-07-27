@@ -17,7 +17,10 @@
 package org.aopalliance.intercept;
 
 /**
- * Intercepts the construction of a new object.
+ * 构造方法拦截器是Interceptor的另一个重要的子类。在AOP中是可以对构造方法进行拦截的
+ * 这样的场景我们应该很少用到。主要方法为:construct入参为ConstructorInvocation
+ *
+ * <p>Intercepts the construction of a new object.
  *
  * <p>The user should implement the {@link #construct(ConstructorInvocation)} method to modify the
  * original behavior. E.g. the following class implements a singleton interceptor (allows only one

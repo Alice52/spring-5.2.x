@@ -39,7 +39,9 @@ import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.multipart.support.MultipartResolutionDelegate;
 
 /**
- * Resolves {@link Map} method arguments annotated with an @{@link RequestParam} where the
+ * 解析注解@RequestParam的map类型、而且注释中有value的参数
+ *
+ * <p>Resolves {@link Map} method arguments annotated with an @{@link RequestParam} where the
  * annotation does not specify a request parameter name.
  *
  * <p>The created {@link Map} contains all request parameter name/value pairs, or all multipart

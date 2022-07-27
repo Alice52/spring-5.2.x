@@ -23,7 +23,9 @@ import org.springframework.aop.TargetSource;
 import org.springframework.lang.Nullable;
 
 /**
- * Abstract {@link org.springframework.aop.TargetSource} implementation that wraps a refreshable
+ * TargetSource的子类。支持可刷新的热部署的目标对象
+ *
+ * <p>Abstract {@link org.springframework.aop.TargetSource} implementation that wraps a refreshable
  * target object. Subclasses can determine whether a refresh is required, and need to provide fresh
  * target objects.
  *

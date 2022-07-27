@@ -20,7 +20,9 @@ import org.springframework.core.AttributeAccessorSupport;
 import org.springframework.lang.Nullable;
 
 /**
- * Extension of {@link org.springframework.core.AttributeAccessorSupport}, holding attributes as
+ * 元数据属性访问器，既能获取源数据，也能提供属性访问
+ *
+ * <p>Extension of {@link org.springframework.core.AttributeAccessorSupport}, holding attributes as
  * {@link BeanMetadataAttribute} objects in order to keep track of the definition source.
  *
  * @author Juergen Hoeller
@@ -30,6 +32,7 @@ import org.springframework.lang.Nullable;
 public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport
         implements BeanMetadataElement {
 
+    // bean的源数据对象
     @Nullable private Object source;
 
     @Override
@@ -48,7 +51,9 @@ public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport
     }
 
     /**
-     * Add the given BeanMetadataAttribute to this accessor's set of attributes.
+     * 添加BeanMetadataAttribute
+     *
+     * <p>Add the given BeanMetadataAttribute to this accessor's set of attributes.
      *
      * @param attribute the BeanMetadataAttribute object to register
      */
@@ -57,7 +62,9 @@ public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport
     }
 
     /**
-     * Look up the given BeanMetadataAttribute in this accessor's set of attributes.
+     * 获取属性之后将属性转成BeanMetadataAttribute
+     *
+     * <p>Look up the given BeanMetadataAttribute in this accessor's set of attributes.
      *
      * @param name the name of the attribute
      * @return the corresponding BeanMetadataAttribute object, or {@code null} if no such attribute
@@ -68,6 +75,12 @@ public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport
         return (BeanMetadataAttribute) super.getAttribute(name);
     }
 
+    /**
+     * 将名字和值封装成BeanMetadataAttribute
+     *
+     * @param name the unique attribute key
+     * @param value the attribute value to be attached
+     */
     @Override
     public void setAttribute(String name, @Nullable Object value) {
         super.setAttribute(name, new BeanMetadataAttribute(name, value));

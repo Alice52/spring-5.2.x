@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class HandlerMappingIntrospector
 
     /**
      * Constructor that detects the configured {@code HandlerMapping}s in the given {@code
-     * ApplicationContext} or falls back on "DispatcherServlet.properties" like the {@code
+     * ApplicationContext} or falls back on "DispatcherServlet_test.properties" like the {@code
      * DispatcherServlet}.
      *
      * @deprecated as of 4.3.12, in favor of {@link #setApplicationContext}
@@ -96,7 +96,7 @@ public class HandlerMappingIntrospector
 
     private static List<HandlerMapping> initFallback(ApplicationContext applicationContext) {
         Properties props;
-        String path = "DispatcherServlet.properties";
+        String path = "DispatcherServlet_test.properties";
         try {
             Resource resource = new ClassPathResource(path, DispatcherServlet.class);
             props = PropertiesLoaderUtils.loadProperties(resource);
@@ -121,7 +121,7 @@ public class HandlerMappingIntrospector
         return result;
     }
 
-    /** Return the configured or detected {@code HandlerMapping}s. */
+    /** Return the configured HandlerMapping's. */
     public List<HandlerMapping> getHandlerMappings() {
         return (this.handlerMappings != null ? this.handlerMappings : Collections.emptyList());
     }

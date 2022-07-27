@@ -24,9 +24,11 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.lang.Nullable;
 
 /**
- * Configuration interface to be implemented by most listable bean factories. In addition to {@link
- * ConfigurableBeanFactory}, it provides facilities to analyze and modify bean definitions, and to
- * pre-instantiate singletons.
+ * BeanFactory配置清单，指定忽略类型及接口等
+ *
+ * <p>Configuration interface to be implemented by most listable bean factories. In addition to
+ * {@link ConfigurableBeanFactory}, it provides facilities to analyze and modify bean definitions,
+ * and to pre-instantiate singletons.
  *
  * <p>This subinterface of {@link org.springframework.beans.factory.BeanFactory} is not meant to be
  * used in normal application code: Stick to {@link org.springframework.beans.factory.BeanFactory}
@@ -35,21 +37,25 @@ import org.springframework.lang.Nullable;
  * bean factory configuration methods.
  *
  * @author Juergen Hoeller
- * @since 03.11.2003
- * @see org.springframework.context.support.AbstractApplicationContext#getBeanFactory()
+ * @since 03.11.2003 see
+ *     org.springframework.context.support.AbstractApplicationContext#getBeanFactory()
  */
 public interface ConfigurableListableBeanFactory
         extends ListableBeanFactory, AutowireCapableBeanFactory, ConfigurableBeanFactory {
 
     /**
-     * Ignore the given dependency type for autowiring: for example, String. Default is none.
+     * 自动装配时忽略的类
+     *
+     * <p>Ignore the given dependency type for autowiring: for example, String. Default is none.
      *
      * @param type the dependency type to ignore
      */
     void ignoreDependencyType(Class<?> type);
 
     /**
-     * Ignore the given dependency interface for autowiring.
+     * 自动装配时忽略的接口
+     *
+     * <p>Ignore the given dependency interface for autowiring.
      *
      * <p>This will typically be used by application contexts to register dependencies that are
      * resolved in other ways, like BeanFactory through BeanFactoryAware or ApplicationContext
@@ -59,8 +65,8 @@ public interface ConfigurableListableBeanFactory
      * invoke this method for each type.
      *
      * @param ifc the dependency interface to ignore
-     * @see org.springframework.beans.factory.BeanFactoryAware
-     * @see org.springframework.context.ApplicationContextAware
+     * @see org.springframework.beans.factory.BeanFactoryAware see
+     *     org.springframework.context.ApplicationContextAware
      */
     void ignoreDependencyInterface(Class<?> ifc);
 

@@ -314,7 +314,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             logger.trace("Loading XML bean definitions from " + encodedResource);
         }
 
-        // ThreadLocal 当前线程鸡精处理过的配置文件
+        // 通过属性来记录已经加载的资源
         Set<EncodedResource> currentResources = this.resourcesCurrentlyBeingLoaded.get();
 
         if (!currentResources.add(encodedResource)) {
@@ -324,12 +324,13 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
                             + " - check your import definitions!");
         }
 
-        // 读取物理配置文件
+        // 从encodedResource中获取已经封装的Resource对象并再次从Resource中获取其中的inputStream
         try (InputStream inputStream = encodedResource.getResource().getInputStream()) {
             InputSource inputSource = new InputSource(inputStream);
             if (encodedResource.getEncoding() != null) {
                 inputSource.setEncoding(encodedResource.getEncoding());
             }
+            // 逻辑处理的核心步骤
             return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
         } catch (IOException ex) {
             throw new BeanDefinitionStoreException(
@@ -381,8 +382,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             throws BeanDefinitionStoreException {
 
         try {
-            // 使用 entity-resolver[XmlBeanDefinitionReader中设置{第一个 loadBeanDefinitions}] 解析规范
-            // validating[loadBeanDefinitions(beanFactory) 中设置] 对 xml 文件进行验证
+            // 此处获取xml文件的document对象，这个解析过程是由documentLoader完成的,从String[] -string-Resource[]-
+            // resource,最终开始将resource读取成一个document文档，根据文档的节点信息封装成一个个的BeanDefinition对象
             Document doc = doLoadDocument(inputSource, resource);
             int count = registerBeanDefinitions(doc, resource);
             if (logger.isDebugEnabled()) {
@@ -432,7 +433,6 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
      * @see DocumentLoader#loadDocument
      */
     protected Document doLoadDocument(InputSource inputSource, Resource resource) throws Exception {
-        // isNamespaceAware 是 validating 的相反值
         return this.documentLoader.loadDocument(
                 inputSource,
                 getEntityResolver(),
@@ -452,14 +452,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
      * @see #detectValidationMode
      */
     protected int getValidationModeForResource(Resource resource) {
-        // 默认是 VALIDATION_AUTO
         int validationModeToUse = getValidationMode();
-        // 如果指定了验证模式, 则使用指定的
+        // 如果手动指定了验证模式，则使用指定的验证模式
         if (validationModeToUse != VALIDATION_AUTO) {
             return validationModeToUse;
         }
-
-        // 使用自动的验证模式: 如果有 DOCTYPE 则是DTD, 否则时 XSD
+        // 如果美欧指定则使用自动检测
         int detectedMode = detectValidationMode(resource);
         if (detectedMode != VALIDATION_AUTO) {
             return detectedMode;
@@ -471,11 +469,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     }
 
     /**
-     * 如果文件内有 DOCTYPE 的定义则认为是 DTD, 否则是 XSD
-     *
-     * <p>Detect which kind of validation to perform on the XML file identified by the supplied
-     * {@link Resource}. If the file has a {@code DOCTYPE} definition then DTD validation is used
-     * otherwise XSD validation is assumed.
+     * Detect which kind of validation to perform on the XML file identified by the supplied {@link
+     * Resource}. If the file has a {@code DOCTYPE} definition then DTD validation is used otherwise
+     * XSD validation is assumed.
      *
      * <p>Override this method if you would like to customize resolution of the {@link
      * #VALIDATION_AUTO} mode.
@@ -532,16 +528,19 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
      */
     public int registerBeanDefinitions(Document doc, Resource resource)
             throws BeanDefinitionStoreException {
+        // 对xml的beanDefinition进行解析
         BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
-        // getRegistry() 返回的就是 DefaultListableBeanFactory
         int countBefore = getRegistry().getBeanDefinitionCount();
+        // 完成具体的解析过程
         documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
         return getRegistry().getBeanDefinitionCount() - countBefore;
     }
 
     /**
-     * Create the {@link BeanDefinitionDocumentReader} to use for actually reading bean definitions
-     * from an XML document.
+     * 实例化创建documentReader对象
+     *
+     * <p>Create the {@link BeanDefinitionDocumentReader} to use for actually reading bean
+     * definitions from an XML document.
      *
      * <p>The default implementation instantiates the specified "documentReaderClass".
      *

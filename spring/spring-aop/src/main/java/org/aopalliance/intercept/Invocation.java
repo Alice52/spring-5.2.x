@@ -17,7 +17,9 @@
 package org.aopalliance.intercept;
 
 /**
- * This interface represents an invocation in the program.
+ * AOP拦截的执行类是Joinpoint的子类。 主要方法：getArguments()获取参数。
+ *
+ * <p>This interface represents an invocation in the program.
  *
  * <p>An invocation is a joinpoint and can be intercepted by an interceptor.
  *

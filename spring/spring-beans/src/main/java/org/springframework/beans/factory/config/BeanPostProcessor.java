@@ -20,7 +20,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
 
 /**
- * Factory hook that allows for custom modification of new bean instances &mdash; for example,
+ * bean的后置处理器接口，在依赖注入的初始化方法前后进行调用
+ *
+ * <p>Factory hook that allows for custom modification of new bean instances &mdash; for example,
  * checking for marker interfaces or wrapping beans with proxies.
  *
  * <p>Typically, post-processors that populate beans via marker interfaces or the like will
@@ -56,7 +58,9 @@ import org.springframework.lang.Nullable;
 public interface BeanPostProcessor {
 
     /**
-     * Apply this {@code BeanPostProcessor} to the given new bean instance <i>before</i> any bean
+     * 初始化方法调用前要进行的处理逻辑
+     *
+     * <p>Apply this {@code BeanPostProcessor} to the given new bean instance <i>before</i> any bean
      * initialization callbacks (like InitializingBean's {@code afterPropertiesSet} or a custom
      * init-method). The bean will already be populated with property values. The returned bean
      * instance may be a wrapper around the original.
@@ -77,7 +81,9 @@ public interface BeanPostProcessor {
     }
 
     /**
-     * Apply this {@code BeanPostProcessor} to the given new bean instance <i>after</i> any bean
+     * 在初始化方法指定后要进行的处理逻辑
+     *
+     * <p>Apply this {@code BeanPostProcessor} to the given new bean instance <i>after</i> any bean
      * initialization callbacks (like InitializingBean's {@code afterPropertiesSet} or a custom
      * init-method). The bean will already be populated with property values. The returned bean
      * instance may be a wrapper around the original.

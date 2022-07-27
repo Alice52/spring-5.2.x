@@ -35,8 +35,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.cors.CorsUtils;
 
 /**
- * A logical disjunction (' || ') request condition that matches a request against a set of {@link
- * RequestMethod RequestMethods}.
+ * 使用requestMethod做匹配 A logical disjunction (' || ') request condition that matches a request
+ * against a set of {@link RequestMethod RequestMethods}.
  *
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
@@ -117,16 +117,18 @@ public final class RequestMethodsRequestCondition
             return matchPreFlight(request);
         }
 
+        // 空的情况下，就返回自身
         if (getMethods().isEmpty()) {
             if (RequestMethod.OPTIONS.name().equals(request.getMethod())
                     && !DispatcherType.ERROR.equals(request.getDispatcherType())) {
 
                 return null; // We handle OPTIONS transparently, so don't match if no explicit
-                // declarations
+                             // declarations
             }
             return this;
         }
 
+        // 非空，逐个匹配
         return matchRequestMethod(request.getMethod());
     }
 

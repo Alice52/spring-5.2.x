@@ -268,6 +268,7 @@ public class Jackson2ObjectMapperFactoryBeanTests {
     }
 
     @Test // SPR-12634
+    @SuppressWarnings("unchecked")
     public void customizeDefaultModulesWithModuleClass()
             throws JsonProcessingException, UnsupportedEncodingException {
         this.factory.setModulesToInstall(CustomIntegerModule.class);
@@ -312,7 +313,8 @@ public class Jackson2ObjectMapperFactoryBeanTests {
 
     @Test
     public void propertyNamingStrategy() {
-        PropertyNamingStrategy strategy = new PropertyNamingStrategy.SnakeCaseStrategy();
+        PropertyNamingStrategy strategy =
+                new PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy();
         this.factory.setPropertyNamingStrategy(strategy);
         this.factory.afterPropertiesSet();
 

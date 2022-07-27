@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -243,7 +243,7 @@ public class RequestMappingInfoTests {
                         .build();
 
         assertThat(info1.equals(info2)).isFalse();
-        assertThat(info2.hashCode()).isNotEqualTo(info1.hashCode());
+        assertThat(info2.hashCode()).isNotEqualTo((long) info1.hashCode());
 
         info2 =
                 paths("/foo")
@@ -255,7 +255,7 @@ public class RequestMappingInfoTests {
                         .build();
 
         assertThat(info1.equals(info2)).isFalse();
-        assertThat(info2.hashCode()).isNotEqualTo(info1.hashCode());
+        assertThat(info2.hashCode()).isNotEqualTo((long) info1.hashCode());
 
         info2 =
                 paths("/foo")
@@ -267,7 +267,7 @@ public class RequestMappingInfoTests {
                         .build();
 
         assertThat(info1.equals(info2)).isFalse();
-        assertThat(info2.hashCode()).isNotEqualTo(info1.hashCode());
+        assertThat(info2.hashCode()).isNotEqualTo((long) info1.hashCode());
 
         info2 =
                 paths("/foo")
@@ -279,7 +279,7 @@ public class RequestMappingInfoTests {
                         .build();
 
         assertThat(info1.equals(info2)).isFalse();
-        assertThat(info2.hashCode()).isNotEqualTo(info1.hashCode());
+        assertThat(info2.hashCode()).isNotEqualTo((long) info1.hashCode());
 
         info2 =
                 paths("/foo")
@@ -291,7 +291,7 @@ public class RequestMappingInfoTests {
                         .build();
 
         assertThat(info1.equals(info2)).isFalse();
-        assertThat(info2.hashCode()).isNotEqualTo(info1.hashCode());
+        assertThat(info2.hashCode()).isNotEqualTo((long) info1.hashCode());
 
         info2 =
                 paths("/foo")
@@ -303,7 +303,7 @@ public class RequestMappingInfoTests {
                         .build();
 
         assertThat(info1.equals(info2)).isFalse();
-        assertThat(info2.hashCode()).isNotEqualTo(info1.hashCode());
+        assertThat(info2.hashCode()).isNotEqualTo((long) info1.hashCode());
 
         info2 =
                 paths("/foo")
@@ -315,7 +315,7 @@ public class RequestMappingInfoTests {
                         .build();
 
         assertThat(info1.equals(info2)).isFalse();
-        assertThat(info2.hashCode()).isNotEqualTo(info1.hashCode());
+        assertThat(info2.hashCode()).isNotEqualTo((long) info1.hashCode());
     }
 
     @Test

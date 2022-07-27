@@ -24,7 +24,10 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.lang.Nullable;
 
 /**
- * Interface responsible for creating instances corresponding to a root bean definition.
+ * 实例化策略接口，子类被用来根据rootBeanDefinition来创建实例对象
+ *
+ * <p>Interface responsible for creating instances corresponding to a root bean definition.
+ * 这是一个策略,因为各种方法是可能的,包括使用CGLIB动态支持创建子类方法注入
  *
  * <p>This is pulled out into a strategy as various approaches are possible, including using CGLIB
  * to create subclasses on the fly to support Method Injection.
@@ -36,7 +39,9 @@ import org.springframework.lang.Nullable;
 public interface InstantiationStrategy {
 
     /**
-     * Return an instance of the bean with the given name in this factory.
+     * 使用默认构造方法进行实例化
+     *
+     * <p>Return an instance of the bean with the given name in this factory.
      *
      * @param bd the bean definition
      * @param beanName the name of the bean when it is created in this context. The name can be
@@ -49,8 +54,10 @@ public interface InstantiationStrategy {
             throws BeansException;
 
     /**
-     * Return an instance of the bean with the given name in this factory, creating it via the given
-     * constructor.
+     * 通过指定构造器来进行实例化
+     *
+     * <p>Return an instance of the bean with the given name in this factory, creating it via the
+     * given constructor.
      *
      * @param bd the bean definition
      * @param beanName the name of the bean when it is created in this context. The name can be
@@ -70,8 +77,10 @@ public interface InstantiationStrategy {
             throws BeansException;
 
     /**
-     * Return an instance of the bean with the given name in this factory, creating it via the given
-     * factory method.
+     * 通过指定工厂方法来进行实例化
+     *
+     * <p>Return an instance of the bean with the given name in this factory, creating it via the
+     * given factory method.
      *
      * @param bd the bean definition
      * @param beanName the name of the bean when it is created in this context. The name can be

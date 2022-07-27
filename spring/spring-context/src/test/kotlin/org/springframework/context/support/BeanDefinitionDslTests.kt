@@ -18,11 +18,11 @@ package org.springframework.context.support
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
-import org.junit.jupiter.api.fail
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.fail
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.beans.factory.getBean
-import org.springframework.context.support.BeanDefinitionDsl.*
+import org.springframework.context.support.BeanDefinitionDsl.Scope
 import org.springframework.core.env.SimpleCommandLinePropertySource
 import org.springframework.core.env.get
 import org.springframework.core.testfixture.env.MockPropertySource

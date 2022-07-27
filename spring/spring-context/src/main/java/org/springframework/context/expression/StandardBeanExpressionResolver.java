@@ -54,10 +54,18 @@ import org.springframework.util.StringUtils;
  */
 public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 
-    /** Default expression prefix: "#{". */
+    /**
+     * 默认表达式前缀
+     *
+     * <p>Default expression prefix: "#{".
+     */
     public static final String DEFAULT_EXPRESSION_PREFIX = "#{";
 
-    /** Default expression suffix: "}". */
+    /**
+     * 默认表达式后缀
+     *
+     * <p>Default expression suffix: "}".
+     */
     public static final String DEFAULT_EXPRESSION_SUFFIX = "}";
 
     private final Map<String, Expression> expressionCache = new ConcurrentHashMap<>(256);

@@ -31,7 +31,9 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
- * Handler for return values of type {@link DeferredResult}, {@link ListenableFuture}, and {@link
+ * 处理DeferredResult类型的返回值，用于异步处理，使用WebAsyncManager完成
+ *
+ * <p>Handler for return values of type {@link DeferredResult}, {@link ListenableFuture}, and {@link
  * CompletionStage}.
  *
  * @author Rossen Stoyanchev

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,28 +68,6 @@ public class UriTemplateServletAnnotationControllerHandlerMethodTests
         MockHttpServletResponse response = new MockHttpServletResponse();
         getServlet().service(request, response);
         assertThat(response.getContentAsString()).isEqualTo("test-42-7");
-    }
-
-    @Test // gh-25864
-    public void literalMappingWithPathParams() throws Exception {
-        initServletWithControllers(MultipleUriTemplateController.class);
-
-        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/data");
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        getServlet().service(request, response);
-        assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.getContentAsString()).isEqualTo("test");
-
-        request = new MockHttpServletRequest("GET", "/data;foo=bar");
-        response = new MockHttpServletResponse();
-        getServlet().service(request, response);
-        assertThat(response.getStatus()).isEqualTo(404);
-
-        request = new MockHttpServletRequest("GET", "/data;jsessionid=123");
-        response = new MockHttpServletResponse();
-        getServlet().service(request, response);
-        assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.getContentAsString()).isEqualTo("test");
     }
 
     @Test
@@ -422,11 +400,6 @@ public class UriTemplateServletAnnotationControllerHandlerMethodTests
             assertThat(booking).as("Invalid path variable value").isEqualTo(21);
             writer.write(
                     "test-" + hotel + "-q" + qHotel + "-" + booking + "-" + other + "-q" + qOther);
-        }
-
-        @RequestMapping("/data")
-        void handleWithLiteralMapping(Writer writer) throws IOException {
-            writer.write("test");
         }
     }
 

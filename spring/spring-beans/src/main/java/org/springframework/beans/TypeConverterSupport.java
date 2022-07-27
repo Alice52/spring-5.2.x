@@ -26,7 +26,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Base implementation of the {@link TypeConverter} interface, using a package-private delegate.
+ * TypeConverter的基本实现类，同时也是BeanWrapperImpl类的依赖类
+ *
+ * <p>Base implementation of the {@link TypeConverter} interface, using a package-private delegate.
  * Mainly serves as base class for {@link BeanWrapperImpl}.
  *
  * @author Juergen Hoeller
@@ -36,6 +38,7 @@ import org.springframework.util.Assert;
 public abstract class TypeConverterSupport extends PropertyEditorRegistrySupport
         implements TypeConverter {
 
+    // 委托给TypeConverterDelegate来转换
     @Nullable TypeConverterDelegate typeConverterDelegate;
 
     @Override
@@ -83,6 +86,7 @@ public abstract class TypeConverterSupport extends PropertyEditorRegistrySupport
 
         Assert.state(this.typeConverterDelegate != null, "No TypeConverterDelegate");
         try {
+            // 调用具体的委托类来进行类型的转换
             return this.typeConverterDelegate.convertIfNecessary(
                     null, null, value, requiredType, typeDescriptor);
         } catch (ConverterNotFoundException | IllegalStateException ex) {

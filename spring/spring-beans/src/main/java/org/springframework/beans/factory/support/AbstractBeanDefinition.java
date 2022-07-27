@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,21 +104,27 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
     public static final int AUTOWIRE_AUTODETECT = AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT;
 
     /**
-     * Constant that indicates no dependency check at all.
+     * 默认不检查
+     *
+     * <p>Constant that indicates no dependency check at all.
      *
      * @see #setDependencyCheck
      */
     public static final int DEPENDENCY_CHECK_NONE = 0;
 
     /**
-     * Constant that indicates dependency checking for object references.
+     * 对依赖对象检查
+     *
+     * <p>Constant that indicates dependency checking for object references.
      *
      * @see #setDependencyCheck
      */
     public static final int DEPENDENCY_CHECK_OBJECTS = 1;
 
     /**
-     * Constant that indicates dependency checking for "simple" properties.
+     * 对原始类型检查
+     *
+     * <p>Constant that indicates dependency checking for "simple" properties.
      *
      * @see #setDependencyCheck
      * @see org.springframework.beans.BeanUtils#isSimpleProperty
@@ -126,8 +132,10 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
     public static final int DEPENDENCY_CHECK_SIMPLE = 2;
 
     /**
-     * Constant that indicates dependency checking for all properties (object references as well as
-     * "simple" properties).
+     * 对所有属性检查
+     *
+     * <p>Constant that indicates dependency checking for all properties (object references as well
+     * as "simple" properties).
      *
      * @see #setDependencyCheck
      */
@@ -145,56 +153,85 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
      */
     public static final String INFER_METHOD = "(inferred)";
 
+    /** 用于记录qualifier */
     private final Map<String, AutowireCandidateQualifier> qualifiers = new LinkedHashMap<>();
 
     @Nullable private volatile Object beanClass;
 
+    /** bean的作用范围 */
     @Nullable private String scope = SCOPE_DEFAULT;
 
+    /** 是否是抽象 */
     private boolean abstractFlag = false;
 
+    /** 是否延迟加载 */
     @Nullable private Boolean lazyInit;
 
+    /** 自动注入模式 */
     private int autowireMode = AUTOWIRE_NO;
 
+    /** 依赖检查 */
     private int dependencyCheck = DEPENDENCY_CHECK_NONE;
 
+    /** 用来表示一个bean的实例化依靠另一个bean先实例化，对应bean属性depend-on */
     @Nullable private String[] dependsOn;
 
+    /**
+     * autowire-candidate属性设置为false，这样容器在查找自动装配对象时，将不考虑该bean，即它不会被考虑作为其他bean自动装配的候选者，但是该bean
+     * 本身还是可以使用自动装配来注入其他bean的
+     */
     private boolean autowireCandidate = true;
 
+    /** 自动装配时当出现多个bean候选者时，将作为首选者 */
     private boolean primary = false;
 
     @Nullable private Supplier<?> instanceSupplier;
 
+    /** 允许访问非公开的构造器和方法 */
     private boolean nonPublicAccessAllowed = true;
 
+    /**
+     * 是否以一种宽松的模式解析构造函数，默认是true 如果是false，则在如下情况 interface ITest{} class ITestImpl implements
+     * ITest{}; class Main{ Main(ITest i){} Main(ITestImpl i){} } 抛出异常，因为spring无法准确定位哪个构造函数
+     */
     private boolean lenientConstructorResolution = true;
 
+    /** 对应factory-bean属性 */
     @Nullable private String factoryBeanName;
 
     @Nullable private String factoryMethodName;
 
+    /** 记录构造函数注入属性 */
     @Nullable private ConstructorArgumentValues constructorArgumentValues;
 
+    /** 普通属性集合 */
     @Nullable private MutablePropertyValues propertyValues;
 
+    /** 方法重写的持有者，记录lookup-method,replaced-method元素 */
     private MethodOverrides methodOverrides = new MethodOverrides();
 
+    /** 初始化方法 */
     @Nullable private String initMethodName;
 
+    /** 销毁方法 */
     @Nullable private String destroyMethodName;
 
+    /** 是否执行init-method方法 */
     private boolean enforceInitMethod = true;
 
+    /** 是否执行destory-method方法 */
     private boolean enforceDestroyMethod = true;
 
+    /** 是否是应用程序本身定义的而不是用户定义的,创建aop的是值是true */
     private boolean synthetic = false;
 
+    /** 定义这个bean的应用，application：用户，infrastructure：完全内部使用，与用户无关 support:某些复杂配置的一部分 */
     private int role = BeanDefinition.ROLE_APPLICATION;
 
+    /** bean的描述信息 */
     @Nullable private String description;
 
+    /** 这个bean定义的资源 */
     @Nullable private Resource resource;
 
     /** Create a new AbstractBeanDefinition with default settings. */
@@ -370,7 +407,11 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
         setEnforceDestroyMethod(false);
     }
 
-    /** Return the current bean class name of this bean definition. */
+    /**
+     * this.beanClasses是对象，可以是String也可以是Class
+     *
+     * <p>Return the current bean class name of this bean definition.
+     */
     @Override
     @Nullable
     public String getBeanClassName() {
@@ -426,7 +467,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
     }
 
     /**
-     * Specify the class for this bean.
+     * 设置BeanClass
+     *
+     * <p>Specify the class for this bean.
      *
      * @see #setBeanClassName(String)
      */
@@ -435,7 +478,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
     }
 
     /**
-     * Return whether this definition specifies a bean class.
+     * 判断beanClass是否是个Class对象
+     *
+     * <p>Return whether this definition specifies a bean class.
      *
      * @see #getBeanClass()
      * @see #setBeanClass(Class)
@@ -457,10 +502,12 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
     @Nullable
     public Class<?> resolveBeanClass(@Nullable ClassLoader classLoader)
             throws ClassNotFoundException {
+        // 获取className
         String className = getBeanClassName();
         if (className == null) {
             return null;
         }
+        // 获取当前bean对应的Class对象
         Class<?> resolvedClass = ClassUtils.forName(className, classLoader);
         this.beanClass = resolvedClass;
         return resolvedClass;
@@ -1127,6 +1174,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
      */
     protected void prepareMethodOverride(MethodOverride mo)
             throws BeanDefinitionValidationException {
+        // 获取对应类中对应方法名的个数
         int count = ClassUtils.getMethodCountForName(getBeanClass(), mo.getMethodName());
         if (count == 0) {
             throw new BeanDefinitionValidationException(
@@ -1137,6 +1185,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
                             + "]");
         } else if (count == 1) {
             // Mark override as not overloaded, to avoid the overhead of arg type checking.
+            // 标记methodOverride暂未被覆盖，避免参数类型检查的开销
             mo.setOverloaded(false);
         }
     }
@@ -1153,7 +1202,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
     }
 
     /**
-     * Clone this bean definition. To be implemented by concrete subclasses.
+     * 定义了一个克隆的抽象方法
+     *
+     * <p>Clone this bean definition. To be implemented by concrete subclasses.
      *
      * @return the cloned bean definition object
      */
@@ -1180,8 +1231,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
                 && this.primary == that.primary
                 && this.nonPublicAccessAllowed == that.nonPublicAccessAllowed
                 && this.lenientConstructorResolution == that.lenientConstructorResolution
-                && equalsConstructorArgumentValues(that)
-                && equalsPropertyValues(that)
+                && ObjectUtils.nullSafeEquals(
+                        this.constructorArgumentValues, that.constructorArgumentValues)
+                && ObjectUtils.nullSafeEquals(this.propertyValues, that.propertyValues)
                 && ObjectUtils.nullSafeEquals(this.methodOverrides, that.methodOverrides)
                 && ObjectUtils.nullSafeEquals(this.factoryBeanName, that.factoryBeanName)
                 && ObjectUtils.nullSafeEquals(this.factoryMethodName, that.factoryMethodName)
@@ -1194,31 +1246,12 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
                 && super.equals(other));
     }
 
-    private boolean equalsConstructorArgumentValues(AbstractBeanDefinition other) {
-        if (!hasConstructorArgumentValues()) {
-            return !other.hasConstructorArgumentValues();
-        }
-        return ObjectUtils.nullSafeEquals(
-                this.constructorArgumentValues, other.constructorArgumentValues);
-    }
-
-    private boolean equalsPropertyValues(AbstractBeanDefinition other) {
-        if (!hasPropertyValues()) {
-            return !other.hasPropertyValues();
-        }
-        return ObjectUtils.nullSafeEquals(this.propertyValues, other.propertyValues);
-    }
-
     @Override
     public int hashCode() {
         int hashCode = ObjectUtils.nullSafeHashCode(getBeanClassName());
         hashCode = 29 * hashCode + ObjectUtils.nullSafeHashCode(this.scope);
-        if (hasConstructorArgumentValues()) {
-            hashCode = 29 * hashCode + ObjectUtils.nullSafeHashCode(this.constructorArgumentValues);
-        }
-        if (hasPropertyValues()) {
-            hashCode = 29 * hashCode + ObjectUtils.nullSafeHashCode(this.propertyValues);
-        }
+        hashCode = 29 * hashCode + ObjectUtils.nullSafeHashCode(this.constructorArgumentValues);
+        hashCode = 29 * hashCode + ObjectUtils.nullSafeHashCode(this.propertyValues);
         hashCode = 29 * hashCode + ObjectUtils.nullSafeHashCode(this.factoryBeanName);
         hashCode = 29 * hashCode + ObjectUtils.nullSafeHashCode(this.factoryMethodName);
         hashCode = 29 * hashCode + super.hashCode();

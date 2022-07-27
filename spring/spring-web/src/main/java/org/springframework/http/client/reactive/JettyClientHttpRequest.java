@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.util.function.Function;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.reactive.client.ContentChunk;
 import org.eclipse.jetty.reactive.client.ReactiveRequest;
-import org.eclipse.jetty.reactive.client.internal.PublisherContentProvider;
 import org.eclipse.jetty.util.Callback;
 import org.reactivestreams.Publisher;
 import reactor.core.Exceptions;
@@ -38,6 +37,8 @@ import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 
 /**
  * {@link ClientHttpRequest} implementation for the Jetty ReactiveStreams HTTP client.
@@ -53,6 +54,8 @@ class JettyClientHttpRequest extends AbstractClientHttpRequest {
 
     private final DataBufferFactory bufferFactory;
 
+    @Nullable private ReactiveRequest reactiveRequest;
+
     public JettyClientHttpRequest(Request jettyRequest, DataBufferFactory bufferFactory) {
         this.jettyRequest = jettyRequest;
         this.bufferFactory = bufferFactory;
@@ -60,7 +63,9 @@ class JettyClientHttpRequest extends AbstractClientHttpRequest {
 
     @Override
     public HttpMethod getMethod() {
-        return HttpMethod.valueOf(this.jettyRequest.getMethod());
+        HttpMethod method = HttpMethod.resolve(this.jettyRequest.getMethod());
+        Assert.state(method != null, "Method must not be null");
+        return method;
     }
 
     @Override
@@ -80,29 +85,25 @@ class JettyClientHttpRequest extends AbstractClientHttpRequest {
 
     @Override
     public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+        Flux<ContentChunk> chunks = Flux.from(body).map(this::toContentChunk);
         ReactiveRequest.Content content =
-                Flux.from(body)
-                        .map(this::toContentChunk)
-                        .as(
-                                chunks ->
-                                        ReactiveRequest.Content.fromPublisher(
-                                                chunks, getContentType()));
-        this.jettyRequest.content(new PublisherContentProvider(content));
+                ReactiveRequest.Content.fromPublisher(chunks, getContentType());
+        this.reactiveRequest =
+                ReactiveRequest.newBuilder(this.jettyRequest).content(content).build();
         return doCommit(this::completes);
     }
 
     @Override
     public Mono<Void> writeAndFlushWith(Publisher<? extends Publisher<? extends DataBuffer>> body) {
-        ReactiveRequest.Content content =
+        Flux<ContentChunk> chunks =
                 Flux.from(body)
                         .flatMap(Function.identity())
                         .doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release)
-                        .map(this::toContentChunk)
-                        .as(
-                                chunks ->
-                                        ReactiveRequest.Content.fromPublisher(
-                                                chunks, getContentType()));
-        this.jettyRequest.content(new PublisherContentProvider(content));
+                        .map(this::toContentChunk);
+        ReactiveRequest.Content content =
+                ReactiveRequest.Content.fromPublisher(chunks, getContentType());
+        this.reactiveRequest =
+                ReactiveRequest.newBuilder(this.jettyRequest).content(content).build();
         return doCommit(this::completes);
     }
 
@@ -149,5 +150,12 @@ class JettyClientHttpRequest extends AbstractClientHttpRequest {
         if (!headers.containsKey(HttpHeaders.ACCEPT)) {
             this.jettyRequest.header(HttpHeaders.ACCEPT, "*/*");
         }
+    }
+
+    ReactiveRequest getReactiveRequest() {
+        if (this.reactiveRequest == null) {
+            this.reactiveRequest = ReactiveRequest.newBuilder(this.jettyRequest).build();
+        }
+        return this.reactiveRequest;
     }
 }

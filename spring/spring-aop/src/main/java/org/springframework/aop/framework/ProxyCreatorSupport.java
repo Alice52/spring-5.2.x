@@ -22,7 +22,9 @@ import java.util.List;
 import org.springframework.util.Assert;
 
 /**
- * Base class for proxy factories. Provides convenient access to a configurable AopProxyFactory.
+ * AdvisedSupport的子类。 引用了AopProxyFactory用来创建代理对象。
+ *
+ * <p>Base class for proxy factories. Provides convenient access to a configurable AopProxyFactory.
  *
  * @author Juergen Hoeller
  * @since 2.0.3
@@ -91,18 +93,24 @@ public class ProxyCreatorSupport extends AdvisedSupport {
     }
 
     /**
-     * Subclasses should call this to get a new AOP proxy. They should <b>not</b> create an AOP
+     * 创建AOP代理，如果激活了，就需要有激活通知
+     *
+     * <p>Subclasses should call this to get a new AOP proxy. They should <b>not</b> create an AOP
      * proxy with {@code this} as an argument.
      */
     protected final synchronized AopProxy createAopProxy() {
         if (!this.active) {
+            // 监听调用AdvisedSupportListener实现类的activated方法
             activate();
         }
+        // 通过AopProxyFactory获得AopProxy，这个AopProxyFactory是在初始化函数中定义的，使用的是DefaultAopProxyFactory
         return getAopProxyFactory().createAopProxy(this);
     }
 
     /**
-     * Activate this proxy configuration.
+     * 激活通知，跟前面的添加接口的通知一样，都是给AdvisedSupportListener通知
+     *
+     * <p>Activate this proxy configuration.
      *
      * @see AdvisedSupportListener#activated
      */
@@ -114,15 +122,20 @@ public class ProxyCreatorSupport extends AdvisedSupport {
     }
 
     /**
-     * Propagate advice change event to all AdvisedSupportListeners.
+     * 添加了接口要有adviceChanged通知
+     *
+     * <p>Propagate advice change event to all AdvisedSupportListeners.
      *
      * @see AdvisedSupportListener#adviceChanged
      */
     @Override
     protected void adviceChanged() {
+        // 清除缓存
         super.adviceChanged();
         synchronized (this) {
             if (this.active) {
+                // 给Advised的监听器发送通知,通知Advised的变化
+                // 在Spring中没有默认的实现
                 for (AdvisedSupportListener listener : this.listeners) {
                     listener.adviceChanged(this);
                 }

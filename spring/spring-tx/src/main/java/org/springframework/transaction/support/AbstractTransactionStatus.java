@@ -192,7 +192,9 @@ public abstract class AbstractTransactionStatus implements TransactionStatus {
     }
 
     /**
-     * This implementation delegates to a SavepointManager for the underlying transaction, if
+     * 如果没有异常回滚的话，要释放保存点
+     *
+     * <p>This implementation delegates to a SavepointManager for the underlying transaction, if
      * possible.
      *
      * @see #getSavepointManager()

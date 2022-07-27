@@ -37,17 +37,26 @@ final class BeanMethod extends ConfigurationMethod {
         super(metadata, configurationClass);
     }
 
+    /**
+     * 验证@Bean注解的方法，如果是静态的，就立即返回，否则的话需要判断是否可以覆盖
+     *
+     * @param problemReporter
+     */
     @Override
     public void validate(ProblemReporter problemReporter) {
+        // 判断是否是静态的
         if (getMetadata().isStatic()) {
             // static @Bean methods have no constraints to validate -> return immediately
+            // 静态@Bean方法没有约束校验，立即返回约束验证
             return;
         }
 
         if (this.configurationClass.getMetadata().isAnnotated(Configuration.class.getName())) {
+            // 判断该配置类方法是否可以重写（非静态方法、非final方法，非private方法）
             if (!getMetadata().isOverridable()) {
                 // instance @Bean methods within @Configuration classes must be overridable to
                 // accommodate CGLIB
+                // @Configuration标注的配置类的@Bean方法要想使用CGLIB代理必须是可重写的
                 problemReporter.error(new NonOverridableMethodError());
             }
         }

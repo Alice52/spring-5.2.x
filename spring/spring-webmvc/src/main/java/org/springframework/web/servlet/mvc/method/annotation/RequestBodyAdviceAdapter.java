@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.springframework.web.servlet.mvc.method.annotation;
 
 import java.io.IOException;
@@ -26,10 +25,10 @@ import org.springframework.lang.Nullable;
 
 /**
  * A convenient starting point for implementing {@link
- * org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice RequestBodyAdvice} with
+ * org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice ResponseBodyAdvice} with
  * default method implementations.
  *
- * <p>Subclasses are required to implement {@link #supports} to return true depending on when the
+ * <p>Sub-classes are required to implement {@link #supports} to return true depending on when the
  * advice applies.
  *
  * @author Rossen Stoyanchev

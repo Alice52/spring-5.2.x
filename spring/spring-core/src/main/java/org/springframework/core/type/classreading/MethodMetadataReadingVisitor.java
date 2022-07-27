@@ -121,6 +121,11 @@ public class MethodMetadataReadingVisitor extends MethodVisitor implements Metho
         return ((this.access & Opcodes.ACC_FINAL) != 0);
     }
 
+    /**
+     * 可以覆盖的条件，非静态且非final且不是私有的
+     *
+     * @return
+     */
     @Override
     public boolean isOverridable() {
         return (!isStatic() && !isFinal() && ((this.access & Opcodes.ACC_PRIVATE) == 0));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,7 +128,7 @@ public abstract class AbstractJsonHttpMessageConverter
 
     @Override
     protected final void writeInternal(
-            Object object, @Nullable Type type, HttpOutputMessage outputMessage)
+            Object o, @Nullable Type type, HttpOutputMessage outputMessage)
             throws IOException, HttpMessageNotWritableException {
 
         Writer writer = getWriter(outputMessage);
@@ -136,7 +136,7 @@ public abstract class AbstractJsonHttpMessageConverter
             writer.append(this.jsonPrefix);
         }
         try {
-            writeInternal(object, type, writer);
+            writeInternal(o, type, writer);
         } catch (Exception ex) {
             throw new HttpMessageNotWritableException(
                     "Could not write JSON: " + ex.getMessage(), ex);
@@ -157,11 +157,11 @@ public abstract class AbstractJsonHttpMessageConverter
     /**
      * Template method that writes the JSON-bound object to the given {@link Writer}.
      *
-     * @param object the object to write to the output message
+     * @param o the object to write to the output message
      * @param type the type of object to write (may be {@code null})
      * @param writer the {@code} Writer to use
      * @throws Exception in case of write failures
      */
-    protected abstract void writeInternal(Object object, @Nullable Type type, Writer writer)
+    protected abstract void writeInternal(Object o, @Nullable Type type, Writer writer)
             throws Exception;
 }

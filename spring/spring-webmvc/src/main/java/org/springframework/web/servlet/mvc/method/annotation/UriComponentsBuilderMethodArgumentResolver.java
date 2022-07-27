@@ -29,7 +29,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Resolvers argument values of type {@link UriComponentsBuilder}.
+ * 解析UriComponentsBuilder类型的参数
+ *
+ * <p>Resolvers argument values of type {@link UriComponentsBuilder}.
  *
  * <p>The returned instance is initialized via {@link
  * ServletUriComponentsBuilder#fromServletMapping(HttpServletRequest)}.
@@ -39,12 +41,13 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 public class UriComponentsBuilderMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
+    // 判断是否是Model类型
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         Class<?> type = parameter.getParameterType();
         return (UriComponentsBuilder.class == type || ServletUriComponentsBuilder.class == type);
     }
-
+    // 解析具体的参数
     @Override
     public Object resolveArgument(
             MethodParameter parameter,

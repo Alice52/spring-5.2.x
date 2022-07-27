@@ -16,7 +16,8 @@
 
 package org.springframework.test.web.servlet
 
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpMethod

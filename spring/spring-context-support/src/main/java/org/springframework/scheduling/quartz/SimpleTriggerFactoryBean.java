@@ -33,16 +33,17 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * A Spring {@link FactoryBean} for creating a Quartz {@link org.quartz.SimpleTrigger} instance,
- * supporting bean-style usage for trigger configuration.
+ * A Spring {@link FactoryBean} for creating a Quartz {@link org.quartz.SimpleTrigger}
+ * instance, supporting bean-style usage for trigger configuration.
  *
- * <p>{@code SimpleTrigger(Impl)} itself is already a JavaBean but lacks sensible defaults. This
- * class uses the Spring bean name as job name, the Quartz default group ("DEFAULT") as job group,
- * the current time as start time, and indefinite repetition, if not specified.
+ * <p>{@code SimpleTrigger(Impl)} itself is already a JavaBean but lacks sensible defaults.
+ * This class uses the Spring bean name as job name, the Quartz default group ("DEFAULT")
+ * as job group, the current time as start time, and indefinite repetition, if not specified.
  *
- * <p>This class will also register the trigger with the job name and group of a given {@link
- * org.quartz.JobDetail}. This allows {@link SchedulerFactoryBean} to automatically register a
- * trigger for the corresponding JobDetail, instead of registering the JobDetail separately.
+ * <p>This class will also register the trigger with the job name and group of
+ * a given {@link org.quartz.JobDetail}. This allows {@link SchedulerFactoryBean}
+ * to automatically register a trigger for the corresponding JobDetail,
+ * instead of registering the JobDetail separately.
  *
  * @author Juergen Hoeller
  * @since 3.1
@@ -53,196 +54,216 @@ import org.springframework.util.Assert;
  * @see SchedulerFactoryBean#setTriggers
  * @see SchedulerFactoryBean#setJobDetails
  */
-public class SimpleTriggerFactoryBean
-        implements FactoryBean<SimpleTrigger>, BeanNameAware, InitializingBean {
+public class SimpleTriggerFactoryBean implements FactoryBean<SimpleTrigger>, BeanNameAware, InitializingBean {
 
-    /** Constants for the SimpleTrigger class. */
-    private static final Constants constants = new Constants(SimpleTrigger.class);
+	/** Constants for the SimpleTrigger class. */
+	private static final Constants constants = new Constants(SimpleTrigger.class);
 
-    @Nullable private String name;
 
-    @Nullable private String group;
+	@Nullable
+	private String name;
 
-    @Nullable private JobDetail jobDetail;
+	@Nullable
+	private String group;
 
-    private JobDataMap jobDataMap = new JobDataMap();
+	@Nullable
+	private JobDetail jobDetail;
 
-    @Nullable private Date startTime;
+	private JobDataMap jobDataMap = new JobDataMap();
 
-    private long startDelay;
+	@Nullable
+	private Date startTime;
 
-    private long repeatInterval;
+	private long startDelay;
 
-    private int repeatCount = -1;
+	private long repeatInterval;
 
-    private int priority;
+	private int repeatCount = -1;
 
-    private int misfireInstruction;
+	private int priority;
 
-    @Nullable private String description;
+	private int misfireInstruction;
 
-    @Nullable private String beanName;
+	@Nullable
+	private String description;
 
-    @Nullable private SimpleTrigger simpleTrigger;
+	@Nullable
+	private String beanName;
 
-    /** Specify the trigger's name. */
-    public void setName(String name) {
-        this.name = name;
-    }
+	@Nullable
+	private SimpleTrigger simpleTrigger;
 
-    /** Specify the trigger's group. */
-    public void setGroup(String group) {
-        this.group = group;
-    }
 
-    /** Set the JobDetail that this trigger should be associated with. */
-    public void setJobDetail(JobDetail jobDetail) {
-        this.jobDetail = jobDetail;
-    }
+	/**
+	 * Specify the trigger's name.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    /** Return the trigger's JobDataMap. */
-    public JobDataMap getJobDataMap() {
-        return this.jobDataMap;
-    }
+	/**
+	 * Specify the trigger's group.
+	 */
+	public void setGroup(String group) {
+		this.group = group;
+	}
 
-    /**
-     * Set the trigger's JobDataMap.
-     *
-     * @see #setJobDataAsMap
-     */
-    public void setJobDataMap(JobDataMap jobDataMap) {
-        this.jobDataMap = jobDataMap;
-    }
+	/**
+	 * Set the JobDetail that this trigger should be associated with.
+	 */
+	public void setJobDetail(JobDetail jobDetail) {
+		this.jobDetail = jobDetail;
+	}
 
-    /**
-     * Register objects in the JobDataMap via a given Map.
-     *
-     * <p>These objects will be available to this Trigger only, in contrast to objects in the
-     * JobDetail's data map.
-     *
-     * @param jobDataAsMap a Map with String keys and any objects as values (for example
-     *     Spring-managed beans)
-     */
-    public void setJobDataAsMap(Map<String, ?> jobDataAsMap) {
-        this.jobDataMap.putAll(jobDataAsMap);
-    }
+	/**
+	 * Set the trigger's JobDataMap.
+	 * @see #setJobDataAsMap
+	 */
+	public void setJobDataMap(JobDataMap jobDataMap) {
+		this.jobDataMap = jobDataMap;
+	}
 
-    /**
-     * Set a specific start time for the trigger.
-     *
-     * <p>Note that a dynamically computed {@link #setStartDelay} specification overrides a static
-     * timestamp set here.
-     */
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
+	/**
+	 * Return the trigger's JobDataMap.
+	 */
+	public JobDataMap getJobDataMap() {
+		return this.jobDataMap;
+	}
 
-    /**
-     * Set the start delay in milliseconds.
-     *
-     * <p>The start delay is added to the current system time (when the bean starts) to control the
-     * start time of the trigger.
-     *
-     * @see #setStartTime
-     */
-    public void setStartDelay(long startDelay) {
-        Assert.isTrue(startDelay >= 0, "Start delay cannot be negative");
-        this.startDelay = startDelay;
-    }
+	/**
+	 * Register objects in the JobDataMap via a given Map.
+	 * <p>These objects will be available to this Trigger only,
+	 * in contrast to objects in the JobDetail's data map.
+	 * @param jobDataAsMap a Map with String keys and any objects as values
+	 * (for example Spring-managed beans)
+	 */
+	public void setJobDataAsMap(Map<String, ?> jobDataAsMap) {
+		this.jobDataMap.putAll(jobDataAsMap);
+	}
 
-    /** Specify the interval between execution times of this trigger. */
-    public void setRepeatInterval(long repeatInterval) {
-        this.repeatInterval = repeatInterval;
-    }
+	/**
+	 * Set a specific start time for the trigger.
+	 * <p>Note that a dynamically computed {@link #setStartDelay} specification
+	 * overrides a static timestamp set here.
+	 */
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
 
-    /**
-     * Specify the number of times this trigger is supposed to fire.
-     *
-     * <p>Default is to repeat indefinitely.
-     */
-    public void setRepeatCount(int repeatCount) {
-        this.repeatCount = repeatCount;
-    }
+	/**
+	 * Set the start delay in milliseconds.
+	 * <p>The start delay is added to the current system time (when the bean starts)
+	 * to control the start time of the trigger.
+	 * @see #setStartTime
+	 */
+	public void setStartDelay(long startDelay) {
+		Assert.isTrue(startDelay >= 0, "Start delay cannot be negative");
+		this.startDelay = startDelay;
+	}
 
-    /** Specify the priority of this trigger. */
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
+	/**
+	 * Specify the interval between execution times of this trigger.
+	 */
+	public void setRepeatInterval(long repeatInterval) {
+		this.repeatInterval = repeatInterval;
+	}
 
-    /** Specify a misfire instruction for this trigger. */
-    public void setMisfireInstruction(int misfireInstruction) {
-        this.misfireInstruction = misfireInstruction;
-    }
+	/**
+	 * Specify the number of times this trigger is supposed to fire.
+	 * <p>Default is to repeat indefinitely.
+	 */
+	public void setRepeatCount(int repeatCount) {
+		this.repeatCount = repeatCount;
+	}
 
-    /**
-     * Set the misfire instruction via the name of the corresponding constant in the {@link
-     * org.quartz.SimpleTrigger} class. Default is {@code MISFIRE_INSTRUCTION_SMART_POLICY}.
-     *
-     * @see org.quartz.SimpleTrigger#MISFIRE_INSTRUCTION_FIRE_NOW
-     * @see org.quartz.SimpleTrigger#MISFIRE_INSTRUCTION_RESCHEDULE_NEXT_WITH_EXISTING_COUNT
-     * @see org.quartz.SimpleTrigger#MISFIRE_INSTRUCTION_RESCHEDULE_NEXT_WITH_REMAINING_COUNT
-     * @see org.quartz.SimpleTrigger#MISFIRE_INSTRUCTION_RESCHEDULE_NOW_WITH_EXISTING_REPEAT_COUNT
-     * @see org.quartz.SimpleTrigger#MISFIRE_INSTRUCTION_RESCHEDULE_NOW_WITH_REMAINING_REPEAT_COUNT
-     * @see org.quartz.Trigger#MISFIRE_INSTRUCTION_SMART_POLICY
-     */
-    public void setMisfireInstructionName(String constantName) {
-        this.misfireInstruction = constants.asNumber(constantName).intValue();
-    }
+	/**
+	 * Specify the priority of this trigger.
+	 */
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
 
-    /** Associate a textual description with this trigger. */
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	/**
+	 * Specify a misfire instruction for this trigger.
+	 */
+	public void setMisfireInstruction(int misfireInstruction) {
+		this.misfireInstruction = misfireInstruction;
+	}
 
-    @Override
-    public void setBeanName(String beanName) {
-        this.beanName = beanName;
-    }
+	/**
+	 * Set the misfire instruction via the name of the corresponding
+	 * constant in the {@link org.quartz.SimpleTrigger} class.
+	 * Default is {@code MISFIRE_INSTRUCTION_SMART_POLICY}.
+	 * @see org.quartz.SimpleTrigger#MISFIRE_INSTRUCTION_FIRE_NOW
+	 * @see org.quartz.SimpleTrigger#MISFIRE_INSTRUCTION_RESCHEDULE_NEXT_WITH_EXISTING_COUNT
+	 * @see org.quartz.SimpleTrigger#MISFIRE_INSTRUCTION_RESCHEDULE_NEXT_WITH_REMAINING_COUNT
+	 * @see org.quartz.SimpleTrigger#MISFIRE_INSTRUCTION_RESCHEDULE_NOW_WITH_EXISTING_REPEAT_COUNT
+	 * @see org.quartz.SimpleTrigger#MISFIRE_INSTRUCTION_RESCHEDULE_NOW_WITH_REMAINING_REPEAT_COUNT
+	 * @see org.quartz.Trigger#MISFIRE_INSTRUCTION_SMART_POLICY
+	 */
+	public void setMisfireInstructionName(String constantName) {
+		this.misfireInstruction = constants.asNumber(constantName).intValue();
+	}
 
-    @Override
-    public void afterPropertiesSet() {
-        if (this.name == null) {
-            this.name = this.beanName;
-        }
-        if (this.group == null) {
-            this.group = Scheduler.DEFAULT_GROUP;
-        }
-        if (this.jobDetail != null) {
-            this.jobDataMap.put("jobDetail", this.jobDetail);
-        }
-        if (this.startDelay > 0 || this.startTime == null) {
-            this.startTime = new Date(System.currentTimeMillis() + this.startDelay);
-        }
+	/**
+	 * Associate a textual description with this trigger.
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-        SimpleTriggerImpl sti = new SimpleTriggerImpl();
-        sti.setName(this.name != null ? this.name : toString());
-        sti.setGroup(this.group);
-        if (this.jobDetail != null) {
-            sti.setJobKey(this.jobDetail.getKey());
-        }
-        sti.setJobDataMap(this.jobDataMap);
-        sti.setStartTime(this.startTime);
-        sti.setRepeatInterval(this.repeatInterval);
-        sti.setRepeatCount(this.repeatCount);
-        sti.setPriority(this.priority);
-        sti.setMisfireInstruction(this.misfireInstruction);
-        sti.setDescription(this.description);
-        this.simpleTrigger = sti;
-    }
+	@Override
+	public void setBeanName(String beanName) {
+		this.beanName = beanName;
+	}
 
-    @Override
-    @Nullable
-    public SimpleTrigger getObject() {
-        return this.simpleTrigger;
-    }
 
-    @Override
-    public Class<?> getObjectType() {
-        return SimpleTrigger.class;
-    }
+	@Override
+	public void afterPropertiesSet() {
+		if (this.name == null) {
+			this.name = this.beanName;
+		}
+		if (this.group == null) {
+			this.group = Scheduler.DEFAULT_GROUP;
+		}
+		if (this.jobDetail != null) {
+			this.jobDataMap.put("jobDetail", this.jobDetail);
+		}
+		if (this.startDelay > 0 || this.startTime == null) {
+			this.startTime = new Date(System.currentTimeMillis() + this.startDelay);
+		}
 
-    @Override
-    public boolean isSingleton() {
-        return true;
-    }
+		SimpleTriggerImpl sti = new SimpleTriggerImpl();
+		sti.setName(this.name != null ? this.name : toString());
+		sti.setGroup(this.group);
+		if (this.jobDetail != null) {
+			sti.setJobKey(this.jobDetail.getKey());
+		}
+		sti.setJobDataMap(this.jobDataMap);
+		sti.setStartTime(this.startTime);
+		sti.setRepeatInterval(this.repeatInterval);
+		sti.setRepeatCount(this.repeatCount);
+		sti.setPriority(this.priority);
+		sti.setMisfireInstruction(this.misfireInstruction);
+		sti.setDescription(this.description);
+		this.simpleTrigger = sti;
+	}
+
+
+	@Override
+	@Nullable
+	public SimpleTrigger getObject() {
+		return this.simpleTrigger;
+	}
+
+	@Override
+	public Class<?> getObjectType() {
+		return SimpleTrigger.class;
+	}
+
+	@Override
+	public boolean isSingleton() {
+		return true;
+	}
+
 }

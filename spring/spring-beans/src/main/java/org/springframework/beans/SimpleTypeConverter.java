@@ -17,8 +17,11 @@
 package org.springframework.beans;
 
 /**
- * Simple implementation of the {@link TypeConverter} interface that does not operate on a specific
- * target object. This is an alternative to using a full-blown BeanWrapperImpl instance for
+ * 不在特定目标对象上运行的TypeConverter接口的简单实现。这是使用完整的BeanWrapperImpl实例来实现
+ * 任意类型转换需求的替代方法，同时使用相同的转换算法（包括委托给PropertyEditor和ConversionService）
+ *
+ * <p>Simple implementation of the {@link TypeConverter} interface that does not operate on a
+ * specific target object. This is an alternative to using a full-blown BeanWrapperImpl instance for
  * arbitrary type conversion needs, while using the very same conversion algorithm (including
  * delegation to {@link java.beans.PropertyEditor} and {@link
  * org.springframework.core.convert.ConversionService}) underneath.

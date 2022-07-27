@@ -271,8 +271,8 @@ public abstract class AbstractAopProxyTests {
     }
 
     /**
-     * MockWebSessionCheck that the two MethodInvocations necessary are independent and don't
-     * conflict. Check also proxy exposure.
+     * Check that the two MethodInvocations necessary are independent and don't conflict. Check also
+     * proxy exposure.
      */
     @Test
     public void testOneAdvisedObjectCallsAnother() {

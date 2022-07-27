@@ -52,7 +52,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 /**
- * Resolves {@link HttpEntity} and {@link RequestEntity} method argument values and also handles
+ * 解析HttpEntity和RequestEntity类型的参数
+ *
+ * <p>Resolves {@link HttpEntity} and {@link RequestEntity} method argument values and also handles
  * {@link HttpEntity} and {@link ResponseEntity} return values.
  *
  * <p>An {@link HttpEntity} return type has a specific purpose. Therefore this handler should be
