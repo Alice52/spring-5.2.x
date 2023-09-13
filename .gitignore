@@ -41,3 +41,5 @@ out
 test-output
 atlassian-ide-plugin.xml
 .gradletasknamecache
+**/build
+spring/debug-spring/build/libs/debug-spring-5.2.9.BUILD-SNAPSHOT.jar

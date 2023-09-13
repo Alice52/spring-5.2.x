@@ -23,7 +23,7 @@ public class SessionAttributeController {
     public String index(Model model) {
         model.addAttribute("book", "金刚经");
         model.addAttribute("description", "经典");
-        model.addAttribute("price", new Double("999.99"));
+        model.addAttribute("price", 999.99d);
         return "redirect:get";
     }
 

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aaa="http://www.mashibing.com/schema/user"
-       xmlns="http://www.springframework.org/schema/beans"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.mashibing.com/schema/user http://www.mashibing.com/schema/user.xsd">
-    <aaa:user id="testbean" userName="lee" email="bbb"/>
-</beans>

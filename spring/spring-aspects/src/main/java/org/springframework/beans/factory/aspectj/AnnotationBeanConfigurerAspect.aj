@@ -17,7 +17,6 @@
 package org.springframework.beans.factory.aspectj;
 
 import org.aspectj.lang.annotation.control.CodeGenerationHint;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.DisposableBean;
@@ -70,23 +69,23 @@ public aspect AnnotationBeanConfigurerAspect extends AbstractInterfaceDrivenDepe
     }
 
 
-    public pointcut inConfigurableBean(): @this(Configurable);
+    public pointcut inConfigurableBean() : @this(Configurable);
 
-    public pointcut preConstructionConfiguration(): preConstructionConfigurationSupport(*);
+    public pointcut preConstructionConfiguration() : preConstructionConfigurationSupport(*);
 
     /*
      * An intermediary to match preConstructionConfiguration signature (that doesn't expose the annotation object)
      */
-    @CodeGenerationHint(ifNameSuffix = "bb0")
-    private pointcut preConstructionConfigurationSupport(Configurable c): @this(c) && if (c.preConstruction());
+    @CodeGenerationHint(ifNameSuffix="bb0")
+    private pointcut preConstructionConfigurationSupport(Configurable c) : @this(c) && if (c.preConstruction());
 
 
-    declare parents:@Configurable*implements ConfigurableObject;
+    declare parents: @Configurable * implements ConfigurableObject;
 
     /*
      * This declaration shouldn't be needed,
      * except for an AspectJ bug (https://bugs.eclipse.org/bugs/show_bug.cgi?id=214559)
      */
-    declare parents:@Configurable Serializable+implements ConfigurableDeserializationSupport;
+    declare parents: @Configurable Serializable+ implements ConfigurableDeserializationSupport;
 
 }
