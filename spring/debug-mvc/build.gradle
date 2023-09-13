@@ -3,6 +3,8 @@ plugins {
 	id 'war'
 }
 
+apply plugin: "kotlin"
+
 group 'org.springframework'
 version '5.2.9.BUILD-SNAPSHOT'
 

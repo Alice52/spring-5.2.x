@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+apply plugin: "kotlin"
+
+group 'org.springframework'
+version '5.2.9.BUILD-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'junit:junit:4.13.1'
+    compile(project(":spring-webmvc"))
+    compile(project(":spring-web"))
+    compile(project(":spring-aspects"))
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation 'javax.annotation:jsr250-api:1.0'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
+    implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.12'
+}

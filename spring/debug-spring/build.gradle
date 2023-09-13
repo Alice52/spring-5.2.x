@@ -1,5 +1,6 @@
 plugins {
 	id 'java'
+	id 'kotlin'
 }
 
 group 'org.springframework'
@@ -30,8 +31,8 @@ dependencies {
 	compile(project(":spring-test"))
 	compile(project(":spring-webflux"))
 	compile(project(":spring-websocket"))
-//    compile(project(":spring-aspects"))
-//    compile('org.springframework:spring-aspectj:5.2.9')
+	compile(project(":spring-aspects"))
+	// compile('org.springframework:spring-aspectj:5.2.9')
 	compile("org.aspectj:aspectjweaver:1.9.6")
 	compile(project(":spring-aop"))
 	testCompile group: 'junit', name: 'junit', version: '4.12'

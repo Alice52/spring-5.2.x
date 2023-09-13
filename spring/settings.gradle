@@ -39,4 +39,4 @@ rootProject.children.each { project ->
 
 include 'debug-spring'
 include 'debug-mvc'
-
+include 'debug-typeconvert'
